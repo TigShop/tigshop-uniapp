@@ -1,0 +1,95 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"enablePullDownRefresh": true,
+				"backgroundTextStyle": "dark",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/search/index",
+			"style": {}
+		},
+		{
+			"path": "pages/productCate/index",
+			"style": {}
+		},
+		{
+			"path": "pages/cart/index",
+			"style": {}
+		},
+		{
+			"path": "pages/user/index",
+			"style": {}
+		},
+		{
+			"path": "pages/login/index",
+			"style": {}
+		},
+		{
+			"path": "pages/productDetail/index",
+			"style": {}
+		},
+		{
+			"path": "pages/coupon/index",
+			"style": {}
+		},
+		{
+			"path": "pages/order/check",
+			"style": {}
+		},
+		{
+			"path": "pages/address/list",
+			"style": {}
+		},
+		{
+			"path": "pages/address/editRegion",
+			"style": {}
+		}
+	],
+	"requiredPrivateInfos": [
+		"chooseLocation",
+		"chooseAddress"
+	],
+	"tabBar": {
+		"backgroundColor": "#ffffff",
+		"color": "#282828",
+		"selectedColor": "#e93323",
+		"borderStyle": "white",
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"iconPath": "static/images/common/ico_1.png",
+				"selectedIconPath": "static/images/common/ico_1h.png",
+				"text": "首页"
+			},
+			{
+				"pagePath": "pages/productCate/index",
+				"iconPath": "static/images/common/ico_2.png",
+				"selectedIconPath": "static/images/common/ico_2h.png",
+				"text": "分类"
+			},
+			{
+				"pagePath": "pages/cart/index",
+				"iconPath": "static/images/common/ico_3.png",
+				"selectedIconPath": "static/images/common/ico_3h.png",
+				"text": "购物车"
+			},
+			{
+				"pagePath": "pages/user/index",
+				"iconPath": "static/images/common/ico_4.png",
+				"selectedIconPath": "static/images/common/ico_4h.png",
+				"text": "我的"
+			}
+		]
+	},
+	"globalStyle": {
+		"backgroundTextStyle": "dark",
+		"navigationBarBackgroundColor": "#fff",
+		"navigationBarTitleText": "WeChat",
+		"navigationBarTextStyle": "black",
+		"navigationStyle": "custom"
+	}
+}
