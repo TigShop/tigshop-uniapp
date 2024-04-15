@@ -132,9 +132,9 @@ const __selectedAddress = async () => {
     });
     try {
         const result = await selectedAddress({ id: isChecked.value });
-        console.log('pages', pages[0])
-        if(pages[0].route === 'pages/order/check'){
-            uni.navigateBack()
+        console.log("pages", pages[0]);
+        if (pages[0].route === "pages/order/check") {
+            uni.navigateBack();
         }
     } catch (errore) {
         console.error(errore);
@@ -145,6 +145,8 @@ const __selectedAddress = async () => {
 
 onShow(() => {
     uni.$on("refreshData", () => {
+        filterParams.page = 1;
+        addressList.value = [];
         __getAddressList();
     });
 });

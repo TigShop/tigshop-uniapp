@@ -85,13 +85,8 @@ onLoad((option: any) => {
 const __getAddressData = async () => {
     try {
         const result = await getAddressData({ id: id.value });
-        const { consignee, region_ids, address, mobile, telephone, email, region_names } = result.item;
-        form.consignee = consignee;
-        form.region_ids = region_ids;
-        form.address = address;
-        form.mobile = mobile;
-        form.telephone = telephone;
-        form.email = email;
+        const { region_names } = result.item;
+        Object.assign(form, result.item);
         regionNames.value = region_names.join(" ");
     } catch (error) {
         console.error(error);
@@ -141,6 +136,20 @@ const add = async () => {
 const edit = async () => {
     try {
         const result = await updateAddressData({ id: id.value, ...form });
+        if (result.message) {
+            uni.showToast({
+                title: result.message,
+                icon: "none",
+                duration: 1000
+            });
+        }
+        setTimeout(() => {
+            uni.navigateBack({
+                success: function (res) {
+                    uni.$emit("refreshData"); // 发送刷新信号和数据
+                }
+            });
+        }, 1000);
     } catch (error) {
         console.error(error);
     }

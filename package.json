@@ -54,7 +54,7 @@
     "@dcloudio/uni-mp-xhs": "3.0.0-3090920231225001",
     "@dcloudio/uni-quickapp-webview": "3.0.0-3090920231225001",
     "crypto-js": "^4.2.0",
-    "pinia": "^2.0.27",
+    "pinia": "2.0.27",
     "sass": "^1.71.1",
     "sass-loader": "^14.1.1",
     "swiper": "^11.1.0",

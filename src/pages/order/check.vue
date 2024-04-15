@@ -8,7 +8,8 @@
             <addressInfo :data="getAddressInfo"></addressInfo>
             <paymentMode v-model:payTypeId="formState.pay_type_id" :availablePaymentType="availablePaymentType"></paymentMode>
             <stroeCArd v-model:shippingType="formState.shipping_type" :cartList="cartList" :shippingTypeList="shippingTypeList"></stroeCArd>
-            <couponInfo :couponList="couponList" v-model:useCouponIds="formState.use_coupon_ids"></couponInfo>
+            <couponInfo :couponAmount="totalData?.coupon_amount ?? 0" :couponList="couponList" v-model:useCouponIds="formState.use_coupon_ids" @sendBalanceStatus="getBalanceStatus"></couponInfo>
+            <invoiceInfo></invoiceInfo>
         </view>
     </view>
 </template>
@@ -19,6 +20,7 @@ import addressInfo from "./src/addressInfo.vue";
 import paymentMode from "./src/paymentMode.vue";
 import stroeCArd from "./src/stroeCArd.vue";
 import couponInfo from "./src/couponInfo.vue";
+import invoiceInfo from "./src/invoiceInfo.vue";
 import { computed, reactive, ref, watch } from "vue";
 import { getOrderCheckData, updateOrderCheckData } from "@/api/order/check";
 import { onShow } from "@dcloudio/uni-app";
@@ -44,7 +46,7 @@ watch(
     formState,
     (newVal) => {
         console.log(newVal)
-        // updateOrderCheck();
+        updateOrderCheck();
     },
     {
         deep: true
@@ -57,23 +59,29 @@ const cartList = ref<CartList[]>([]);
 const totalData = ref<Total>();
 const shippingTypeList = ref<Array<StoreShippingType[]>>([]);
 const couponList = ref<any>([])
+const balanceNum = ref(0)
 
 const getOrderInfo = async () => {
-    myLoading.value = true;
+    uni.showLoading({
+        title: "加载中"
+    });
+    // myLoading.value = true;
     try {
         const result = await getOrderCheckData();
         Object.assign(formState, result.item);
-        const { address_list, available_payment_type, cart_list, total, store_shipping_type, coupon_list } = result;
+        const { address_list, available_payment_type, cart_list, total, store_shipping_type, coupon_list, balance } = result;
         addressList.value = address_list;
         availablePaymentType.value = available_payment_type;
         cartList.value = cart_list;
         totalData.value = total;
         shippingTypeList.value = store_shipping_type;
         couponList.value = coupon_list;
+        balanceNum.value = balance
     } catch (error) {
         console.error(error);
     } finally {
-        myLoading.value = false;
+         uni.hideLoading();
+        // myLoading.value = false;
     }
 };
 const getAddressInfo = computed(() => {
@@ -81,19 +89,27 @@ const getAddressInfo = computed(() => {
 });
 
 const updateOrderCheck = async (type = "") => {
-    // uni.showLoading({
-    //     title: "加载中"
-    // });
+    uni.showLoading({
+        title: "加载中"
+    });
     try {
         const result = await updateOrderCheckData(type, formState);
         totalData.value = result.total;
         availablePaymentType.value = result.available_payment_type
-
+        shippingTypeList.value = result.store_shipping_type
         return result;
     } catch (error: any) {
         Toast(error.message);
     } finally {
-        // uni.hideLoading();
+        uni.hideLoading();
+    }
+};
+
+const getBalanceStatus = (status: boolean) => {
+    if (status) {
+        formState.use_balance = balanceNum.value;
+    } else {
+        formState.use_balance = 0;
     }
 };
 

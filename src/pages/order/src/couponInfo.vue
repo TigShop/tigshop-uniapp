@@ -3,62 +3,66 @@
         <view class="coupon">
             <view class="coupon-title">优惠券</view>
             <view class="coupon-content" @click="handleCoupon">
-                <view class="coupon-text">优惠￥9</view>
+                <view class="coupon-text">优惠￥{{ couponAmount }}</view>
                 <image class="more-ico" src="/static/images/common/more.png"></image>
             </view>
         </view>
-
-        <popup v-model:show="show" title="优惠券" height="60%" backgroundColor="#f5f5f5" paddingBottom="90">
+        <view class="balance">
+            <view class="balance-title">余额</view>
             <view>
-                <van-tabs v-model:active="tabsActive" swipeable sticky>
-                    <van-tab title="可用优惠券">
-                        <view class="coupon-list">
-                            <view class="bonus-box">
-                                <view :class="'bonus-bd enable_select'" v-for="(item, idx) in couponList.enable_coupons" :key="idx">
-                                    <view class="bonus-left">
-                                        <view class="bonus-amount price">
-                                            {{ item.coupon_type === 2 ? `${item.coupon_money} 折` : priceFormat(Number(item.coupon_money)) }}
-                                        </view>
-                                        <view class="bonus-desc">{{ item.coupon_name }}</view>
-                                    </view>
+                <van-switch v-model="isBalance" active-color="#ee0a24" inactive-color="#dcdee0" @change="handleBalance" size="40rpx" />
+            </view>
+        </view>
 
-                                    <view class="bonus-right">
-                                        <view class="bonus-name">{{ item.is_global ? "[全场券]" : "" }} </view>
-                                        <view class="bonus-time">截止时间 {{ item.end_date }}</view>
+        <popup v-model:show="show" title="优惠券" height="60%" backgroundColor="#f5f5f5">
+            <van-tabs v-model:active="tabsActive" swipeable>
+                <van-tab title="可用优惠券">
+                    <view class="coupon-list">
+                        <view class="bonus-box">
+                            <view :class="'bonus-bd enable_select'" v-for="(item, idx) in couponList.enable_coupons" :key="idx">
+                                <view class="bonus-left">
+                                    <view class="bonus-amount price">
+                                        {{ item.coupon_type === 2 ? `${item.coupon_money} 折` : priceFormat(Number(item.coupon_money)) }}
                                     </view>
-                                    <view class="coupon-btn">
-                                        <van-checkbox v-model="item.selected" checked-color="#ee0a24" @click="handleCheck(item)"></van-checkbox>
-                                    </view>
+                                    <view class="bonus-desc">{{ item.coupon_name }}</view>
+                                </view>
+
+                                <view class="bonus-right">
+                                    <view class="bonus-name">{{ item.is_global ? "[全场券]" : "" }} </view>
+                                    <view class="bonus-time">截止时间 {{ item.end_date }}</view>
+                                </view>
+                                <view class="coupon-btn">
+                                    <van-checkbox v-model="item.selected" checked-color="#ee0a24" @click="handleCheck(item)"></van-checkbox>
                                 </view>
                             </view>
                         </view>
-                    </van-tab>
-                    <van-tab title="不可用优惠券">
-                        <view class="coupon-list">
-                            <view class="bonus-box">
-                                <view :class="'bonus-bd disabled'" v-for="(item, idx) in couponList.disable_coupons" :key="idx">
-                                    <view class="bonus-left">
-                                        <view class="bonus-amount price">
-                                            {{ item.coupon_type === 2 ? `${item.coupon_money} 折` : priceFormat(Number(item.coupon_money)) }}
-                                        </view>
-                                        <view class="bonus-desc">{{ item.coupon_name }}</view>
+                    </view>
+                </van-tab>
+                <van-tab title="不可用优惠券">
+                    <view class="coupon-list">
+                        <view class="bonus-box">
+                            <view :class="'bonus-bd disabled'" v-for="(item, idx) in couponList.disable_coupons" :key="idx">
+                                <view class="bonus-left">
+                                    <view class="bonus-amount price">
+                                        {{ item.coupon_type === 2 ? `${item.coupon_money} 折` : priceFormat(Number(item.coupon_money)) }}
                                     </view>
+                                    <view class="bonus-desc">{{ item.coupon_name }}</view>
+                                </view>
 
-                                    <view class="bonus-right">
-                                        <view class="bonus-name">{{ item.is_global ? "[全场券]" : "" }} </view>
-                                        <view class="bonus-time">截止时间 {{ item.end_date }}</view>
-                                    </view>
-                                    <view class="coupon-btn">
-                                        <van-checkbox disabled v-model="item.selected"></van-checkbox>
-                                    </view>
+                                <view class="bonus-right">
+                                    <view class="bonus-name">{{ item.is_global ? "[全场券]" : "" }} </view>
+                                    <view class="bonus-time">截止时间 {{ item.end_date }}</view>
+                                </view>
+                                <view class="coupon-btn">
+                                    <van-checkbox disabled v-model="item.selected"></van-checkbox>
                                 </view>
                             </view>
                         </view>
-                    </van-tab>
-                </van-tabs>
-                <view class="button-position">
-                    <van-button round type="danger" style="width: 100%" @click="handlecConfirm">确定</van-button>
-                </view>
+                    </view>
+                </van-tab>
+            </van-tabs>
+            <view class="button-position">
+                <van-button round type="danger" style="width: 100%" @click="handlecConfirm">确定</van-button>
             </view>
         </popup>
     </view>
@@ -72,9 +76,10 @@ import popup from "@/components/popup/index.vue";
 interface Props {
     couponList: CouponList;
     useCouponIds: number[];
+    couponAmount: number;
 }
 const props = defineProps<Props>();
-const emit = defineEmits(["update:useCouponIds"]);
+const emit = defineEmits(["update:useCouponIds", "sendBalanceStatus"]);
 
 const selectedDatas = ref<EnableCoupon[]>([]);
 watch(
@@ -88,13 +93,12 @@ watch(
     }
 );
 const show = ref(false);
+const isBalance = ref(false); // 是否使余额
 const tabsActive = ref("可用优惠券");
 const handleCoupon = () => {
     show.value = true;
 };
 const handleCheck = (item: any) => {
-    console.log("click", item.id);
-
     if (item.selected) {
         if (item.is_global) {
             selectedDatas.value.push(item);
@@ -110,14 +114,16 @@ const handleCheck = (item: any) => {
     } else {
         selectedDatas.value = selectedDatas.value.filter(({ id }) => id !== item.id);
     }
-
-    console.log("selectedDatas.value", selectedDatas.value);
 };
 
 const handlecConfirm = () => {
     const selectedIds = selectedDatas.value.map(({ id }) => id);
     emit("update:useCouponIds", selectedIds);
     show.value = false;
+};
+
+const handleBalance = (value: any) => {
+    emit("sendBalanceStatus", value);
 };
 </script>
 
@@ -127,14 +133,14 @@ const handlecConfirm = () => {
 }
 
 .coupon {
-    border-radius: 18rpx;
+    border-radius: 18rpx 18rpx 0 0;
     background: #fff;
-    margin-bottom: 20rpx;
-    padding: 30rpx 32rpx 35rpx;
+    padding: 30rpx 32rpx 0;
     margin-top: 20rpx;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 100%;
 
     .coupon-content {
         display: flex;
@@ -146,6 +152,20 @@ const handlecConfirm = () => {
         height: 36rpx;
         padding-left: 10rpx;
     }
+}
+
+.balance {
+    border-radius: 0 0 18rpx 18rpx;
+    background: #fff;
+    margin-bottom: 20rpx;
+    padding: 30rpx 32rpx 25rpx;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.coupon-list {
+    height: 100%;
 }
 
 .button-position {
@@ -183,6 +203,10 @@ const handlecConfirm = () => {
     padding: 24rpx 20rpx;
     position: relative;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 .bonus-box .bonus-bd .bonus-left::before {
     content: "";
@@ -216,13 +240,13 @@ const handlecConfirm = () => {
     top: 60rpx;
 }
 .bonus-box .bonus-bd .bonus-amount b {
-    font-size: 28rpx;
+    font-size: 24rpx;
     font-weight: 700;
     padding-right: 6rpx;
     vertical-align: middle;
 }
 .bonus-box .bonus-bd .bonus-amount {
-    font-size: 60rpx;
+    font-size: 48rpx;
     font-weight: 700;
     color: #fff;
 }

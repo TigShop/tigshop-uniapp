@@ -5,10 +5,14 @@
         :round="round"
         :closeable="closeable"
         close-icon="close"
-        :style="{ height: height, 'background-color': backgroundColor, 'padding-bottom': paddingBottom + 'rpx'}"
+        :style="{ height: height, 'background-color': backgroundColor, 'padding-bottom': paddingBottom + 'rpx' }"
     >
-        <view class="popup-title" v-if="showTitle">{{ title }} </view>
-        <slot></slot>
+        <view class="popup-container">
+            <view class="popup-title" v-if="showTitle">{{ title }} </view>
+            <view class="popup-content">
+                <slot></slot>
+            </view>
+        </view>
     </van-popup>
 </template>
 
@@ -64,15 +68,28 @@ const show = computed({
 </script>
 
 <style lang="scss" scoped>
-.popup-title {
+
+.popup-container {
+    height: 100%;
     box-sizing: border-box;
+    position: relative;
+}
+
+.popup-title {
+   
     font-size: 32rpx;
     font-weight: bold;
     text-align: left;
     height: 123rpx;
     line-height: 123rpx;
-    position: relative;
     padding-left: 30rpx;
     background: #fff;
+}
+
+.popup-content {
+    top: 123rpx;
+    overflow: hidden;
+    overflow-y: auto;
+    height: calc(100% - 123px);
 }
 </style>
