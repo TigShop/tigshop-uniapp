@@ -65,8 +65,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { CouponList } from "@/types/order/check";
-import { ref } from "vue";
+import type { CouponList, EnableCoupon } from "@/types/order/check";
+import { computed, ref, watch } from "vue";
 import { priceFormat } from "@/utils/format";
 import popup from "@/components/popup/index.vue";
 interface Props {
@@ -74,33 +74,50 @@ interface Props {
     useCouponIds: number[];
 }
 const props = defineProps<Props>();
+const emit = defineEmits(["update:useCouponIds"]);
 
-const selectedIds = ref(props.useCouponIds);
+const selectedDatas = ref<EnableCoupon[]>([]);
+watch(
+    () => props.couponList.enable_coupons,
+    (newVal) => {
+        selectedDatas.value = newVal.filter((item) => item.selected);
+    },
+    {
+        deep: true,
+        immediate: true
+    }
+);
 const show = ref(false);
 const tabsActive = ref("可用优惠券");
 const handleCoupon = () => {
     show.value = true;
 };
 const handleCheck = (item: any) => {
-    console.log(item);
-    if (item.selected) {
-    } else {
-        // const isSelectedId = isSelected(item.id);
-        // if (isSelectedId) {
-        //     const index = selectedIds.value.findIndex((id) => id === item.id);
-        //     if (index !== -1) {
-        //       selectedIds.value.splice(index, 1);
-        //     }
-        // }
-    }
-};
+    console.log("click", item.id);
 
-const isSelected = (couponId: number): boolean => {
-    return selectedIds.value.includes(couponId);
+    if (item.selected) {
+        if (item.is_global) {
+            selectedDatas.value.push(item);
+        } else {
+            props.couponList.enable_coupons.forEach((data) => {
+                if (!data.is_global && data.id !== item.id) {
+                    data.selected = false;
+                }
+            });
+            selectedDatas.value = selectedDatas.value.filter(({ is_global }) => is_global === 1);
+            selectedDatas.value.push(item);
+        }
+    } else {
+        selectedDatas.value = selectedDatas.value.filter(({ id }) => id !== item.id);
+    }
+
+    console.log("selectedDatas.value", selectedDatas.value);
 };
 
 const handlecConfirm = () => {
-    // show.value = false;
+    const selectedIds = selectedDatas.value.map(({ id }) => id);
+    emit("update:useCouponIds", selectedIds);
+    show.value = false;
 };
 </script>
 
