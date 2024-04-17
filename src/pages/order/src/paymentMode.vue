@@ -36,7 +36,7 @@
 
 <script setup lang="ts">
 import popup from "@/components/popup/index.vue";
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import type { AvailablePaymentType } from "@/types/order/check";
 import { showFailToast } from "vant";
 interface Props {

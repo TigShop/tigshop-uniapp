@@ -31,10 +31,12 @@ export default function request<T extends ResponseData>(config: RequestConfig): 
             success: (response) => {
                 // 根据你的结构处理响应
                 const data = response.data as T;
-                if (data.errcode > 0) {
-                    reject(data.data);
+                if (data.data.errcode > 0) {
+                    console.log("reject");
+                    reject(data);
                 } else {
-                    resolve(data.data);
+                    console.log("resolve");
+                    resolve(data);
                 }
             },
             fail: (err) => {

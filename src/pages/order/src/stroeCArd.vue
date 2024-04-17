@@ -2,7 +2,7 @@
     <view class="store-card" v-for="(item, index) in cartList" :key="index">
         <view class="store-card-item">
             <view class="store-card-item-title">
-                <view class="store-card-item-label">自营</view>
+                <view class="store-card-item-label" v-if="item.store_id === 0">自营</view>
                 <!-- <view class="store-card-item-name">LYESC</view> -->
                 <view class="store-card-item-name">{{ item.store_id === 0 ? "自营" : item.store_title }}</view>
             </view>
@@ -14,7 +14,7 @@
                         </view>
                         <view class="store-card-item-content-right">
                             <view class="store-card-item-content-right-title">{{ subItem.product_name }}</view>
-                            <view class="store-card-item-content-right-price">{{ priceFormat(Number(subItem.price)) }}</view>
+                            <view class="store-card-item-content-right-price"><FormatPrice :priceData="subItem.price"></FormatPrice></view>
                             <view class="store-card-item-content-right-num">x {{ subItem.quantity }}</view>
                         </view>
                     </navigator>
@@ -85,9 +85,9 @@ const handleDistributionMode = (index: number) => {
 
 const currentIndex = ref(0);
 const getActive = (index: number, id: number) => {
-    if(currentTypeID.value){
+    if (currentTypeID.value) {
         return currentTypeID.value === id;
-    }else {
+    } else {
         return props.shippingType[shippingTypeIndex.value]?.type_id === id;
     }
 };
@@ -103,7 +103,7 @@ const handlecConfirm = () => {
     list[shippingTypeIndex.value].type_id = shipping_type_id;
     list[shippingTypeIndex.value].type_name = shipping_type_name;
     emit("update:shippingType", list);
-    emit("change")
+    emit("change");
     show.value = false;
 };
 </script>
@@ -227,6 +227,12 @@ const handlecConfirm = () => {
                 color: #f23030;
                 display: inline-block;
                 margin-right: 10rpx;
+                :deep(.util) {
+                    font-size: 22rpx;
+                    font-weight: normal;
+                    position: relative;
+                    top: 4rpx;
+                }
             }
 
             .store-card-item-content-right-num {

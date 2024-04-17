@@ -2,27 +2,25 @@
     <view class="total-card">
         <view class="total-card-item">
             <view class="total-card-item-left">商品总价</view>
-            <view class="total-card-item-right">{{ total.product_amount }}</view>
+            <view class="total-card-item-right"><FormatPrice :priceData="total.product_amount"></FormatPrice></view>
         </view>
         <view class="total-card-item">
             <view class="total-card-item-left">配送费用</view>
-            <view class="total-card-item-right red">+ {{ total.shipping_fee }}</view>
+            <view class="total-card-item-right red">+ <FormatPrice :priceData="total.shipping_fee"></FormatPrice></view>
         </view>
         <view class="total-card-item" v-if="total.balance > 0">
             <view class="total-card-item-left">使用余额</view>
-            <view class="total-card-item-right">{{ total.balance }}</view>
+            <view class="total-card-item-right"><FormatPrice :priceData="total.balance"></FormatPrice></view>
         </view>
         <view class="total-card-item" v-if="total.points_amount > 0">
             <view class="total-card-item-left">使用积分</view>
-            <view class="total-card-item-right">{{ total.points_amount }}</view>
+            <view class="total-card-item-right"><FormatPrice :priceData="total.points_amount"></FormatPrice></view>
         </view>
         <view class="total-card-item" v-if="total.coupon_amount > 0">
             <view class="total-card-item-left">使用优惠券</view>
-            <view class="total-card-item-right">{{ total.coupon_amount }}</view>
+            <view class="total-card-item-right"><FormatPrice :priceData="total.coupon_amount"></FormatPrice></view>
         </view>
-        <view class="total-card-tig"> 
-            * 该订单完成后，您将获得 <text class="special-text">111111</text> 积分
-        </view>
+        <view class="total-card-tig"> * 该订单完成后，您将获得 <text class="special-text">111111</text> 积分 </view>
     </view>
 </template>
 
@@ -47,7 +45,7 @@ const props = defineProps({
         padding-bottom: 35rpx;
         display: flex;
         justify-content: space-between;
-        
+
         .red {
             color: #ff3700;
         }
@@ -61,7 +59,7 @@ const props = defineProps({
         padding-bottom: 10rpx;
 
         .special-text {
-            color:  #333;
+            color: #333;
             padding: 0 5rpx;
         }
     }

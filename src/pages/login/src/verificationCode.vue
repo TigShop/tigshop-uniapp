@@ -1,6 +1,6 @@
 <template>
     <view>
-        <van-button @click.stop="handBtn" type="default" round :disabled="countdown <= 0">{{ countdown <= 0 ? codeText : btnText }}</van-button>
+        <van-button @click.stop="handBtn" type="default" round :disabled="countdown <= 0">{{ btnText }}</van-button>
         <Verify ref="verify" mode="pop" captchaType="blockPuzzle" :imgSize="{ width: '310px', height: '155px' }" @okCallback="okCallback"></Verify>
     </view>
 </template>
@@ -8,19 +8,30 @@
 <script setup lang="ts">
 import { ref, toRefs, onUnmounted, computed } from "vue";
 import Verify from "@/components/verifition/Verify.vue";
+import { showToast } from "vant";
 const props = defineProps({
     class: String,
-    mobileCode: { type: String, default: "" },
     mobile: { type: String, default: "" },
-    requestApi: { type: Function, required: true }
+    requestApi: { type: Function, required: true },
+    isChecked: { type: Boolean, default: false },
+    verifyTokenData: { type: String, default: null }
 });
-const emit = defineEmits(["update:mobileCode", "mobileErrorCallback", "update:mobileCodeSended"]);
+const emit = defineEmits([ "mobileErrorCallback", "update:isChecked", "update:verifyTokenData"]);
 const { mobile } = toRefs(props);
-const btnText = ref("获取验证码");
-const countdown = ref(60);
+// const btnText = ref("获取验证码");
+const btnText = computed(() => {
+    if (countdown.value === 61) {
+        return "获取验证码";
+    } else if (countdown.value > 0) {
+        return countdown.value + "秒后重发";
+    }
+});
+const countdown = ref(61);
 const verifyToken = ref(null);
 const verify = ref();
 const handBtn = async () => {
+    if (props.isChecked === false) return emit("mobileErrorCallback", "请阅读并同意协议！");
+    if (countdown.value > 0 && countdown.value < 61) return;
     if (mobile.value == "") {
         emit("mobileErrorCallback", "手机号不能为空！");
         return;
@@ -39,10 +50,13 @@ const handBtn = async () => {
             verify_token: verifyToken.value
         });
         if (result.errcode === 0) {
-            emit("update:mobileCodeSended", true);
+            emit("update:verifyTokenData", verifyToken.value);
+            showToast("验证码已发送");
             startCountdown();
+           
         } else {
             emit("mobileErrorCallback", result.message);
+            emit("update:verifyTokenData", "");
         }
     } catch (error: any) {
         emit("mobileErrorCallback", error.message);
@@ -67,16 +81,13 @@ const okCallback = (e: any) => {
     verifyToken.value = e.verifyToken;
     handBtn();
 };
-const codeText = computed(() => {
-    return countdown.value + "秒后重发";
-});
 const timer = ref();
 const startCountdown = () => {
     timer.value = setInterval(() => {
         countdown.value--;
         if (countdown.value <= 0) {
             clearInterval(timer.value);
-            countdown.value = 60;
+            countdown.value = 61;
         }
     }, 1000);
 };
@@ -85,4 +96,8 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+:deep(.van-button__text) {
+    font-size: 26rpx;
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-    <view style="height: 100%; padding-bottom: 100rpx; overflow: hidden; overflow-y: auto">
+    <view style="height: 100%; padding-bottom: 110rpx; overflow: hidden; overflow-y: auto">
         <navbar :parameter="parameter"></navbar>
         <view class="page-loading" v-if="myLoading && Object.keys(addressList).length === 0">
             <view class="ico"></view>
@@ -28,9 +28,8 @@
             <invoiceInfo></invoiceInfo>
             <totalCard :total="totalData"></totalCard>
             <view class="submit-btn">
-                <!-- <view class="submit-btn-price">{{ totalData?.unpaid_amount }}</view> -->
                 <view class="submit-btn-price">
-                    <FormatPrice class="price" :priceData="totalData?.unpaid_amount"></FormatPrice>
+                    <FormatPrice :priceData="totalData?.unpaid_amount"></FormatPrice>
                 </view>
                 <view>
                     <van-button
@@ -59,7 +58,6 @@ import stroeCard from "./src/stroeCard.vue";
 import couponInfo from "./src/couponInfo.vue";
 import invoiceInfo from "./src/invoiceInfo.vue";
 import totalCard from "./src/totalCard.vue";
-import FormatPrice from "@/components/format/Price.vue";
 import { computed, reactive, ref, watch } from "vue";
 import { getOrderCheckData, updateOrderCheckData, orderSubmit } from "@/api/order/check";
 import { onShow } from "@dcloudio/uni-app";
@@ -197,6 +195,11 @@ onShow(() => {
         color: #f23030;
         font-size: 40rpx;
         font-weight: bold;
+        :deep(.util){
+            font-size: 24rpx;
+            padding-bottom: 5rpx;
+            font-weight: normal;
+        }
     }
 }
 </style>

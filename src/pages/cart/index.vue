@@ -31,7 +31,7 @@
                                                 @click="onChangeCheck"
                                                 checked-color="#ee0a24"
                                             ></van-checkbox>
-                                            <navigator target="_blank" :url="'/pages/goods_details/index?id=' + goods.cart_id" class="photo">
+                                            <navigator target="_blank" :url="'/pages/productDetail/index?id=' + goods.cart_id" class="photo">
                                                 <image :src="goods.pic_thumb" />
                                                 <view class="image_mask_sold_out" v-if="goods.storage == 0">
                                                     <image src="/static/images/common/bg_soldout.png"></image>
@@ -56,16 +56,15 @@
                                                     > -->
                                             </navigator>
                                             <view class="cart-row">
-                                                <navigator target="_blank" :url="'/pages/goods_details/index?id=' + goods.product_id" class="name">
+                                                <navigator target="_blank" :url="'/pages/productDetail/index?id=' + goods.product_id" class="name">
                                                     {{ goods.product_name }}
                                                 </navigator>
                                                 <view class="extra_info" v-if="goods.goods_attr">
                                                     <text v-if="goods.goods_attr" class="desc">{{ goods.goods_attr }}</text>
                                                 </view>
                                                 <view class="cart-price">
-                                                    <view class="price-one price">
-                                                        <text>{{ configStore.config.dollar_sign }}</text>
-                                                        {{ goods.price }}
+                                                    <view class="price-one">
+                                                        <FormatPrice :priceData="goods.price"></FormatPrice>
                                                     </view>
                                                     <view class="cart-num-box">
                                                         <van-stepper v-model="goods.quantity" @change="updateCartItem(goods.cart_id, goods.quantity)" integer />
@@ -104,8 +103,7 @@
                         <view class="item-total">
                             <view class="item-total-amount">
                                 <text class="txt">合计：</text>
-                                <text class="dol">{{ configStore.config.dollar_sign }}</text>
-                                <text class="item-amount">{{ total.product_amount }}</text>
+                                <FormatPrice :priceData="total.product_amount"></FormatPrice>
                             </view>
                             <view class="item-total-desc">{{ total.discounts ? "组合优惠：" + total.discounts + " " : "" }}(不含运费)</view>
                         </view>
@@ -291,7 +289,7 @@ onShow(() => {
     uni.hideTabBar();
 });
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .shoppingCart .labelNav {
     height: 76rpx;
     padding: 0 30rpx;
@@ -658,7 +656,6 @@ onShow(() => {
     right: 0;
     top: 0;
     border-radius: 8rpx;
-    background-color: #f7f7f7;
     overflow: hidden;
     width: 214rpx;
 }
@@ -715,9 +712,15 @@ onShow(() => {
 .goods-list-cart .cart_item .price-one {
     font-size: 32rpx;
     line-height: 56rpx;
-}
-.goods-list-cart .cart_item .price-one .price text {
-    font-size: 20rpx;
+    color: #f23030;
+    font-weight: bold;
+
+    :deep(.util) {
+        font-weight: normal;
+        font-size: 22rpx;
+        position: relative;
+        top: 4rpx;
+    }
 }
 
 .goods-list-cart .cart_item .cart_promotion {
@@ -892,18 +895,17 @@ onShow(() => {
     padding-top: 10rpx;
     height: 40rpx;
     text-align: right;
-}
-.cart-total-box .item-total .item-total-amount .txt {
-    color: #666;
-}
-.cart-total-box .item-total .item-total-amount .dol {
-    font-size: 20rpx;
-    padding-right: 8rpx;
-    color: #e93b3d;
-}
-.cart-total-box .item-total .item-total-amount .item-amount {
+    color: #f23030;
     font-size: 32rpx;
-    color: #e93b3d;
+    .txt {
+        font-weight: normal;
+        color: #666;
+    }
+
+    :deep(.util) {
+        font-weight: normal;
+        font-size: 22rpx;
+    }
 }
 .cart-total-box .item-total .item-total-desc {
     padding-top: 12rpx;

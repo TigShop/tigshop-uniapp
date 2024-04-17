@@ -9,8 +9,8 @@ export default defineConfig({
         proxy: {
             "/api": {
                 target: "http://www.tigshop.com",
+                // target: "http://192.168.5.106:82",
                 changeOrigin: true,
-                // rewrite: (path) => path.replace(/^\/api/, "index/"),
                 rewrite: (path) => path.replace(/^\/api/, "")
             }
         }

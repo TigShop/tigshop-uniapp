@@ -14,8 +14,6 @@ onHide(() => {
 });
 </script>
 <style>
-@import "./font/iconfont.css";
-@import "./static/css/style.css"; /**app.wxss**/
 .start {
     width: 122rpx;
     height: 30rpx;
@@ -220,7 +218,7 @@ button::after {
     height: 80rpx;
 }
 
-.price {
+/* .price {
     color: #f23030;
     font-size: 30rpx;
     font-weight: bold;
@@ -229,5 +227,5 @@ button::after {
     font-size: 20rpx;
     margin-right: 5rpx;
     font-weight: normal;
-}
+} */
 </style>
