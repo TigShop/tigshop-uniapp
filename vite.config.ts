@@ -8,8 +8,7 @@ export default defineConfig({
         host: "0.0.0.0",
         proxy: {
             "/api": {
-                target: "http://www.tigshop.com",
-                // target: "http://192.168.5.106:82",
+                target: "http://lyecs8.com:7888",
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/api/, "")
             }
