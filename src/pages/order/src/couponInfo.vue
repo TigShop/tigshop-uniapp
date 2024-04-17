@@ -7,8 +7,27 @@
                 <image class="more-ico" src="/static/images/common/more.png"></image>
             </view>
         </view>
+        <view class="points">
+            <view class="points-title"
+                >积分
+                <view class="points-text"
+                    >当前账户积分：<text class="red">{{ points }}</text>
+                </view>
+            </view>
+            <view class="points-content" @click="handlePoints">
+                <view class="points-text" v-if="pointsAmount > 0">共抵扣：￥{{ pointsAmount }}</view>
+                <view class="points-text" v-else-if="points === 0 && pointsAmount === 0">暂无可用积分</view>
+                <view class="points-text" v-else>最多可用{{ availablePoints }} 积分</view>
+                <image class="more-ico" src="/static/images/common/more.png"></image>
+            </view>
+        </view>
         <view class="balance">
-            <view class="balance-title">余额</view>
+            <view class="balance-title"
+                >余额
+                <view class="balance-text"
+                    >当前账户余额：<text class="red">{{ balance }}</text></view
+                >
+            </view>
             <view>
                 <van-switch v-model="isBalance" active-color="#ee0a24" inactive-color="#dcdee0" @change="handleBalance" size="40rpx" />
             </view>
@@ -22,7 +41,7 @@
                             <view :class="'bonus-bd enable_select'" v-for="(item, idx) in couponList.enable_coupons" :key="idx">
                                 <view class="bonus-left">
                                     <view class="bonus-amount price">
-                                        {{ item.coupon_type === 2 ? `${item.coupon_money} 折` : priceFormat(Number(item.coupon_money)) }}
+                                        {{ item.coupon_type === 2 ? `${item.coupon_discount} 折` : priceFormat(Number(item.coupon_money)) }}
                                     </view>
                                     <view class="bonus-desc">{{ item.coupon_name }}</view>
                                 </view>
@@ -44,7 +63,7 @@
                             <view :class="'bonus-bd disabled'" v-for="(item, idx) in couponList.disable_coupons" :key="idx">
                                 <view class="bonus-left">
                                     <view class="bonus-amount price">
-                                        {{ item.coupon_type === 2 ? `${item.coupon_money} 折` : priceFormat(Number(item.coupon_money)) }}
+                                        {{ item.coupon_type === 2 ? `${item.coupon_discount} 折` : priceFormat(Number(item.coupon_money)) }}
                                     </view>
                                     <view class="bonus-desc">{{ item.coupon_name }}</view>
                                 </view>
@@ -65,6 +84,32 @@
                 <van-button round type="danger" style="width: 100%" @click="handlecConfirm">确定</van-button>
             </view>
         </popup>
+
+        <popup v-model:show="showPoints" title="积分" backgroundColor="#f5f5f5">
+            <view class="points-popup">
+                <van-form @submit="onSubmit">
+                    <van-cell-group inset>
+                        <van-field
+                            name="validatorMessage"
+                            :rules="[{ validator: validatorMessage }]"
+                            :border="true"
+                            clickable
+                            colon
+                            v-model="usePoints"
+                            type="digit"
+                            label="使用积分"
+                            clearable
+                        >
+                        </van-field>
+                    </van-cell-group>
+                    <view class="button-position">
+                        <van-button round block type="danger" native-type="submit"> 确定 </van-button>
+                    </view>
+                </van-form>
+
+                <view class="points-popup-text">该订单最多可用800 积分<text class="text-clolor">【如何获得积分？】</text></view>
+            </view>
+        </popup>
     </view>
 </template>
 
@@ -73,13 +118,19 @@ import type { CouponList, EnableCoupon } from "@/types/order/check";
 import { computed, ref, watch } from "vue";
 import { priceFormat } from "@/utils/format";
 import popup from "@/components/popup/index.vue";
+import { showFailToast } from "vant";
 interface Props {
     couponList: CouponList;
     useCouponIds: number[];
     couponAmount: number;
+    balance: number;
+    points: number;
+    availablePoints: number;
+    pointsAmount: number;
+    usePoint: number;
 }
 const props = defineProps<Props>();
-const emit = defineEmits(["update:useCouponIds", "sendBalanceStatus"]);
+const emit = defineEmits(["update:useCouponIds", "sendBalanceStatus", "change", "update:usePoint"]);
 
 const selectedDatas = ref<EnableCoupon[]>([]);
 watch(
@@ -97,6 +148,7 @@ const isBalance = ref(false); // 是否使余额
 const tabsActive = ref("可用优惠券");
 const handleCoupon = () => {
     show.value = true;
+    usePoints.value = props.usePoint;
 };
 const handleCheck = (item: any) => {
     if (item.selected) {
@@ -119,7 +171,32 @@ const handleCheck = (item: any) => {
 const handlecConfirm = () => {
     const selectedIds = selectedDatas.value.map(({ id }) => id);
     emit("update:useCouponIds", selectedIds);
+    emit("change");
     show.value = false;
+};
+
+const showPoints = ref(false);
+const usePoints = ref(0);
+const validatorMessage = (val: any) => {
+    if (val > props.availablePoints) return "积分不能大于可用积分";
+    if (val < 0) return "积分不能小于0";
+    return true;
+};
+
+const handlePoints = () => {
+    if (props.points === 0 && props.pointsAmount === 0) {
+        return showFailToast("暂无可用积分");
+    }
+    showPoints.value = true;
+};
+
+const onSubmit = () => {
+    console.log(usePoints.value);
+    if (usePoints.value && usePoints.value > 0 && usePoints.value < props.availablePoints) {
+        emit("update:usePoint", Number(usePoints.value));
+        emit("change");
+    }
+    showPoints.value = false;
 };
 
 const handleBalance = (value: any) => {
@@ -146,6 +223,29 @@ const handleBalance = (value: any) => {
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+    .more-ico {
+        width: 36rpx;
+        height: 36rpx;
+        padding-left: 10rpx;
+    }
+}
+.points {
+    background: #fff;
+    padding: 30rpx 32rpx 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+
+    .points-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .points-text {
+            font-size: 26rpx;
+        }
     }
     .more-ico {
         width: 36rpx;
@@ -312,5 +412,51 @@ const handleBalance = (value: any) => {
 
 .coupon-btn {
     width: 76rpx;
+}
+
+.balance-title {
+    display: flex;
+
+    .balance-text {
+        font-size: 22rpx;
+        padding-left: 15rpx;
+        display: flex;
+        align-items: flex-end;
+    }
+}
+.points-title {
+    display: flex;
+
+    .points-text {
+        font-size: 22rpx;
+        padding-left: 15rpx;
+        display: flex;
+        align-items: flex-end;
+    }
+}
+.red {
+    color: #f23030;
+}
+
+.points-popup {
+    padding: 30rpx 0;
+
+    .points-popup-text {
+        padding-top: 20rpx;
+        margin-left: 40rpx;
+
+        .text-clolor {
+            color: #09f;
+        }
+    }
+}
+
+.button-position {
+    position: fixed;
+    bottom: 30rpx;
+    left: 0;
+    right: 0;
+    padding: 0 30rpx;
+    padding-bottom: env(safe-area-inset-bottom) !important;
 }
 </style>

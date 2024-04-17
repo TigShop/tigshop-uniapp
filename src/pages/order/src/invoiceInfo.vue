@@ -13,88 +13,110 @@
                 <view class="invoice-typemenu">
                     <view class="invoice-typemenu-item" :class="{ active: formState.invoice_type === 1 }" @click="handleInvoiceType(1)">普通发票</view>
                     <view class="invoice-typemenu-item" :class="{ active: formState.invoice_type === 2 }" @click="handleInvoiceType(2)">增值税专用发票</view>
+                    <view class="invoice-explain">
+                        我公司依法开具发票，请您按照税法规定使用发票。根据现行税收政策，部分公司提供数电票,
+                        数电（专用发票）法律效力与现有增值税专用发票相同;如商品由第三方卖家销售，发票类型和内容将由该卖家决定，发票由卖家开具并提供。如您为企业采购，需要多单合并开具或批量提交发票可注册企业用户；<text
+                            class="red"
+                            >使用礼品卡支付部分的金额，不支持开发票</text
+                        >
+                    </view>
                 </view>
 
                 <view class="invoice-formState">
                     <van-form @submit="onSubmit">
-                        <van-cell-group inset>
-                            <van-field name="radio" label="单选框">
-                                <template #input>
-                                    <van-radio-group v-model="formState.title_type" direction="horizontal">
-                                        <van-radio checked-color="#ee0a24" :name="1">个人</van-radio>
-                                        <van-radio checked-color="#ee0a24" :name="2">企业</van-radio>
-                                    </van-radio-group>
-                                </template>
-                            </van-field>
-                            <block v-if="formState.title_type === 1">
-                                <van-field
-                                    v-model="formState.company_name"
-                                    name="个人名称"
-                                    label="个人名称"
-                                    placeholder="请输入个人名称"
-                                    :rules="[{ required: true, message: '个人名称不能为空!' }]"
-                                />
-                            </block>
-                            <block v-else="formState.title_type === 2">
-                                <van-field
-                                    v-model="formState.company_name"
-                                    name="企业名称"
-                                    label="企业名称"
-                                    placeholder="请输入企业名称"
-                                    :rules="[{ required: true, message: '企业名称不能为空!' }]"
-                                />
-                                <van-field
-                                    v-model="formState.company_code"
-                                    name="纳税人识号"
-                                    label="纳税人识号"
-                                    placeholder="请输入纳税人识号"
-                                    :rules="[{ required: true, message: '纳税人识号不能为空!' }]"
-                                />
-                                <van-field
-                                    v-model="formState.company_address"
-                                    name="单位地址"
-                                    label="单位地址"
-                                    placeholder="请输入单位地址"
-                                    :rules="[{ required: true, message: '单位地址不能为空!' }]"
-                                />
-                                <van-field
-                                    v-model="formState.company_phone"
-                                    name="单位电话"
-                                    label="单位电话"
-                                    placeholder="请输入单位电话"
-                                    :rules="[{ required: true, message: '单位电话不能为空!' }]"
-                                />
-                                <van-field
-                                    v-model="formState.company_bank"
-                                    name="开户银行"
-                                    label="开户银行"
-                                    placeholder="请输入开户银行"
-                                    :rules="[{ required: true, message: '开户银行不能为空!' }]"
-                                />
-                                <van-field
-                                    v-model="formState.company_account"
-                                    name="银行账户"
-                                    label="银行账户"
-                                    placeholder="请输入银行账户"
-                                    :rules="[{ required: true, message: '银行账户不能为空!' }]"
-                                />
-                            </block>
+                        <block v-if="formState.invoice_type === 1">
+                            <van-cell-group inset>
+                                <van-field name="radio" label="发票抬头">
+                                    <template #input>
+                                        <van-radio-group v-model="formState.title_type" direction="horizontal">
+                                            <van-radio checked-color="#ee0a24" :name="1">个人</van-radio>
+                                            <van-radio checked-color="#ee0a24" :name="2">企业</van-radio>
+                                        </van-radio-group>
+                                    </template>
+                                </van-field>
+                                <block v-if="formState.title_type === 1">
+                                    <van-field
+                                        v-model="formState.company_name"
+                                        name="个人名称"
+                                        label="个人名称"
+                                        placeholder="请输入个人名称"
+                                        :rules="[{ required: true, message: '个人名称不能为空!' }]"
+                                    />
+                                </block>
+                                <block v-else="formState.title_type === 2">
+                                    <van-field
+                                        v-model="formState.company_name"
+                                        name="企业名称"
+                                        label="企业名称"
+                                        placeholder="请输入企业名称"
+                                        :rules="[{ required: true, message: '企业名称不能为空!' }]"
+                                    />
+                                    <van-field
+                                        v-model="formState.company_code"
+                                        name="纳税人识号"
+                                        label="纳税人识号"
+                                        placeholder="请输入纳税人识号"
+                                        :rules="[{ required: true, message: '纳税人识号不能为空!' }]"
+                                    />
+                                    <van-field
+                                        v-model="formState.company_address"
+                                        name="单位地址"
+                                        label="单位地址"
+                                        placeholder="请输入单位地址"
+                                        :rules="[{ required: true, message: '单位地址不能为空!' }]"
+                                    />
+                                    <van-field
+                                        v-model="formState.company_phone"
+                                        name="单位电话"
+                                        label="单位电话"
+                                        placeholder="请输入单位电话"
+                                        :rules="[{ required: true, message: '单位电话不能为空!' }]"
+                                    />
+                                    <van-field
+                                        v-model="formState.company_bank"
+                                        name="开户银行"
+                                        label="开户银行"
+                                        placeholder="请输入开户银行"
+                                        :rules="[{ required: true, message: '开户银行不能为空!' }]"
+                                    />
+                                    <van-field
+                                        v-model="formState.company_account"
+                                        name="银行账户"
+                                        label="银行账户"
+                                        placeholder="请输入银行账户"
+                                        :rules="[{ required: true, message: '银行账户不能为空!' }]"
+                                    />
+                                </block>
 
-                            <van-field
-                                v-model="formState.mobile"
-                                name="收票人手机"
-                                label="收票人手机"
-                                placeholder="请输入收票人手机"
-                                :rules="[{ required: true, message: '手机不能为空!' }]"
-                            />
-                            <van-field
-                                v-model="formState.email"
-                                name="收票人邮箱"
-                                label="收票人邮箱"
-                                placeholder="请输入收票人邮箱"
-                                :rules="[{ required: true, message: '邮箱不能为空!' }]"
-                            />
-                        </van-cell-group>
+                                <van-field
+                                    v-model="formState.mobile"
+                                    name="收票人手机"
+                                    label="收票人手机"
+                                    placeholder="请输入收票人手机"
+                                    :rules="[{ required: true, message: '手机不能为空!' }]"
+                                />
+                                <van-field
+                                    v-model="formState.email"
+                                    name="收票人邮箱"
+                                    label="收票人邮箱"
+                                    placeholder="请输入收票人邮箱"
+                                    :rules="[{ required: true, message: '邮箱不能为空!' }]"
+                                />
+                            </van-cell-group>
+                        </block>
+                        <block v-else-if="formState.invoice_type === 2 && invoiceStatus">
+                            <van-cell-group inset>
+                                <van-field label="单位名称" :model-value="invoiceData.company_name" readonly></van-field>
+                                <van-field label="纳税人识别码" :model-value="invoiceData.company_code" readonly></van-field>
+                                <van-field label="注册地址" :model-value="invoiceData.company_address" readonly></van-field>
+                                <van-field label="注册电话" :model-value="invoiceData.company_phone" readonly></van-field>
+                                <van-field label="开户银行" :model-value="invoiceData.company_bank" readonly></van-field>
+                                <van-field label="银行账户" :model-value="invoiceData.company_account" readonly></van-field>
+                            </van-cell-group>
+                        </block>
+                        <block v-else>
+                            <view> 您还未通过增票资质申请，暂时无法开具增值税专用发票 </view>
+                        </block>
                         <view class="button-position">
                             <van-button round block type="danger" native-type="submit"> 提交 </van-button>
                         </view>
@@ -107,7 +129,8 @@
 
 <script setup lang="ts">
 import popup from "@/components/popup/index.vue";
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
+import { getInvoiceStatus } from "@/api/order/invoice";
 
 const formState = reactive({
     title_type: 1, // 抬头类型
@@ -121,7 +144,29 @@ const formState = reactive({
     company_bank: "",
     company_account: ""
 });
+
+const invoiceStatus = ref(false);
+const invoiceData = ref<any>({});
 const show = ref(false);
+const __getInvoiceStatus = async () => {
+    try {
+        const result = await getInvoiceStatus();
+        if (result.item) {
+            invoiceStatus.value = true;
+            console.log(result.item);
+            Object.assign(invoiceData.value, result.item);
+        } else {
+            invoiceStatus.value = false;
+        }
+    } catch (error) {
+        console.error(error);
+    } finally {
+    }
+};
+
+onMounted(() => {
+    __getInvoiceStatus();
+});
 const handleInvoice = () => {
     show.value = true;
 };
@@ -160,7 +205,8 @@ const onSubmit = () => {};
     padding: 30rpx 30rpx 0;
 
     .invoice-typemenu {
-        margin-bottom: 20rpx;
+        padding-bottom: 20rpx;
+        border-bottom: 1rpx solid #eee;
         .invoice-typemenu-item {
             background: #f2f2f2;
             color: #282828;
@@ -174,6 +220,16 @@ const onSubmit = () => {};
             &.active {
                 color: #fff;
                 background-color: #ff3700;
+            }
+        }
+
+        .invoice-explain {
+            padding: 10rpx 0;
+            font-size: 20rpx;
+            color: #999;
+
+            .red {
+                color: #ff3700;
             }
         }
     }

@@ -44,7 +44,7 @@ interface Props {
     payTypeId: number;
 }
 const props = defineProps<Props>();
-const emit = defineEmits(["update:payTypeId"]);
+const emit = defineEmits(["update:payTypeId", "change"]);
 
 watch(
     () => props.availablePaymentType,
@@ -82,6 +82,7 @@ const handlecConfirm = () => {
     if (currentIndex.value !== null && currentIndex.value !== undefined && currentIndex.value >= 0) {
         paymentTypeText.value = props.availablePaymentType[currentIndex.value].type_name;
         emit("update:payTypeId", props.availablePaymentType[currentIndex.value].type_id);
+        emit("change")
         show.value = false;
     } else {
         showFailToast("请选择付款方式");

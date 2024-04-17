@@ -65,7 +65,7 @@ interface Props {
     shippingType: Array<{ type_id: number; type_name: string; store_id: number }>;
 }
 const props = defineProps<Props>();
-const emit = defineEmits(["update:shippingType"]);
+const emit = defineEmits(["update:shippingType", "change"]);
 const show = ref(false);
 const shippingTypeIndex = ref(0);
 const currentShippingType = computed(() => {
@@ -103,6 +103,7 @@ const handlecConfirm = () => {
     list[shippingTypeIndex.value].type_id = shipping_type_id;
     list[shippingTypeIndex.value].type_name = shipping_type_name;
     emit("update:shippingType", list);
+    emit("change")
     show.value = false;
 };
 </script>
