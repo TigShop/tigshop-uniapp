@@ -21,7 +21,7 @@
                     </view>
                 </view>
                 <view class="coupon-con">
-                    <block v-for="item in couponList" :key="item.coupon_id"> 
+                    <block v-for="item in couponList" :key="item.coupon_id">
                         <view class="coupon-item" :style="couponFormat.item_padding" @click="handleCoupon(item.coupon_id)">
                             <view class="item-coupon-con">
                                 <view class="coupon-money">
