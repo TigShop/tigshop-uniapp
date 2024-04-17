@@ -87,6 +87,7 @@ const getIndexData = async () => {
     loading.value = true;
     try {
         const res = await getIndex();
+        console.log(res);
         if (res.errcode === 0) {
             modulesData.value = res.module_list;
         }
@@ -94,6 +95,7 @@ const getIndexData = async () => {
         uni.stopPullDownRefresh();
         console.log("modulesData.value=>", modulesData.value);
     } catch (error) {
+        console.log(error);
         console.error(error);
     } finally {
         loading.value = false;
