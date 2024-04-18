@@ -152,17 +152,13 @@ const productInfo = ref<Item>();
 const __getProductDetail = async (id: string) => {
     try {
         const result = await getProductDetail(id);
-        if (result.errcode === 0) {
-            const { pic_list, item } = result;
-            picList.value = pic_list;
-            productInfo.value = item;
-        }
+        const { pic_list, item } = result;
+        picList.value = pic_list;
+        productInfo.value = item;
     } catch (error) {
         console.error(error);
     }
 };
-
-
 
 const handleShare = () => {};
 const isCollect = ref(false);

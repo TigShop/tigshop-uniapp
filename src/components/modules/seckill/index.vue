@@ -152,9 +152,7 @@ const seckillList = ref<SeckillList[]>();
 const getData = async () => {
     try {
         const result = await getHomeSeckill();
-        if (result.errcode === 0) {
-            seckillList.value = result.seckill_list;
-        }
+        seckillList.value = result.seckill_list;
     } catch (error) {
         console.error(error);
     }

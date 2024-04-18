@@ -73,9 +73,8 @@ const couponList = ref<CouponList[]>();
 const __getHomeCoupon = async () => {
     try {
         const result = await getHomeCoupon();
-        if (result.errcode === 0) {
-            couponList.value = result.coupon_list;
-        }
+
+        couponList.value = result.coupon_list;
     } catch (error) {
         console.error(error);
     }

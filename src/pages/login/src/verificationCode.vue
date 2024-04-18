@@ -16,7 +16,7 @@ const props = defineProps({
     isChecked: { type: Boolean, default: false },
     verifyTokenData: { type: String, default: null }
 });
-const emit = defineEmits([ "mobileErrorCallback", "update:isChecked", "update:verifyTokenData"]);
+const emit = defineEmits(["mobileErrorCallback", "update:isChecked", "update:verifyTokenData"]);
 const { mobile } = toRefs(props);
 // const btnText = ref("获取验证码");
 const btnText = computed(() => {
@@ -49,17 +49,12 @@ const handBtn = async () => {
             mobile: mobile.value,
             verify_token: verifyToken.value
         });
-        if (result.errcode === 0) {
-            emit("update:verifyTokenData", verifyToken.value);
-            showToast("验证码已发送");
-            startCountdown();
-           
-        } else {
-            emit("mobileErrorCallback", result.message);
-            emit("update:verifyTokenData", "");
-        }
+        emit("update:verifyTokenData", verifyToken.value);
+        showToast("验证码已发送");
+        startCountdown();
     } catch (error: any) {
         emit("mobileErrorCallback", error.message);
+        emit("update:verifyTokenData", "");
     } finally {
         verifyToken.value = null;
     }

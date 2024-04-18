@@ -68,11 +68,9 @@ const __getCouponList = async () => {
 
     try {
         const result = await getCouponList(params);
-        if (result.errcode === 0) {
-            if (result.filter_result.length === 0) return (loadend.value = true);
-            couponList.value = [...couponList.value, ...result.filter_result];
-            loadend.value = false;
-        }
+        if (result.filter_result.length === 0) return (loadend.value = true);
+        couponList.value = [...couponList.value, ...result.filter_result];
+        loadend.value = false;
     } catch (error) {
         console.error(error);
     } finally {

@@ -196,9 +196,11 @@ const updateCheckData = async () => {
         });
     });
 
-    const result = await updateCartCheck({ data: checkData });
-    if (result.errcode === 0) {
+    try {
+        const result = await updateCartCheck({ data: checkData });
         getCartList();
+    } catch (error) {
+        console.error(error);
     }
 };
 
@@ -213,12 +215,10 @@ const getCartList = async () => {
     try {
         const result = await getCart();
 
-        if (result.errcode === 0) {
-            const { cart_list } = result;
-            total.value = result.total;
-            cartList.value = cart_list;
-            updateCheckbox();
-        }
+        const { cart_list } = result;
+        total.value = result.total;
+        cartList.value = cart_list;
+        updateCheckbox();
     } catch (error) {
         console.error(error);
     }
@@ -228,9 +228,8 @@ const getCartList = async () => {
 const updateCartItem = async (cart_id: number, quantity: number) => {
     try {
         const result = await updateCartItemData({ cart_id, data: { quantity } });
-        if (result.errcode === 0) {
-            getCartList();
-        }
+
+        getCartList();
     } catch (error) {
         console.error(error);
     }
@@ -247,9 +246,8 @@ const checkClearCart = () => {
         .then(async () => {
             // return
             const result = await clearCart();
-            if (result.errcode === 0) {
-                getCartList();
-            }
+
+            getCartList();
         })
         .catch(() => {});
 };
@@ -265,9 +263,12 @@ const delCartItem = () => {
                     if (product.is_checked) cartIds.push(product.cart_id);
                 });
             });
-            const result = await removeCartItemData({ cart_ids: cartIds });
-            if (result.errcode === 0) {
+            try {
+                const result = await removeCartItemData({ cart_ids: cartIds });
+
                 getCartList();
+            } catch (error) {
+                console.error(error);
             }
         })
         .catch(() => {});

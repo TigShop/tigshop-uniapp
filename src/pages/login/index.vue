@@ -139,7 +139,7 @@ const password = ref("");
 const is_checked = ref(false);
 const verifyToken = ref("");
 const loginLoading = ref(false);
-const verify = ref<HTMLElement | null>();
+const verify = ref();
 
 const isloginDisabled = computed(() => {
     if (loginType.value === "password") {
@@ -186,29 +186,30 @@ const signin = async () => {
             mobile_code: mobileCode.value,
             verify_token: verifyToken.value
         });
-        console.log(result)
-        if (result.errcode == 1002 && verify.value) {
-            // verify.value.show();
-        } else if (result.errcode > 0) {
-            showToast(result.message);
+
+        userStore.setToken = result.token;
+        uni.setStorageSync("token", result.token);
+        showToast("登入成功");
+
+        if (pages[0].route === "pages/login/index") {
+            uni.reLaunch({
+                url: "/pages/index/index"
+            });
+        } else {
+            uni.navigateBack();
+        }
+    } catch (error: any) {
+        if (error.errcode == 1002 && verify.value) {
+            verify.value.show();
+            showToast(error.message);
+        } else if (error.errcode > 0) {
+            showToast(error.message);
             mobile.value = "";
             mobileCode.value = "";
             verifyToken.value = "";
             username.value = "";
             password.value = "";
-            return;
         }
-        userStore.setToken = result.token;
-        uni.setStorageSync("token", result.token);
-        showToast("登入成功");
-        console.log(pages[0].route);
-        if (pages[0].route === "pages/login/index") {
-            uni.reLaunch({
-                url: "/pages/index/index"
-            });
-        }
-    } catch (error: any) {
-        console.log(error)
     } finally {
         loginLoading.value = false;
     }

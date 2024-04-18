@@ -68,13 +68,11 @@ const getProductList = async () => {
     bottomLoading.value = true;
     try {
         const result = await getCateProduct({ category_id: categoryId.value, page: page.value });
-        if (result.errcode === 0) {
-            if (result.filter_result.length > 0) {
-                commodityList.value = [...commodityList.value, ...result.filter_result];
-                loadend.value = false;
-            } else {
-                loadend.value = true;
-            }
+        if (result.filter_result.length > 0) {
+            commodityList.value = [...commodityList.value, ...result.filter_result];
+            loadend.value = false;
+        } else {
+            loadend.value = true;
         }
     } catch (error) {
         console.error(error);
@@ -87,9 +85,7 @@ const getIndexData = async () => {
     loading.value = true;
     try {
         const res = await getIndex();
-        if (res.errcode === 0) {
-            modulesData.value = res.module_list;
-        }
+        modulesData.value = res.module_list;
         showCatNav.value = 1;
         uni.stopPullDownRefresh();
         console.log("modulesData.value=>", modulesData.value);
