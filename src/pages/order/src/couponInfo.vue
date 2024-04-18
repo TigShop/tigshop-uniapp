@@ -107,7 +107,7 @@
                     </view>
                 </van-form>
 
-                <view class="points-popup-text">该订单最多可用800 积分<text class="text-clolor">【如何获得积分？】</text></view>
+                <view class="points-popup-text">该订单最多可用{{ points }} 积分<text class="text-clolor">【如何获得积分？】</text></view>
             </view>
         </popup>
     </view>
@@ -192,10 +192,13 @@ const handlePoints = () => {
 
 const onSubmit = () => {
     console.log(usePoints.value);
-    if (usePoints.value && usePoints.value > 0 && usePoints.value < props.availablePoints) {
-        emit("update:usePoint", Number(usePoints.value));
-        emit("change");
+    if (!usePoints.value) {
+        usePoints.value = 0;
     }
+
+    emit("update:usePoint", Number(usePoints.value));
+    emit("change");
+
     showPoints.value = false;
 };
 

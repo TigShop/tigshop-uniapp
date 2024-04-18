@@ -109,7 +109,7 @@
                 </view>
             </view>
         </view>
-        <Verify ref="verify" mode="pop" captchaType="blockPuzzle" :imgSize="{ width: '310px', height: '155px' }"></Verify>
+        <Verify ref="verify" mode="pop" captchaType="blockPuzzle" :imgSize="{ width: '310px', height: '155px' }" @okCallback="okCallback"></Verify>
     </view>
 </template>
 
@@ -119,7 +119,7 @@ import navbar from "@/components/navbar/index.vue";
 import Verify from "@/components/verifition/Verify.vue";
 import { reactive, ref, computed } from "vue";
 import { sendMobileCode, userSignin } from "@/api/login/login";
-import { calendarProps, showToast } from "vant";
+import { showToast } from "vant";
 import { onLoad } from "@dcloudio/uni-app";
 import { useUserStore } from "@/store/user";
 
@@ -143,7 +143,7 @@ const verify = ref();
 
 const isloginDisabled = computed(() => {
     if (loginType.value === "password") {
-        return username.value == "" || password.value == "";
+        return !username.value || !password.value;
     } else {
         return !mobile.value || !mobileCode.value || !verifyToken.value;
     }
@@ -186,22 +186,21 @@ const signin = async () => {
             mobile_code: mobileCode.value,
             verify_token: verifyToken.value
         });
-
-        userStore.setToken = result.token;
-        uni.setStorageSync("token", result.token);
+        userStore.setToken(result.token);
+        
         showToast("登入成功");
-
-        if (pages[0].route === "pages/login/index") {
-            uni.reLaunch({
-                url: "/pages/index/index"
-            });
-        } else {
-            uni.navigateBack();
-        }
+        setTimeout(() => {
+            if (pages[0].route === "pages/login/index") {
+                uni.reLaunch({
+                    url: "/pages/index/index"
+                });
+            } else {
+                uni.navigateBack();
+            }
+        }, 1000);
     } catch (error: any) {
         if (error.errcode == 1002 && verify.value) {
             verify.value.show();
-            showToast(error.message);
         } else if (error.errcode > 0) {
             showToast(error.message);
             mobile.value = "";
@@ -215,6 +214,10 @@ const signin = async () => {
     }
 };
 
+const okCallback = (e: any) => {
+    verifyToken.value = e.verifyToken;
+    signin();
+};
 const passwordType = ref("password");
 const passwordTypeChange = () => {
     passwordType.value = passwordType.value === "password" ? "text" : "password";
@@ -226,9 +229,12 @@ const passwordInput = (e: any) => {
     password.value = e.detail.value;
 };
 
-const showAgreement = () => {};
-const userRegistration = () => {};
-onLoad((options) => {});
+const showAgreement = () => {
+    console.log("协议");
+};
+const userRegistration = () => {
+    console.log("注册");
+};
 </script>
 <style lang="scss" scoped>
 page {

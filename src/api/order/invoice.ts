@@ -8,3 +8,11 @@ export const getInvoiceStatus = () => {
         method: "get"
     });
 };
+
+export const getCheckInvoice = (params: object) => {
+    return request<any>({
+        url: "order/check/check_invoice",
+        method: "get",
+        params
+    });
+};

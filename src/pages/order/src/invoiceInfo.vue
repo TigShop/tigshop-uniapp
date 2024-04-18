@@ -8,7 +8,7 @@
             </view>
         </view>
 
-        <popup v-model:show="show" title="发票" height="60%" paddingBottom="50">
+        <popup v-model:show="show" title="发票" height="70%" paddingBottom="50">
             <view class="invoice-popup-content">
                 <view class="invoice-typemenu">
                     <view class="invoice-typemenu-item" :class="{ active: formState.invoice_type === 1 }" @click="handleInvoiceType(1)">普通发票</view>
@@ -28,7 +28,7 @@
                             <van-cell-group inset>
                                 <van-field name="radio" label="发票抬头">
                                     <template #input>
-                                        <van-radio-group v-model="formState.title_type" direction="horizontal">
+                                        <van-radio-group @change="getTitleType" v-model="formState.title_type" direction="horizontal">
                                             <van-radio checked-color="#ee0a24" :name="1">个人</van-radio>
                                             <van-radio checked-color="#ee0a24" :name="2">企业</van-radio>
                                         </van-radio-group>
@@ -106,12 +106,26 @@
                         </block>
                         <block v-else-if="formState.invoice_type === 2 && invoiceStatus">
                             <van-cell-group inset>
-                                <van-field label="单位名称" :model-value="invoiceData.company_name" readonly></van-field>
-                                <van-field label="纳税人识别码" :model-value="invoiceData.company_code" readonly></van-field>
-                                <van-field label="注册地址" :model-value="invoiceData.company_address" readonly></van-field>
-                                <van-field label="注册电话" :model-value="invoiceData.company_phone" readonly></van-field>
-                                <van-field label="开户银行" :model-value="invoiceData.company_bank" readonly></van-field>
-                                <van-field label="银行账户" :model-value="invoiceData.company_account" readonly></van-field>
+                                <van-field label="单位名称" :model-value="formState.company_name" readonly></van-field>
+                                <van-field label="纳税人识别码" :model-value="formState.company_code" readonly></van-field>
+                                <van-field label="注册地址" :model-value="formState.company_address" readonly></van-field>
+                                <van-field label="注册电话" :model-value="formState.company_phone" readonly></van-field>
+                                <van-field label="开户银行" :model-value="formState.company_bank" readonly></van-field>
+                                <van-field label="银行账户" :model-value="formState.company_account" readonly></van-field>
+                                <van-field
+                                    v-model="formState.mobile"
+                                    name="收票人手机"
+                                    label="收票人手机"
+                                    placeholder="请输入收票人手机"
+                                    :rules="[{ required: true, message: '手机不能为空!' }]"
+                                />
+                                <van-field
+                                    v-model="formState.email"
+                                    name="收票人邮箱"
+                                    label="收票人邮箱"
+                                    placeholder="请输入收票人邮箱"
+                                    :rules="[{ required: true, message: '邮箱不能为空!' }]"
+                                />
                             </van-cell-group>
                         </block>
                         <block v-else>
@@ -129,8 +143,20 @@
 
 <script setup lang="ts">
 import popup from "@/components/popup/index.vue";
-import { onMounted, reactive, ref } from "vue";
-import { getInvoiceStatus } from "@/api/order/invoice";
+import { onMounted, reactive, ref, watch } from "vue";
+import { getInvoiceStatus, getCheckInvoice } from "@/api/order/invoice";
+
+const props = defineProps({
+    getAddressInfo: {
+        type: Object,
+        default: () => {}
+    },
+    invoiceInfoData:{
+        type: Object,
+        default: () => {}
+    }
+});
+const emit = defineEmits(['update:invoiceInfo'])
 
 const formState = reactive({
     title_type: 1, // 抬头类型
@@ -145,16 +171,24 @@ const formState = reactive({
     company_account: ""
 });
 
+const clearFormState = () => {
+    formState.company_name = "";
+    formState.mobile = "";
+    formState.email = "";
+    formState.company_code = "";
+    formState.company_address = "";
+    formState.company_phone = "";
+    formState.company_bank = "";
+    formState.company_account = "";
+};
+
 const invoiceStatus = ref(false);
-const invoiceData = ref<any>({});
 const show = ref(false);
 const __getInvoiceStatus = async () => {
     try {
         const result = await getInvoiceStatus();
         if (result.item) {
             invoiceStatus.value = true;
-            console.log(result.item);
-            Object.assign(invoiceData.value, result.item);
         } else {
             invoiceStatus.value = false;
         }
@@ -164,15 +198,56 @@ const __getInvoiceStatus = async () => {
     }
 };
 
-onMounted(() => {
-    __getInvoiceStatus();
+const __getCheckInvoice = async () => {
+    try {
+        const result = await getCheckInvoice({
+            invoice_type: formState.invoice_type,
+            title_type: formState.title_type
+        });
+        if (result.item) {
+            if(formState.title_type === 1) {
+                formState.company_name = result.item.company_name;
+                formState.mobile = result.item.mobile;
+                formState.email = result.item.email;
+            }else {
+                Object.assign(formState, result.item)
+                console.log('formState', formState)
+            }
+        } else if (formState.title_type === 1) {
+            formState.company_name = props.getAddressInfo.consignee;
+            formState.mobile = props.getAddressInfo.mobile;
+            formState.email = props.getAddressInfo.email;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+watch(show, (newVal) => {
+    if (newVal) {
+        __getInvoiceStatus();
+        __getCheckInvoice();
+    }
 });
+
 const handleInvoice = () => {
     show.value = true;
 };
 
+const getTitleType = (val: number) => {
+    clearFormState();
+    __getCheckInvoice();
+};
+
 const handleInvoiceType = (type: number) => {
     formState.invoice_type = type;
+    if (type === 2) {
+        formState.title_type = 2;
+    } else {
+        formState.title_type = 1;
+    }
+    clearFormState();
+    __getCheckInvoice();
 };
 
 const onSubmit = () => {};

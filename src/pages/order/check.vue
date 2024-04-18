@@ -25,7 +25,7 @@
                 @sendBalanceStatus="getBalanceStatus"
                 @change="updateOrderCheck"
             ></couponInfo>
-            <invoiceInfo></invoiceInfo>
+            <invoiceInfo v-model:invoiceInfoData="formState.invoice_data" :getAddressInfo="getAddressInfo"></invoiceInfo>
             <totalCard :total="totalData"></totalCard>
             <view class="submit-btn">
                 <view class="submit-btn-price">
@@ -77,7 +77,11 @@ const formState = reactive({
     use_point: 0,
     use_balance: 0,
     use_coupon_ids: [],
-    buyer_note: ""
+    buyer_note: "",
+    invoice_data: {
+        title_type: 1,
+        invoice_type: 1
+    }
 });
 watch(
     formState,
@@ -195,7 +199,7 @@ onShow(() => {
         color: #f23030;
         font-size: 40rpx;
         font-weight: bold;
-        :deep(.util){
+        :deep(.util) {
             font-size: 24rpx;
             padding-bottom: 5rpx;
             font-weight: normal;

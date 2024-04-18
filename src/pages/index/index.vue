@@ -1,5 +1,9 @@
 <template>
     <view style="height: 100%">
+        <view class="preview-box" v-if="configStore.previewId > 0">
+            <view class="container">预览：&emsp;<text>移动端</text></view>
+        </view>
+        <view v-if="configStore.previewId > 0" style="padding: 58rpx;"></view>
         <navbar :parameter="parameter" :logoUrl="logoUrl || ''" v-if="showCatNav == 0"></navbar>
         <view>
             <view class="index_empty" v-if="loading">
@@ -35,6 +39,10 @@ import navbar from "@/components/navbar/index.vue";
 import masonry from "@/components/masonry/masonry.vue";
 import { getCateProduct } from "@/api/home/home";
 import type { GetProductFilterResult } from "@/types/home/home";
+import { useConfigStore } from "@/store/config";
+
+const configStore = useConfigStore()
+
 const showCatNav = ref(0);
 const parameter = ref({
     navbar: "1",
@@ -96,7 +104,10 @@ const getIndexData = async () => {
     }
 };
 
-onLoad(() => {
+onLoad((options: any) => {
+    if (options && options.preview_id) {
+        configStore.previewId = options.preview_id;
+    }
     getIndexData();
 });
 onPullDownRefresh(() => {
@@ -117,6 +128,31 @@ onHide(() => {
 });
 </script>
 <style lang="scss" scoped>
+.preview-box {
+    padding: 40rpx;
+    background-color: #fff;
+    border-bottom: 1px solid #ebeef5;
+    position: fixed;
+    width: 100%;
+    z-index: 999;
+    left: 0;
+    top: 0;
+}
+.preview-box text {
+    position: relative;
+    display: inline-block;
+    font-size: 28rpx;
+}
+.preview-box text::after {
+    content: "";
+    position: absolute;
+    top: 50rpx;
+    left: 0;
+    width: 100%;
+    height: 4rpx;
+    background-color: #155bd4;
+}
+
 page {
     background-color: #f6f6f6 !important;
 }

@@ -1,12 +1,11 @@
 <template>
     <view style="height: 100%">
         <navbar :parameter="parameter"></navbar>
-        <!-- <view class="page-loading" v-if="!loaded"><view class="ico"></view></view> -->
         <view class="cart-box shoppingCart">
             <view class="top-text" v-if="cartList">
                 <view class="fl">
                     已选商品
-                    <text class="num font-color">{{ total.total_count }}</text>
+                    <text class="num font-color">{{ total.checked_count }}</text>
                     件
                 </view>
                 <view class="fr administrate acea-row row-center-wrapper" @click="cartManageFun">
@@ -18,7 +17,7 @@
                     <view class="cart_table" id="">
                         <view class="cart_store_title noborder">
                             <van-checkbox v-model="item.is_checked" @click="onCheckAllItem(index)" checked-color="#ee0a24"></van-checkbox>
-                            <view target="_blank" class="store_label">{{ item.store_title }}</view>
+                            <view  class="store_label">{{ item.store_title ? item.store_title :'自营' }}</view>
                         </view>
                         <view class="goods-list-cart">
                             <block v-for="(goods, index) in item.carts" :key="goods.product_id">
@@ -31,7 +30,7 @@
                                                 @click="onChangeCheck"
                                                 checked-color="#ee0a24"
                                             ></van-checkbox>
-                                            <navigator target="_blank" :url="'/pages/productDetail/index?id=' + goods.cart_id" class="photo">
+                                            <navigator :url="'/pages/productDetail/index?id=' + goods.cart_id" class="photo">
                                                 <image :src="goods.pic_thumb" />
                                                 <view class="image_mask_sold_out" v-if="goods.storage == 0">
                                                     <image src="/static/images/common/bg_soldout.png"></image>
@@ -99,7 +98,7 @@
                 </view>
                 <view class="cart-total-box" v-if="!cartManage">
                     <view class="cart-total">
-                        <view @click.stop.prevent="handleCheckout" :class="'btn-checkout ' + (total.total_count == 0 ? 'unable_btn' : '')">去结算</view>
+                        <view @click="handleCheckout" :class="'btn-checkout ' + (total.checked_count == 0 ? 'unable_btn' : '')">去结算</view>
                         <view class="item-total">
                             <view class="item-total-amount">
                                 <text class="txt">合计：</text>
@@ -110,7 +109,7 @@
                     </view>
                 </view>
             </view>
-            <view class="noCart" v-if="!cartList && loaded">
+            <view class="noCart" v-if="cartList.length === 0">
                 <view class="pictrue"><image src="/static/images/cart_empty.png"></image></view>
                 <view class="noCart_text">购物车内还没商品哦，去逛逛吧~</view>
             </view>
@@ -141,6 +140,7 @@ import { useConfigStore } from "@/store/config";
 import { getCart, updateCartItemData, updateCartCheck, clearCart, removeCartItemData } from "@/api/cart/cart";
 import type { updateCartCheckitem, Total } from "@/types/cart/cart";
 import { showConfirmDialog } from "vant";
+import { showNotify } from 'vant';
 const configStore = useConfigStore();
 const parameter = ref({
     navbar: "1",
@@ -230,7 +230,8 @@ const updateCartItem = async (cart_id: number, quantity: number) => {
         const result = await updateCartItemData({ cart_id, data: { quantity } });
 
         getCartList();
-    } catch (error) {
+    } catch (error: any) {
+        
         console.error(error);
     }
 };
@@ -274,7 +275,7 @@ const delCartItem = () => {
         .catch(() => {});
 };
 const handleCheckout = () => {
-    if (total.value.total_count == 0) return;
+    if (total.value.checked_count == 0) return;
     uni.navigateTo({
         url: "/pages/order/check"
     });
@@ -592,7 +593,7 @@ onShow(() => {
     font-weight: bold;
     color: #333;
     font-size: 28rpx;
-    padding-left: 10rpx;
+    padding-left: 15rpx;
 }
 
 .goods-list-cart .cart_item {

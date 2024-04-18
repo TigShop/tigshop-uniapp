@@ -15,6 +15,7 @@ interface State {
     config: ConfigState;
     tabbarList: any[];//自定义tabber
     tabbarHeight: string;//自定义tabber高度
+    previewId: number;//预览id
 }
 
 export const useConfigStore = defineStore("config", {
@@ -30,7 +31,8 @@ export const useConfigStore = defineStore("config", {
             navHeight: 0
         },
         tabbarList: [],
-        tabbarHeight: '90rpx'
+        tabbarHeight: '90rpx',
+        previewId: 0
     }),
     getters: {
         icoDefinedCss: (state: State): string => {
@@ -92,6 +94,9 @@ export const useConfigStore = defineStore("config", {
                     text: "我的"
                 }
             ];
+        },
+        setPreviewId(val: number) {
+            this.previewId = val;
         }
     }
 });

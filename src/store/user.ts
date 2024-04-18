@@ -9,13 +9,15 @@ export const useUserStore = defineStore("user", {
     getters: {},
     actions: {
         logout() {
-            localStorage.removeItem("accessToken");
+            uni.removeStorageSync("token");
         },
         setUserInfo(data: any) {
             this.userInfo = data;
         },
         setToken(token: string) {
+            console.log('token',token)
             this.token = token;
+            uni.setStorageSync("token", token);
         }
     }
 });

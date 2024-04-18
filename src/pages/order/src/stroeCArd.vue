@@ -59,6 +59,7 @@ import type { CartList, StoreShippingType } from "@/types/order/check";
 import { imageFormat, priceFormat, urlFormat } from "@/utils/format";
 import popup from "@/components/popup/index.vue";
 import { showFailToast } from "vant";
+
 interface Props {
     cartList: CartList[];
     shippingTypeList: Array<StoreShippingType[]>;
@@ -237,11 +238,18 @@ const handlecConfirm = () => {
 
             .store-card-item-content-right-num {
                 display: inline-block;
+                position: relative;
+                top: 3rpx;
+                
             }
         }
 
         .flex {
             display: flex;
+
+            & :deep(.navigator-wrap) {
+                display: flex;
+            }
         }
     }
 }
