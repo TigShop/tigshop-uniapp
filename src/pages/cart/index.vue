@@ -17,7 +17,7 @@
                     <view class="cart_table" id="">
                         <view class="cart_store_title noborder">
                             <van-checkbox v-model="item.is_checked" @click="onCheckAllItem(index)" checked-color="#ee0a24"></van-checkbox>
-                            <view  class="store_label">{{ item.store_title ? item.store_title :'自营' }}</view>
+                            <view class="store_label">{{ item.store_title ? item.store_title : "自营" }}</view>
                         </view>
                         <view class="goods-list-cart">
                             <block v-for="(goods, index) in item.carts" :key="goods.product_id">
@@ -55,8 +55,10 @@
                                                     > -->
                                             </navigator>
                                             <view class="cart-row">
-                                                <navigator target="_blank" :url="'/pages/productDetail/index?id=' + goods.product_id" class="name">
-                                                    {{ goods.product_name }}
+                                                <navigator target="_blank" :url="'/pages/productDetail/index?id=' + goods.product_id">
+                                                    <view class="name">
+                                                        {{ goods.product_name }}
+                                                    </view>
                                                 </navigator>
                                                 <view class="extra_info" v-if="goods.goods_attr">
                                                     <text v-if="goods.goods_attr" class="desc">{{ goods.goods_attr }}</text>
@@ -138,9 +140,9 @@ import masonry from "@/components/masonry/masonry.vue";
 import { onLoad, onPullDownRefresh, onShow } from "@dcloudio/uni-app";
 import { useConfigStore } from "@/store/config";
 import { getCart, updateCartItemData, updateCartCheck, clearCart, removeCartItemData } from "@/api/cart/cart";
-import type { updateCartCheckitem, Total } from "@/types/cart/cart";
+import type { updateCartCheckitem } from "@/types/cart/cart";
 import { showConfirmDialog } from "vant";
-import { showNotify } from 'vant';
+import { debounce } from "@/utils/index";
 const configStore = useConfigStore();
 const parameter = ref({
     navbar: "1",
@@ -225,13 +227,26 @@ const getCartList = async () => {
     uni.hideLoading();
     loaded.value = true;
 };
+
+let delayTimer: number | null = null; // 延时定时器
+const startDelayTimer = (cart_id: number, quantity: number) => {
+    if (delayTimer) {
+        clearTimeout(delayTimer);
+    }
+    delayTimer = setTimeout(() => {
+        __updateCartItemData(cart_id, quantity);
+    }, 300);
+};
 const updateCartItem = async (cart_id: number, quantity: number) => {
+    startDelayTimer(cart_id, quantity);
+};
+
+const __updateCartItemData = async (cart_id: number, quantity: number) => {
     try {
         const result = await updateCartItemData({ cart_id, data: { quantity } });
 
         getCartList();
     } catch (error: any) {
-        
         console.error(error);
     }
 };
@@ -647,6 +662,7 @@ onShow(() => {
     -moz-line-clamp: 2;
     -webkit-box-orient: vertical;
     -moz-box-orient: vertical;
+    font-weight: bold;
 }
 .goods-list-cart .cart_item .cart-row .extra_info {
     font-size: 22rpx;
@@ -715,7 +731,6 @@ onShow(() => {
     font-size: 32rpx;
     line-height: 56rpx;
     color: #f23030;
-    font-weight: bold;
 
     :deep(.util) {
         font-weight: normal;
