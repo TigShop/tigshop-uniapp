@@ -31,7 +31,7 @@
                                                 checked-color="#ee0a24"
                                             ></van-checkbox>
                                             <navigator :url="'/pages/productDetail/index?id=' + goods.cart_id" class="photo">
-                                                <image :src="goods.pic_thumb" />
+                                                <image :src="imageFormat(goods.pic_thumb)" />
                                                 <view class="image_mask_sold_out" v-if="goods.storage == 0">
                                                     <image src="/static/images/common/bg_soldout.png"></image>
                                                 </view>
@@ -142,7 +142,7 @@ import { useConfigStore } from "@/store/config";
 import { getCart, updateCartItemData, updateCartCheck, clearCart, removeCartItemData } from "@/api/cart/cart";
 import type { updateCartCheckitem } from "@/types/cart/cart";
 import { showConfirmDialog } from "vant";
-import { debounce } from "@/utils/index";
+import { imageFormat } from "@/utils/format";
 const configStore = useConfigStore();
 const parameter = ref({
     navbar: "1",

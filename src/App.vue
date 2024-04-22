@@ -6,6 +6,7 @@ const configStore = useConfigStore();
 onLaunch(() => {
     configStore.getNavHeight();
     configStore.getTabbarList();
+    configStore.setXClientType();
 });
 onShow(() => {
     uni.hideTabBar();

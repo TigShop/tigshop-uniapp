@@ -13,9 +13,10 @@ interface ConfigState {
 
 interface State {
     config: ConfigState;
-    tabbarList: any[];//自定义tabber
-    tabbarHeight: string;//自定义tabber高度
-    previewId: number;//预览id
+    tabbarList: any[]; //自定义tabber
+    tabbarHeight: string; //自定义tabber高度
+    previewId: number; //预览id
+    XClientType: string; //运行环境
 }
 
 export const useConfigStore = defineStore("config", {
@@ -31,8 +32,9 @@ export const useConfigStore = defineStore("config", {
             navHeight: 0
         },
         tabbarList: [],
-        tabbarHeight: '90rpx',
-        previewId: 0
+        tabbarHeight: "90rpx",
+        previewId: 0,
+        XClientType: ""
     }),
     getters: {
         icoDefinedCss: (state: State): string => {
@@ -97,6 +99,15 @@ export const useConfigStore = defineStore("config", {
         },
         setPreviewId(val: number) {
             this.previewId = val;
+        },
+        setXClientType() {
+            const { uniPlatform } = uni.getSystemInfoSync();
+            switch(uniPlatform) {
+              case 'web':
+                return this.XClientType = 'h5';
+              case 'mp-weixin':
+                return this.XClientType = 'miniProgram'
+            }
         }
     }
 });

@@ -41,6 +41,10 @@
 			"style": {}
 		},
 		{
+			"path": "pages/order/pay",
+			"style": {}
+		},
+		{
 			"path": "pages/address/list",
 			"style": {}
 		},

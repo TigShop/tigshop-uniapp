@@ -3,7 +3,7 @@
         <view class="invoice">
             <view class="invoice-title">发票</view>
             <view class="invoice-content" @click="handleInvoice">
-                <view class="invoice-text">本次不开具发票</view>
+                <view class="invoice-text">{{ typeCodeText || "" }}</view>
                 <image class="more-ico" src="/static/images/common/more.png"></image>
             </view>
         </view>
@@ -95,13 +95,7 @@
                                     placeholder="请输入收票人手机"
                                     :rules="[{ required: true, message: '手机不能为空!' }]"
                                 />
-                                <van-field
-                                    v-model="formState.email"
-                                    name="收票人邮箱"
-                                    label="收票人邮箱"
-                                    placeholder="请输入收票人邮箱"
-                                    :rules="[{ required: true, message: '邮箱不能为空!' }]"
-                                />
+                                <van-field v-model="formState.email" name="收票人邮箱" label="收票人邮箱" placeholder="请输入收票人邮箱" />
                             </van-cell-group>
                         </block>
                         <block v-else-if="formState.invoice_type === 2 && invoiceStatus">
@@ -119,20 +113,18 @@
                                     placeholder="请输入收票人手机"
                                     :rules="[{ required: true, message: '手机不能为空!' }]"
                                 />
-                                <van-field
-                                    v-model="formState.email"
-                                    name="收票人邮箱"
-                                    label="收票人邮箱"
-                                    placeholder="请输入收票人邮箱"
-                                    :rules="[{ required: true, message: '邮箱不能为空!' }]"
-                                />
+                                <van-field v-model="formState.email" name="收票人邮箱" label="收票人邮箱" placeholder="请输入收票人邮箱" />
                             </van-cell-group>
                         </block>
                         <block v-else>
-                            <view> 您还未通过增票资质申请，暂时无法开具增值税专用发票 </view>
+                            <view class="notPass">
+                                <view>您还未通过增票资质申请，暂时无法开具增值税专用发票 <text class="notPassBtn" @click="handleApply">去申请</text></view>
+                            </view>
                         </block>
                         <view class="button-position">
-                            <van-button round block type="danger" native-type="submit"> 提交 </van-button>
+                            <van-button :disabled="formState.invoice_type === 2 && !invoiceStatus" round block type="danger" native-type="submit">
+                                提交
+                            </van-button>
                         </view>
                     </van-form>
                 </view>
@@ -143,7 +135,7 @@
 
 <script setup lang="ts">
 import popup from "@/components/popup/index.vue";
-import { onMounted, reactive, ref, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import { getInvoiceStatus, getCheckInvoice } from "@/api/order/invoice";
 
 const props = defineProps({
@@ -151,12 +143,18 @@ const props = defineProps({
         type: Object,
         default: () => {}
     },
-    invoiceInfoData:{
+    invoiceInfoData: {
         type: Object,
         default: () => {}
+    },
+    typeCode: {
+        type: Number
     }
 });
-const emit = defineEmits(['update:invoiceInfo'])
+const emit = defineEmits(["update:invoiceInfo", "change"]);
+const typeCodeText = computed(() => {
+    return props.typeCode === 1 ? "普通发票" : "增值税专用发票";
+});
 
 const formState = reactive({
     title_type: 1, // 抬头类型
@@ -205,14 +203,21 @@ const __getCheckInvoice = async () => {
             title_type: formState.title_type
         });
         if (result.item) {
-            if(formState.title_type === 1) {
+            if (formState.invoice_type === 1 && formState.title_type === 1) {
                 formState.company_name = result.item.company_name;
                 formState.mobile = result.item.mobile;
                 formState.email = result.item.email;
-            }else {
-                Object.assign(formState, result.item)
-                console.log('formState', formState)
+            } else {
+                formState.company_code = result.item.company_code;
+                formState.company_name = result.item.company_name;
+                formState.company_address = result.item.company_address;
+                formState.company_phone = result.item.company_phone;
+                formState.company_bank = result.item.company_bank;
+                formState.company_account = result.item.company_account;
             }
+
+            formState.mobile = result.item.mobile;
+            formState.email = result.item.email;
         } else if (formState.title_type === 1) {
             formState.company_name = props.getAddressInfo.consignee;
             formState.mobile = props.getAddressInfo.mobile;
@@ -250,7 +255,13 @@ const handleInvoiceType = (type: number) => {
     __getCheckInvoice();
 };
 
-const onSubmit = () => {};
+const onSubmit = () => {
+    emit("update:invoiceInfo", formState);
+};
+
+const handleApply = () => {
+  // uni.navigateTo()
+}
 </script>
 
 <style lang="scss" scoped>
@@ -323,5 +334,12 @@ const onSubmit = () => {};
     right: 0;
     padding: 0 30rpx;
     padding-bottom: env(safe-area-inset-bottom) !important;
+}
+
+.notPass {
+    padding: 20rpx;
+    .notPassBtn {
+      color: #ff3700;
+    }
 }
 </style>

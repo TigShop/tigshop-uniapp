@@ -1,6 +1,8 @@
-import indexConfig from "@/config/index";
+import indexConfig from "@/config/index.config";
 import { useUserStore } from "@/store/user";
+import { useConfigStore } from "@/store/config"
 const userStore = useUserStore();
+const configStore = useConfigStore();
 
 // 定义请求配置接口
 interface RequestConfig {
@@ -22,7 +24,7 @@ export default function request<T extends ResponseData>(config: RequestConfig): 
     const header = {
         Authorization: userStore.token,
         ...config.header,
-        "X-Client-Type": "mobile"
+        "X-Client-Type": configStore.XClientType
     };
     return new Promise<T>((resolve, reject) => {
         uni.request({

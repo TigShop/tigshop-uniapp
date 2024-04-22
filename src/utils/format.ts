@@ -8,9 +8,11 @@ export function imageFormat(path: string) {
     }
     if (Number(config.get("storage_type")) > 0) {
         // return path.includes("http") !== false ? path : config.get("storage_url") + path;
-        return path.includes("http") !== false ? path : "https://oss.lyecs.com/" + path;
+        // return path.includes("http") !== false ? path : "https://oss.lyecs.com/" + path;
+        return path.includes("http") !== false ? path : "http://lyecs2.oss-cn-zhangjiakou.aliyuncs.com/" + path;
     } else {
-        return path.includes("http") !== false ? path : "https://oss.lyecs.com/" + path;
+        // return path.includes("http") !== false ? path : "https://oss.lyecs.com/" + path;
+        return path.includes("http") !== false ? path : "http://lyecs2.oss-cn-zhangjiakou.aliyuncs.com/" + path;
     }
 }
 // 格式化金额

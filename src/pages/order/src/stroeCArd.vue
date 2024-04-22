@@ -56,7 +56,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import type { CartList, StoreShippingType } from "@/types/order/check";
-import { imageFormat, priceFormat, urlFormat } from "@/utils/format";
+import { imageFormat } from "@/utils/format";
 import popup from "@/components/popup/index.vue";
 import { showFailToast } from "vant";
 
@@ -220,11 +220,13 @@ const handlecConfirm = () => {
 
         .store-card-item-content-right {
             padding-left: 18rpx;
+            .store-card-item-content-right-title {
+                font-weight: bold;
+            }
 
             .store-card-item-content-right-price {
                 font-size: 32rpx;
                 line-height: 56rpx;
-                font-weight: bold;
                 color: #f23030;
                 display: inline-block;
                 margin-right: 10rpx;
@@ -240,7 +242,6 @@ const handlecConfirm = () => {
                 display: inline-block;
                 position: relative;
                 top: 3rpx;
-                
             }
         }
 

@@ -25,7 +25,11 @@
                 @sendBalanceStatus="getBalanceStatus"
                 @change="updateOrderCheck"
             ></couponInfo>
-            <invoiceInfo v-model:invoiceInfoData="formState.invoice_data" :getAddressInfo="getAddressInfo"></invoiceInfo>
+            <invoiceInfo
+                v-model:invoiceInfoData="formState.invoice_data"
+                :typeCode="formState.invoice_data.invoice_type"
+                :getAddressInfo="getAddressInfo"
+            ></invoiceInfo>
             <totalCard :total="totalData"></totalCard>
             <view class="submit-btn">
                 <view class="submit-btn-price">
@@ -166,6 +170,9 @@ const submit = async () => {
     submitLoading.value = true;
     try {
         const result = await orderSubmit(formState);
+        uni.redirectTo({
+            url: `/pages/order/pay?order_id=${result.order_id}`
+        });
     } catch (error) {
         console.error(error);
     } finally {

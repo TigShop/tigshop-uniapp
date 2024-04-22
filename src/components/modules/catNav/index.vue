@@ -42,27 +42,19 @@
 
                         <scroll-view class="item-cat_nav-con" :scroll-left="navLeft" :scroll-with-animation="true" :scroll-x="true">
                             <view class="cat-nav-list">
-                                <block v-if="navList.length === 0">
-                                    <!-- <block v-if="true"> -->
-                                    <view class="catnav-skeleton">
-                                        <skeleton v-for="i in 5" :key="i" animated bg="#e4e4e4" width="50px" height="20px"></skeleton>
-                                    </view>
-                                </block>
-                                <block v-else>
-                                    <view
-                                        :class="'nav-item ' + (current_cat_nav_id == nav.mobile_cat_nav_id ? 'current' : '')"
-                                        @click="changeCatNav"
-                                        :data-id="nav.mobile_cat_nav_id"
-                                        :data-category_id="nav.category_id"
-                                        :data-index="index"
-                                        :data-cat_color="nav.cat_color"
-                                        :data-allData="nav"
-                                        v-for="(nav, index) in navList"
-                                        :key="index"
-                                    >
-                                        <view class="tit" :style="'color: ' + module.text_color + ';'">{{ nav.category_name }}</view>
-                                    </view>
-                                </block>
+                                <view
+                                    :class="'nav-item ' + (current_cat_nav_id == nav.mobile_cat_nav_id ? 'current' : '')"
+                                    @click="changeCatNav"
+                                    :data-id="nav.mobile_cat_nav_id"
+                                    :data-category_id="nav.category_id"
+                                    :data-index="index"
+                                    :data-cat_color="nav.cat_color"
+                                    :data-allData="nav"
+                                    v-for="(nav, index) in module.nav_list"
+                                    :key="index"
+                                >
+                                    <view class="tit" :style="'color: ' + module.text_color + ';'">{{ nav.category_name }}</view>
+                                </view>
                             </view>
                         </scroll-view>
                     </view>
@@ -73,11 +65,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, computed } from "vue";
 import { useConfigStore } from "@/store/config";
-import { getMobileCatNavList } from "@/api/home/home";
 import { imageFormat } from "@/utils/format";
-import skeleton from "@/components/skeleton/index.vue";
 
 const props = defineProps({
     module: {
@@ -142,22 +132,6 @@ const changeCatNav = (e: any) => {
         child_cat_info: allData.child_cat_info
     });
 };
-
-const navList = ref<any>([]);
-const getCatnNavList = async () => {
-    try {
-        const result = await getMobileCatNavList({ is_show: 1 });
-        navList.value = result.filter_result;
-        navList.value.splice(0, 0, { mobile_cat_nav_id: 0, category_name: "推荐" });
-        // console.log("getCatnNavList", result);
-    } catch (error) {
-        console.error(error);
-    }
-};
-
-onMounted(() => {
-    getCatnNavList();
-});
 </script>
 <style lang="scss" scoped>
 @import "../../../static/css/modules.css";
