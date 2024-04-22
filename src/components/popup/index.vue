@@ -5,7 +5,7 @@
         :round="round"
         :closeable="closeable"
         close-icon="close"
-        :style="{ height: height, 'background-color': backgroundColor, 'padding-bottom': paddingBottom + 'rpx' }"
+        :style="{ height, width, 'background-color': backgroundColor, 'padding-bottom': paddingBottom + 'rpx' }"
     >
         <view class="popup-container">
             <view class="popup-title" v-if="showTitle">{{ title }} </view>
@@ -28,6 +28,10 @@ const props = defineProps({
     height: {
         type: String,
         default: "50%"
+    },
+    width: {
+        type: String,
+        default: "100%"
     },
     round: {
         type: Boolean,
@@ -68,7 +72,6 @@ const show = computed({
 </script>
 
 <style lang="scss" scoped>
-
 .popup-container {
     height: 100%;
     box-sizing: border-box;
@@ -76,7 +79,6 @@ const show = computed({
 }
 
 .popup-title {
-   
     font-size: 32rpx;
     font-weight: bold;
     text-align: left;

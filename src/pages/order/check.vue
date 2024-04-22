@@ -30,7 +30,7 @@
                 :typeCode="formState.invoice_data.invoice_type"
                 :getAddressInfo="getAddressInfo"
             ></invoiceInfo>
-            <totalCard :total="totalData"></totalCard>
+            <totalCard :total="totalData" :cartList="cartList"></totalCard>
             <view class="submit-btn">
                 <view class="submit-btn-price">
                     <FormatPrice :priceData="totalData?.unpaid_amount"></FormatPrice>

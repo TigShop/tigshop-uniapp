@@ -14,19 +14,33 @@
                     <text>{{ order.order_sn }}</text>
                 </view>
             </view>
-            <view class="pay-list">
-                <radio-group class="radio-group" @change="paymentChange">
-                    <van-radio-group v-model="paymentType">
-                        <block v-for="(payment, idx) in paymentList" :key="idx">
-                            <view class="item">
-                                <van-radio :name="payment" checked-color="#ee0a24">{{ payment }}</van-radio>
-                            </view>
-                        </block>
-                    </van-radio-group>
-                </radio-group>
-            </view>
+            <block v-if="paymentList?.length > 1">
+                <view class="pay-list">
+                    <radio-group class="radio-group" @change="paymentChange">
+                        <van-radio-group v-model="paymentType">
+                            <block v-for="(payment, idx) in paymentList" :key="idx">
+                                <view class="item">
+                                    <view class="payment-info">
+                                        <view class="payment-info-text">
+                                            {{ paymentText[payment] }}
+                                        </view>
+
+                                        <image
+                                            v-if="payment !== 'offline'"
+                                            class="payment-info-img"
+                                            :src="'/src/static/images/payment/pay_' + payment + '.png'"
+                                        ></image>
+                                    </view>
+                                    <van-radio :name="payment" checked-color="#ee0a24"> </van-radio>
+                                </view>
+                            </block>
+                        </van-radio-group>
+                    </radio-group>
+                </view>
+            </block>
+
             <block v-if="paymentType === 'offline'">
-                <view>
+                <view class="offline-warp">
                     <van-tabs v-model:active="activeName" swipeable>
                         <van-tab title="银行汇款">
                             <view class="offline-content">
@@ -64,28 +78,35 @@
                 </view>
             </view>
         </view>
+        <!-- #ifdef H5 -->
+        <div ref="formContainer"></div>
+        <!-- #endif -->
     </view>
 </template>
 
 <script setup lang="ts">
 import navbar from "@/components/navbar/index.vue";
 import { onLoad } from "@dcloudio/uni-app";
-import { ref } from "vue";
-import { showFailToast } from "vant";
+import { reactive, ref } from "vue";
+import { showFailToast, showSuccessToast } from "vant";
 import { orderPayInfo, creatPay } from "@/api/order/pay";
 import type { Order, OfflinePaymentList } from "@/types/order/pay";
-const parameter = {
+import { useConfigStore } from "@/store/config";
+const configStore = useConfigStore();
+const parameter = reactive({
     navbar: "1",
     return: "1",
-    title: "订单支付"
-};
+    title: "订单支付",
+    returnUrl: '/pages/order/list'
+});
 const loading = ref(false);
-const paymentList = ref<string[]>();
+const paymentList = ref<string[]>([]);
 const paymentDisabled = ref(false);
 const offline_payment_list = ref<OfflinePaymentList>();
 const paymentType = ref("wechat");
 const order = ref<Order>();
 const activeName = ref("银行汇款");
+const formContainer = ref<HTMLElement | null>(null);
 
 const orderId = ref<number | null>(null);
 onLoad((options) => {
@@ -102,6 +123,9 @@ const loadOrderPayInfo = async () => {
             const result = await orderPayInfo(orderId.value);
             order.value = result.order;
             paymentList.value = result.payment_list;
+            if (paymentList.value.length === 1) {
+                paymentType.value = paymentList.value[0];
+            }
             offline_payment_list.value = result.offline_payment_list;
         }
     } catch (error: any) {
@@ -123,6 +147,27 @@ const handlePay = async () => {
                 id: orderId.value,
                 type: paymentType.value
             });
+            // 支付宝
+            if (paymentType.value === "alipay") {
+                alipay(result.pay_info.html);
+            }
+
+            // 微信
+            if (paymentType.value === "wechat") {
+                // onBridgeReady(result.pay_info);
+
+                if (configStore.XClientType === "h5") {
+                    // #ifdef APP-PLUS
+                    plus.runtime.openURL(result.pay_info.url);
+                    // #endif
+
+                    // #ifdef H5
+                    window.location.href = result.pay_info.url;
+                    // #endif
+                } else if (configStore.XClientType === "miniProgram") {
+                    miniProgramPay(result.pay_info);
+                }
+            }
         }
     } catch (error: any) {
         console.error(error);
@@ -131,6 +176,58 @@ const handlePay = async () => {
         paymentDisabled.value = false;
     }
 };
+
+const alipay = (html: string) => {
+    if (formContainer.value) {
+        formContainer.value.innerHTML = html;
+        // 提交表单
+        document.forms["alipaysubmit"]!.submit();
+    }
+};
+
+/* 微信小程序调用 */
+const miniProgramPay = (pay_info: any) => {
+    uni.requestPayment({
+        provider: "wxpay",
+        orderInfo: {
+            timeStamp: String(pay_info.timestamp),
+            nonceStr: pay_info.nonceStr,
+            package: "prepay_id=" + pay_info.prepay_id,
+            signType: pay_info.signType,
+            paySign: pay_info.paySign
+        },
+        success(res) {
+            showSuccessToast("支付成功");
+            setTimeout(function () {
+                // uni.redirectTo()
+            }, 1500);
+        },
+        fail(e) {
+            showFailToast("支付失败");
+            setTimeout(() => {
+                console.log("跳转用户订单页面");
+                // uni.redirectTo()
+            }, 1500);
+        }
+    });
+};
+
+/* 微信公众号调用 */
+
+// const onBridgeReady = (pay_info: any) => {
+//     WeixinJSBridge.invoke(
+//         "getBrandWCPayRequest",
+//         {
+//             ...pay_info
+//         },
+//         function (res) {
+//             if (res.err_msg == "get_brand_wcpay_request:ok") {
+//                 // 使用以上方式判断前端返回,微信团队郑重提示：
+//                 //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+//             }
+//         }
+//     );
+// };
 </script>
 
 <style lang="scss" scoped>
@@ -185,44 +282,31 @@ const handlePay = async () => {
     height: 100rpx;
     border-bottom: 1rpx solid #eee;
     padding-top: 20rpx;
-    // margin-bottom: 20rpx;
-}
-.pay-list .item .bank_img {
-    width: 66rpx;
-    display: block;
-    position: absolute;
-    left: 4rpx;
-    top: 20rpx;
-}
-.pay-list .item .bank_img image {
-    width: 60rpx;
-    height: 60rpx;
-}
-.pay-list .item radio {
-    position: absolute;
-    right: 20rpx;
-    top: 30rpx;
-}
-.pay-list .item .pay-title {
-    position: absolute;
-    left: 100rpx;
-    top: 14rpx;
-    color: #333;
-    font-size: 30rpx;
-}
-.pay-list .item .pay-info {
-    position: absolute;
-    left: 100rpx;
-    top: 60rpx;
-    color: #999;
-    font-size: 22rpx;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .payment-info {
+        display: flex;
+        align-items: center;
+
+        .payment-info-text {
+            min-width: 110rpx;
+        }
+
+        .payment-info-img {
+            width: 66rpx;
+            height: 66rpx;
+        }
+    }
 }
 
 .other-info {
     background: #fff;
     padding: 30rpx 36rpx 30rpx;
     border-radius: 18rpx;
-    margin-top: 40rpx;
+    margin-top: 20rpx;
+    margin-bottom: 40rpx;
 }
 .other-info .tit {
     font-size: 22rpx;
@@ -253,7 +337,15 @@ const handlePay = async () => {
     display: block;
     margin: 20rpx 30rpx;
 }
+.offline-warp {
+    border-radius: 20rpx;
+    padding: 10rpx;
+    background-color: #fff;
+    margin: 20rpx 0 0;
+    overflow: hidden;
+}
 .offline-content {
     padding: 20rpx;
+    line-height: 45rpx;
 }
 </style>

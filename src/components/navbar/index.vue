@@ -47,7 +47,9 @@ const props = defineProps({
         default: () => ({
             class: "0",
             showHome: false,
-            searchKeywords: ""
+            searchKeywords: "",
+            return: '0',
+            returnUrl: ''
         })
     },
     logoUrl: {
@@ -97,6 +99,11 @@ const ready = () => {
 };
 
 const returnFun = () => {
+    if(props.parameter.returnUrl){
+        return uni.redirectTo({
+            url: props.parameter.returnUrl
+        });
+    }
     uni.navigateBack();
 };
 

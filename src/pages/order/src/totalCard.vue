@@ -5,7 +5,7 @@
             <view class="total-card-item-right"><FormatPrice :priceData="total.product_amount"></FormatPrice></view>
         </view>
         <view class="total-card-item">
-            <view class="total-card-item-left">配送费用</view>
+            <view class="total-card-item-left">配送费用<van-icon class="total-card-ico" name="info-o" @click="handleDispatching" /></view>
             <view class="total-card-item-right red">+ <FormatPrice :priceData="total.shipping_fee"></FormatPrice></view>
         </view>
         <view class="total-card-item" v-if="total.balance > 0">
@@ -21,16 +21,37 @@
             <view class="total-card-item-right"><FormatPrice :priceData="total.coupon_amount"></FormatPrice></view>
         </view>
         <view class="total-card-tig"> * 该订单完成后，您将获得 <text class="special-text">111111</text> 积分 </view>
+
+        <popup v-model:show="show" title="配送费用" height="40%" width="75%" position="center">
+            <view class="distribution">
+                <view class="distribution-content">
+                    <view class="distribution-item" v-for="(item, index) in cartList" :key="index">
+                        <view class="shop_name">{{ item?.store_id == 0 ? "自营" : item.store_name }}</view>
+                    </view>
+                </view>
+            </view>
+        </popup>
     </view>
 </template>
 
 <script setup lang="ts">
+import type { CartList } from "@/types/order/check";
+import popup from '@/components/popup/index.vue'
+import { ref } from 'vue';
 const props = defineProps({
     total: {
         type: Object,
         default: () => ({ product_amount: 0, shipping_fee: 0, balance: 0, points_amount: 0, coupon_amount: 0 })
+    },
+    cartList: {
+        type: Array,
+        default: () => []
     }
 });
+const show = ref(false);
+const handleDispatching = () => {
+    show.value = true;
+}
 </script>
 
 <style lang="scss" scoped>
@@ -48,6 +69,10 @@ const props = defineProps({
 
         .red {
             color: #ff3700;
+        }
+
+        .total-card-ico {
+            margin-left: 10rpx;
         }
     }
 
