@@ -4,7 +4,7 @@
             <view class="invoice-title">发票</view>
             <view class="invoice-content" @click="handleInvoice">
                 <view class="invoice-text">{{ typeCodeText || "" }}</view>
-                <image class="more-ico" src="/static/images/common/more.png"></image>
+                <image lazy-load  class="more-ico" src="/static/images/common/more.png"></image>
             </view>
         </view>
 

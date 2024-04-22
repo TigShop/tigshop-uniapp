@@ -49,7 +49,7 @@
             <view class="dOne">
                 <view class="wrap">
                     <view class="bg">
-                        <image :src="module.background.pic_thumb_format" mode="" />
+                        <image lazy-load  :src="module.background.pic_thumb_format" mode="" />
                     </view>
                     <view style="z-index: 1">
                         <view class="dOne-title">
@@ -64,7 +64,7 @@
                                     <view class="goods-li">
                                         <view class="pic">
                                             <navigator :url="goods.url" class="item-image-a"
-                                                ><image class="img" :src="goods.goods_thumb" mode="widthFix"
+                                                ><image lazy-load  class="img" :src="goods.goods_thumb" mode="widthFix"
                                             /></navigator>
                                         </view>
                                         <view class="info">

@@ -2,7 +2,7 @@
     <view :class="'item-li list-' + masonryListClass">
         <view class="photo">
             <navigator :url="'/pages/goods_details/index?id=' + item.product_id + '&is_exchange=' + item.is_exchange">
-                <image :src="imageFormat(item.pic_thumb)" mode="widthFix"></image>
+                <image lazy-load  :src="imageFormat(item.pic_thumb)" mode="widthFix"></image>
 
                 <view v-if="item.product_stock == 0" class="outsale">售罄</view>
             </navigator>
@@ -21,7 +21,7 @@
                     <text>{{ configStore.config.dollar_sign }}</text>
                     {{ item.product_price ?? 0 }}
                 </view>
-                <view @click.stop="buy" class="buy_btn"><image src="/static/images/common/cart.png" role="img"></image></view>
+                <view @click.stop="buy" class="buy_btn"><image lazy-load  src="/static/images/common/cart.png" role="img"></image></view>
             </view>
         </view>
     </view>

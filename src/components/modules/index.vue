@@ -71,7 +71,7 @@
                                 <block v-for="(item, index) in imgUrl" :key="index">
                                     <swiper-item>
                                         <view class="swiper-slide">
-                                            <image :src="imageFormat(item.pic_url)"></image>
+                                            <image lazy-load  :src="imageFormat(item.pic_url)"></image>
                                         </view>
                                     </swiper-item>
                                 </block>
@@ -87,7 +87,7 @@
                         <block v-for="(item, index) in childCatInfo" :key="index">
                             <view class="item" v-if="index < 10">
                                 <navigator :url="'/pages/goods_search/index?category=' + item.category_id + '&title=' + item.category_name">
-                                    <image :src="item.category_pic"></image>
+                                    <image lazy-load  :src="item.category_pic"></image>
                                     <view class="txt">{{ item.category_name }}</view>
                                 </navigator>
                             </view>
@@ -103,7 +103,7 @@
                             <view class="item" v-if="index < 8">
                                 <view class="itemWrap">
                                     <navigator :url="'/pages/goods_search/index?brand=' + brand.brand_id + '&title=' + brand.brand_name">
-                                        <image :src="imageFormat(brand.brand_logo)"></image>
+                                        <image lazy-load  :src="imageFormat(brand.brand_logo)"></image>
                                         <view class="txt">{{ brand.brand_name }}</view>
                                     </navigator>
                                 </view>

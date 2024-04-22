@@ -4,7 +4,7 @@
             <swiper :indicator-dots="false" :circular="circular" :interval="interval" :duration="duration" @change="change">
                 <block v-for="(item, index) in imgUrls" :key="index">
                     <swiper-item>
-                        <image :src="item.pic_url" class="slide-image" @tap.stop.prevent="showBigPic" :data-src="item.pic_url" />
+                        <image lazy-load  :src="item.pic_url" class="slide-image" @tap.stop.prevent="showBigPic" :data-src="item.pic_url" />
                     </swiper-item>
                 </block>
             </swiper>
@@ -16,7 +16,7 @@
         <view class="product-bg" v-if="imgUrls.length == 0">
             <swiper :indicator-dots="false" :autoplay="autoplay" :circular="circular" :interval="interval" :duration="duration" @change="change">
                 <swiper-item>
-                    <image :src="goodsImg" class="slide-image" @tap.stop.prevent="showBigPic" :data-src="item.pic_url" />
+                    <image lazy-load  :src="goodsImg" class="slide-image" @tap.stop.prevent="showBigPic" :data-src="item.pic_url" />
                 </swiper-item>
             </swiper>
         </view>

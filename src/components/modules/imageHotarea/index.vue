@@ -12,7 +12,7 @@
                         <view class="image-ad-item">
                             <view class="item-content" :style="format.img_padding">
                                 <view class="item-content-hotatrea">
-                                    <image class="item-img-bg" :data-auto="true" :alt="item.pic_name" :src="imageFormat(item.pic_url)" mode="widthFix"></image>
+                                    <image lazy-load  class="item-img-bg" :data-auto="true" :alt="item.pic_name" :src="imageFormat(item.pic_url)" mode="widthFix"></image>
                                     <block v-for="(subItem, index) in item.hotarea" :key="index">
                                         <navigator
                                             :url="subItem.link.path"

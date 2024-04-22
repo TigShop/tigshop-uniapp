@@ -10,7 +10,7 @@
                 <view class="store-card-item-content">
                     <navigator :url="'/pages/productDetail/index?id=' + subItem.product_id" class="flex">
                         <view class="store-card-item-content-left">
-                            <image :src="imageFormat(subItem.pic_thumb)"></image>
+                            <image lazy-load  :src="imageFormat(subItem.pic_thumb)"></image>
                         </view>
                         <view class="store-card-item-content-right">
                             <view class="store-card-item-content-right-title">{{ subItem.product_name }}</view>
@@ -24,7 +24,7 @@
                 <view class="payment-title">配送方式</view>
                 <view class="payment-content" @click="handleDistributionMode(index)">
                     <view class="payment-text">{{ getShippingTypeText(index) }}</view>
-                    <image class="more-ico" src="/static/images/common/more.png"></image>
+                    <image lazy-load  class="more-ico" src="/static/images/common/more.png"></image>
                 </view>
             </view>
         </view>

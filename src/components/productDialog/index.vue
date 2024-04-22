@@ -3,7 +3,7 @@
         <view :class="'goods-dialog ' + (attribute.cartAttr == true ? 'on' : '')">
             <view class="textpic">
                 <view class="pictrue"
-                    ><image
+                    ><image lazy-load 
                         v-if="productSelect.goods_thumb"
                         :src="productSelect.goods_thumb"
                     ></image

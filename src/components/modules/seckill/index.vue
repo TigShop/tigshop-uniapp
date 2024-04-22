@@ -47,7 +47,7 @@
                                             <van-image :src="imageFormat(item.pic_thumb)">
                                                 <template v-slot:error>加载失败</template>
                                             </van-image>
-                                            <!-- <image :src="imageFormat(item.pic_thumb)" mode="widthFix" /> -->
+                                            <!-- <image lazy-load  :src="imageFormat(item.pic_thumb)" mode="widthFix" /> -->
                                         </navigator>
                                         <view :class="'cap-seckill-goods__tag ' + className">
                                             <text class="cap-seckill-goods__tag-title" v-if="module?.style === 1"> 秒杀 </text>

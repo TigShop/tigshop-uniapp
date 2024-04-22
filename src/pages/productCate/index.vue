@@ -68,7 +68,7 @@
                                                 class="item acea-row row-column row-middle"
                                             >
                                                 <view class="picture" v-if="item.cat_pic"
-                                                    ><image :src="item.cat_pic"></image
+                                                    ><image lazy-load  :src="item.cat_pic"></image
                                                 ></view>
                                                 <view class="name line1">{{ item.name }}</view>
                                             </navigator>
@@ -141,7 +141,7 @@
                                                 class="item acea-row row-column row-middle"
                                             >
                                                 <view class="picture" v-if="hotCat.cat_pic"
-                                                    ><image :src="hotCat.cat_pic"></image
+                                                    ><image lazy-load  :src="hotCat.cat_pic"></image
                                                 ></view>
                                                 <view class="name line1">{{
                                                     hotCat.cat_name
@@ -187,7 +187,7 @@
                                                 class="item acea-row row-column row-middle"
                                             >
                                                 <view class="picture" v-if="childCatItem.cat_pic"
-                                                    ><image :src="childCatItem.cat_pic"></image
+                                                    ><image lazy-load  :src="childCatItem.cat_pic"></image
                                                 ></view>
                                                 <view class="name line1">{{
                                                     childCatItem.name

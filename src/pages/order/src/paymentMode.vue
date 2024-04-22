@@ -4,7 +4,7 @@
             <view class="payment-title">支付方式</view>
             <view class="payment-content" @click="handlePaymentMode">
                 <view class="payment-text">{{ paymentTypeText }}</view>
-                <image class="more-ico" src="/static/images/common/more.png"></image>
+                <image lazy-load  class="more-ico" src="/static/images/common/more.png"></image>
             </view>
         </view>
 

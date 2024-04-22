@@ -7,7 +7,7 @@
         <navbar :parameter="parameter" :logoUrl="logoUrl || ''" v-if="showCatNav == 0"></navbar>
         <view>
             <view class="index_empty" v-if="loading">
-                <image src="/static/images/common/index_empty.png" mode="widthFix"></image>
+                <image lazy-load  src="/static/images/common/index_empty.png" mode="widthFix"></image>
             </view>
             <view class="index" v-else>
                 <view class="decorate-page-window">
@@ -18,13 +18,13 @@
             <view class="goods-container" v-if="categoryId > 0">
                 <masonry :commodityList="commodityList"></masonry>
             </view>
-            <view class="bottomLoading" v-if="bottomLoading && categoryId > 0"><image class="loading" src="/static/images/common/loading.gif"></image></view>
+            <view class="bottomLoading" v-if="bottomLoading && categoryId > 0"><image lazy-load  class="loading" src="/static/images/common/loading.gif"></image></view>
             <view v-if="loadend && categoryId > 0" class="noMore">没有更多了~</view>
         </view>
         <tabbar :currentActive="0"></tabbar>
         <van-back-top right="6vw" bottom="6vh">
             <block #default>
-                <image src="/src/static//images//common/scroll-to-top.png" mode="widthFix"></image>
+                <image lazy-load  src="/src/static//images//common/scroll-to-top.png" mode="widthFix"></image>
             </block>
         </van-back-top>
     </view>

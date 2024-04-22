@@ -31,9 +31,9 @@
                                                 checked-color="#ee0a24"
                                             ></van-checkbox>
                                             <navigator :url="'/pages/productDetail/index?id=' + goods.cart_id" class="photo">
-                                                <image :src="imageFormat(goods.pic_thumb)" />
+                                                <image lazy-load  :src="imageFormat(goods.pic_thumb)" />
                                                 <view class="image_mask_sold_out" v-if="goods.storage == 0">
-                                                    <image src="/static/images/common/bg_soldout.png"></image>
+                                                    <image lazy-load  src="/static/images/common/bg_soldout.png"></image>
                                                 </view>
                                                 <!-- <view
                                                         class="cart-notice-row"
@@ -112,7 +112,7 @@
                 </view>
             </view>
             <view class="noCart" v-if="cartList.length === 0">
-                <view class="pictrue"><image src="/static/images/cart_empty.png"></image></view>
+                <view class="pictrue"><image lazy-load  src="/static/images/cart_empty.png"></image></view>
                 <view class="noCart_text">购物车内还没商品哦，去逛逛吧~</view>
             </view>
 

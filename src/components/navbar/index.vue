@@ -7,7 +7,7 @@
                         <text class="iconfont icon-xiazai5"></text>
                         搜索商品
                     </view>
-                    <view class="logo"><image class="logo-image" :src="logoUrl"></image></view>
+                    <view class="logo"><image lazy-load  class="logo-image" :src="logoUrl"></image></view>
                 </view>
                 <view class="navbarCon acea-row row-center-wrapper" v-if="parameter.navbar == 1">
                     <view :class="'name ' + (parameter.color == true ? 'on' : '') + ' line1'" v-if="parameter.class != 'sea1rch'">{{ parameter.title }}</view>

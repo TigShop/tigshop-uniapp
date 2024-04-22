@@ -5,7 +5,7 @@
             <form @submit="submit" :data-id="id">
                 <view class="title">
                     {{ title }}
-                    <view class="close" @tap="colseSlider"><image src="/static/images/common/close.png"></image></view>
+                    <view class="close" @tap="colseSlider"><image lazy-load  src="/static/images/common/close.png"></image></view>
                 </view>
                 <view class="bottom-slider-content">
                     <view style="height: 100rpx"></view>

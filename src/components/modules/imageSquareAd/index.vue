@@ -26,7 +26,7 @@
                                     <view class="image-ad-item">
                                         <view class="item-content" :style="format.img_padding">
                                             <navigator class="item-img-a" :url="urlFormat(module.pic_list[0].pic_link)"
-                                                ><image class="item-img" :src="imageFormat(module.pic_list[0]?.pic_url)" mode=""></image
+                                                ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[0]?.pic_url)" mode=""></image
                                             ></navigator>
                                         </view>
                                     </view>
@@ -34,14 +34,14 @@
                                         <view class="image-ad-item">
                                             <view class="item-content" :style="format.img_padding">
                                                 <navigator class="item-img-a" :url="urlFormat(module.pic_list[1].pic_link)"
-                                                    ><image class="item-img" :src="imageFormat(module.pic_list[1]?.pic_url)" mode=""></image
+                                                    ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[1]?.pic_url)" mode=""></image
                                                 ></navigator>
                                             </view>
                                         </view>
                                         <view class="image-ad-item">
                                             <view class="item-content" :style="format.img_padding">
                                                 <navigator class="item-img-a" :url="urlFormat(module.pic_list[2].pic_link)"
-                                                    ><image class="item-img" :src="imageFormat(module.pic_list[2]?.pic_url)" mode=""></image
+                                                    ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[2]?.pic_url)" mode=""></image
                                                 ></navigator>
                                             </view>
                                         </view>
@@ -53,7 +53,7 @@
                                     <view class="image-ad-item">
                                         <view class="item-content" :style="format.img_padding">
                                             <navigator class="item-img-a" :url="urlFormat(module.pic_list[0].pic_link)"
-                                                ><image class="item-img" :src="imageFormat(module.pic_list[0]?.pic_url)" mode="widthFix"></image
+                                                ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[0]?.pic_url)" mode="widthFix"></image
                                             ></navigator>
                                         </view>
                                     </view>
@@ -61,14 +61,14 @@
                                         <view class="image-ad-item">
                                             <view class="item-content" :style="format.img_padding">
                                                 <navigator class="item-img-a" :url="urlFormat(module.pic_list[1].pic_link)"
-                                                    ><image class="item-img" :src="imageFormat(module.pic_list[1]?.pic_url)" mode="widthFix"></image
+                                                    ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[1]?.pic_url)" mode="widthFix"></image
                                                 ></navigator>
                                             </view>
                                         </view>
                                         <view class="image-ad-item">
                                             <view class="item-content" :style="format.img_padding">
                                                 <navigator class="item-img-a" :url="urlFormat(module.pic_list[2].pic_link)"
-                                                    ><image class="item-img" :src="imageFormat(module.pic_list[2]?.pic_url)" mode="widthFix"></image
+                                                    ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[2]?.pic_url)" mode="widthFix"></image
                                                 ></navigator>
                                             </view>
                                         </view>
@@ -80,7 +80,7 @@
                                     <view class="image-ad-item">
                                         <view class="item-content" :style="format.img_padding">
                                             <navigator class="item-img-a" :url="urlFormat(module.pic_list[0].pic_link)"
-                                                ><image class="item-img" :src="imageFormat(module.pic_list[0]?.pic_url)" mode=""></image
+                                                ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[0]?.pic_url)" mode=""></image
                                             ></navigator>
                                         </view>
                                     </view>
@@ -89,7 +89,7 @@
                                             <view class="image-ad-item">
                                                 <view class="item-content" :style="format.img_padding">
                                                     <navigator class="item-img-a" :url="urlFormat(module.pic_list[1].pic_link)"
-                                                        ><image class="item-img" :src="imageFormat(module.pic_list[1]?.pic_url)" mode=""></image
+                                                        ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[1]?.pic_url)" mode=""></image
                                                     ></navigator>
                                                 </view>
                                             </view>
@@ -98,14 +98,14 @@
                                             <view class="image-ad-item">
                                                 <view class="item-content" :style="format.img_padding">
                                                     <navigator class="item-img-a" :url="urlFormat(module.pic_list[2].pic_link)"
-                                                        ><image class="item-img" :src="imageFormat(module.pic_list[2]?.pic_url)" mode=""></image
+                                                        ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[2]?.pic_url)" mode=""></image
                                                     ></navigator>
                                                 </view>
                                             </view>
                                             <view class="image-ad-item">
                                                 <view class="item-content" :style="format.img_padding">
                                                     <navigator class="item-img-a" :url="urlFormat(module.pic_list[3].pic_link)"
-                                                        ><image class="item-img" :src="imageFormat(module.pic_list[3]?.pic_url)" mode=""></image
+                                                        ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[3]?.pic_url)" mode=""></image
                                                     ></navigator>
                                                 </view>
                                             </view>

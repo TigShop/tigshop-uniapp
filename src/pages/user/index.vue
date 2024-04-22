@@ -8,7 +8,7 @@
                     <view class="picTxt">
                         <view>
                             <button open-type="chooseAvatar" class="pictrue pic-btn" @chooseavatar="onChooseAvatar">
-                                <image v-if="member.user_photo" :src="member.user_photo"></image>
+                                <image lazy-load  v-if="member.user_photo" :src="member.user_photo"></image>
                             </button>
                         </view>
                         <view class="text">
@@ -115,7 +115,7 @@
                     <block v-if="wap_user_center_ads.ad_list" v-for="(ads, index) in wap_user_center_ads.ad_list" :key="index">
                         <view style="margin-top: 10px">
                             <view class="item" @click="goPages(ads.ad_link)">
-                                <image :src="ads.pic_url" mode="widthFix" style="width: 100%; display: block"></image>
+                                <image lazy-load  :src="ads.pic_url" mode="widthFix" style="width: 100%; display: block"></image>
                             </view>
                         </view>
                     </block>
@@ -123,30 +123,30 @@
                         <view class="title acea-row row-middle">我的服务</view>
                         <view class="serviceList acea-row row-middle">
                             <view class="item" @click="goPages('/pages/user_profile/index')">
-                                <view class="pic"><image src="/static/images/user/zhanghaoguanli.png"></image></view>
+                                <view class="pic"><image lazy-load  src="/static/images/user/zhanghaoguanli.png"></image></view>
                                 <view>账号管理</view>
                             </view>
                             <view class="item" @click="goPages('/pages/user_address_list/index')">
-                                <view class="pic"><image src="/static/images/user/shouhuodizhi.png"></image></view>
+                                <view class="pic"><image lazy-load  src="/static/images/user/shouhuodizhi.png"></image></view>
                                 <view>收货地址</view>
                             </view>
                             <view class="item" @click="goPages('/pages/user_security/index')">
-                                <view class="pic"><image src="/static/images/user/anquanzhongxin.png"></image></view>
+                                <view class="pic"><image lazy-load  src="/static/images/user/anquanzhongxin.png"></image></view>
                                 <view>安全中心</view>
                             </view>
                             <view class="item" @click="goPages('/pages/user_invoice/index')">
                                 <view class="pic">
-                                    <image src="/static/images/user/fapiao.png"></image>
+                                    <image lazy-load  src="/static/images/user/fapiao.png"></image>
                                 </view>
                                 <view>发票管理</view>
                             </view>
                             <view class="item" @click="goPages('/pages/user_message/index')">
-                                <view class="pic"><image src="/static/images/user/xiaoxi.png"></image></view>
+                                <view class="pic"><image lazy-load  src="/static/images/user/xiaoxi.png"></image></view>
                                 <view>站内消息</view>
                             </view>
                             <view class="item" @click="goPages('/pages/pin_order/index')">
                                 <view class="pic">
-                                    <image src="/static/images/user/dingdan.png"></image>
+                                    <image lazy-load  src="/static/images/user/dingdan.png"></image>
                                 </view>
                                 <view>拼团订单</view>
                             </view>

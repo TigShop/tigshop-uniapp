@@ -46,7 +46,7 @@
                                         <view class="item-con">
                                             <view class="item-photo">
                                                 <navigator :url="urlFormat(subItem.url)" class="item-image-a"
-                                                    ><image :src="imageFormat(subItem.pic_thumb)" mode="widthFix"
+                                                    ><image lazy-load  :src="imageFormat(subItem.pic_thumb)" mode="widthFix"
                                                 /></navigator>
                                             </view>
                                             <view class="item-info">
@@ -88,7 +88,7 @@
                                     <view class="item-con">
                                         <view class="item-photo">
                                             <navigator :url="urlFormat({ path: 'product', id: item.product_id })" class="item-image-a"
-                                                ><image :src="imageFormat(item.pic_thumb)" mode="widthFix"
+                                                ><image lazy-load  :src="imageFormat(item.pic_thumb)" mode="widthFix"
                                             /></navigator>
                                         </view>
                                         <view class="item-info">

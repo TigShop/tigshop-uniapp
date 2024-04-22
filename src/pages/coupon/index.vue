@@ -24,11 +24,11 @@
                     </view>
                 </view>
                 <view v-if="loadend" class="noMore">没有更多了~</view>
-                <view class="bottomLoading" v-if="bottomLoading"><image class="loading" src="/static/images/common/loading.gif"></image></view>
+                <view class="bottomLoading" v-if="bottomLoading"><image lazy-load  class="loading" src="/static/images/common/loading.gif"></image></view>
             </view>
         </block>
         <view class="empty-box" v-if="!loading && couponList && couponList.length === 0">
-            <view class="pictrue"><image src="/static/images/common/data_empty.png"></image></view>
+            <view class="pictrue"><image lazy-load  src="/static/images/common/data_empty.png"></image></view>
             <view class="txt">暂无优惠券！</view>
         </view>
     </view>

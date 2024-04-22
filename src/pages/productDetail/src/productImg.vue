@@ -5,7 +5,7 @@
             <swiper :indicator-dots="false" :circular="true" interval="3000" duration="500" @change="swiperChange">
                 <block v-for="(item, index) in picList" :key="index">
                     <swiper-item>
-                        <image @click="swiperImagePreview(index)" :src="imageFormat(item.pic_url)" class="slide-image" />
+                        <image lazy-load  @click="swiperImagePreview(index)" :src="imageFormat(item.pic_url)" class="slide-image" />
                     </swiper-item>
                 </block>
             </swiper>
@@ -17,7 +17,7 @@
         <view class="product-bg" v-if="picList.length == 0">
             <swiper :indicator-dots="false" :circular="true" interval="3000" duration="500">
                 <swiper-item>
-                    <image @click="imagePreview(imageFormat(productInfo?.pic_url || ''))" :src="imageFormat(productInfo?.pic_url || '')" class="slide-image" />
+                    <image lazy-load  @click="imagePreview(imageFormat(productInfo?.pic_url || ''))" :src="imageFormat(productInfo?.pic_url || '')" class="slide-image" />
                 </swiper-item>
             </swiper>
         </view>

@@ -45,7 +45,7 @@
                             <view class="item-content" :style="module.goods_padding_format">
                                 <view class="item-con">
                                     <view class="item-photo">
-                                        <navigator :url="goods.url" class="item-image-a"><image :src="goods.bargain_pic" mode="widthFix" /></navigator>
+                                        <navigator :url="goods.url" class="item-image-a"><image lazy-load  :src="goods.bargain_pic" mode="widthFix" /></navigator>
                                     </view>
                                     <view class="item-info">
                                         <block v-if="module.show_name">

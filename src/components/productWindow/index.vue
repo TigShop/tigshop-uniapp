@@ -2,7 +2,7 @@
     <view style="height: 100%">
         <view :class="'product-window ' + (attribute.cartAttr == true ? 'on' : '')">
             <view class="textpic">
-                <view class="pictrue"><image v-if="productSelect.goods_thumb" :src="productSelect.goods_thumb"></image></view>
+                <view class="pictrue"><image lazy-load  v-if="productSelect.goods_thumb" :src="productSelect.goods_thumb"></image></view>
                 <view class="text">
                     <view class="amount">
                         ￥

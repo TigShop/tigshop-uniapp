@@ -45,7 +45,7 @@
                             <view class="item-content" :style="module.goods_padding_format">
                                 <view class="item-con">
                                     <view class="item-photo">
-                                        <navigator :url="goods.url" class="item-image-a"><image :src="goods.pin_img" mode="widthFix" /></navigator>
+                                        <navigator :url="goods.url" class="item-image-a"><image lazy-load  :src="goods.pin_img" mode="widthFix" /></navigator>
                                         <block v-if="module.style == 1 || module.style == 2 || module.style == 5 || module.style == 6">
                                             <block v-if="module.style == 1">
                                                 <view class="cap-pin-goods__tag big">

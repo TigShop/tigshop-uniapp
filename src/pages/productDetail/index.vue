@@ -91,7 +91,7 @@
                         <text class="goods_number">{{ selectNumber }}</text>
                         件
                     </view>
-                    <image class="more-ico" src="/static/images/common/more.png"></image>
+                    <image lazy-load  class="more-ico" src="/static/images/common/more.png"></image>
                 </view>
                 <!-- <view class="detail-li-con" style="padding-top: 15rpx">
                     <view class="title">服务</view>
@@ -104,7 +104,7 @@
                             <block v-if="productInfo.service_list" v-for="(servie, index) in productInfo.service_list" :key="index">
                                 <view class="service-tip-module">
                                     <block v-if="servie.ico_img">
-                                        <image :src="servie.ico_img" class="service-item-icon" mode="widthFix"></image>
+                                        <image lazy-load  :src="servie.ico_img" class="service-item-icon" mode="widthFix"></image>
                                     </block>
                                     <block v-else>
                                         <view class="servie_right"></view>
