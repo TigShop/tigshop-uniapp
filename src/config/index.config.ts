@@ -1,13 +1,13 @@
 const CONFIG: any = {
     // 开发环境配置
     development: {
-        baseUrl: "api/", // 接口请求地址 
-        requestUrlPrefix: 'index/',
+        baseUrl: "api/", // 接口请求地址
+        requestUrlPrefix: "index/"
     },
     // 生产环境配置
     production: {
-        baseUrl: "http://www.tigshop.com/", // 接口请求地址
-        requestUrlPrefix: 'index/',
+        baseUrl: "http://lyecs8.com:7888/", // 接口请求地址
+        requestUrlPrefix: "index/"
     }
 };
 // export default CONFIG[import.meta.env.MODE];
