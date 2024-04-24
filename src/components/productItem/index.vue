@@ -2,7 +2,7 @@
     <view :class="'item-li list-' + masonryListClass">
         <view class="photo">
             <navigator :url="'/pages/goods_details/index?id=' + item.product_id + '&is_exchange=' + item.is_exchange">
-                <image lazy-load  :src="imageFormat(item.pic_thumb)" mode="widthFix"></image>
+                <image lazy-load :src="imageFormat(item.pic_thumb)" mode="widthFix"></image>
 
                 <view v-if="item.product_stock == 0" class="outsale">售罄</view>
             </navigator>
@@ -17,21 +17,18 @@
                 }}</navigator>
             </view>
             <view class="action">
-                <view class="price">
-                    <text>{{ configStore.config.dollar_sign }}</text>
-                    {{ item.product_price ?? 0 }}
+                <view class="pricenum">
+                    <FormatPrice :priceData="item.product_price"></FormatPrice>
                 </view>
-                <view @click.stop="buy" class="buy_btn"><image lazy-load  src="/static/images/common/cart.png" role="img"></image></view>
+
+                <view @click.stop="buy" class="buy_btn"><image lazy-load src="/static/images/common/cart.png" role="img"></image></view>
             </view>
         </view>
     </view>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
-import { useConfigStore } from "@/store/config";
 import { imageFormat } from "@/utils/format";
-const configStore = useConfigStore();
 const props = defineProps({
     item: {
         type: Object,
@@ -44,7 +41,7 @@ const props = defineProps({
 });
 const buy = (e: any) => {};
 </script>
-<style>
+<style lang="scss" scoped>
 .item-li {
     width: 100%;
     margin-bottom: 15rpx;
@@ -100,9 +97,9 @@ const buy = (e: any) => {};
     -moz-box-orient: vertical;
 }
 .item-li .info .action {
-    vertical-align: middle;
-    height: 70rpx;
     padding: 0 16rpx 10rpx;
+    display: flex;
+    justify-content: space-between;
 }
 
 .item-li .info .price {
@@ -151,5 +148,18 @@ const buy = (e: any) => {};
     letter-spacing: 0;
     text-align: center;
     border-radius: 100%;
+}
+
+ .pricenum {
+    font-size: 32rpx;
+    line-height: 56rpx;
+    color: #f23030;
+    min-width: 200rpx;
+    :deep(.util) {
+        font-weight: normal;
+        font-size: 22rpx;
+        position: relative;
+        top: 4rpx;
+    }
 }
 </style>

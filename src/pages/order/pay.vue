@@ -88,7 +88,6 @@
 import navbar from "@/components/navbar/index.vue";
 import { onLoad } from "@dcloudio/uni-app";
 import { reactive, ref } from "vue";
-import { showFailToast, showSuccessToast } from "vant";
 import { orderPayInfo, creatPay } from "@/api/order/pay";
 import type { Order, OfflinePaymentList } from "@/types/order/pay";
 import { useConfigStore } from "@/store/config";
@@ -97,7 +96,7 @@ const parameter = reactive({
     navbar: "1",
     return: "1",
     title: "订单支付",
-    returnUrl: '/pages/order/list'
+    returnUrl: "/pages/order/list"
 });
 const loading = ref(false);
 const paymentList = ref<string[]>([]);
@@ -130,7 +129,11 @@ const loadOrderPayInfo = async () => {
         }
     } catch (error: any) {
         console.error(error.message);
-        showFailToast(error.message);
+        uni.showToast({
+            title: error.message,
+            duration: 1500,
+            icon: 'none'
+        });
         // 跳转用户订单页面
     } finally {
         loading.value = false;
@@ -171,7 +174,11 @@ const handlePay = async () => {
         }
     } catch (error: any) {
         console.error(error);
-        showFailToast(error.message);
+        uni.showToast({
+            title: error.message,
+            duration: 1500,
+            icon: 'none'
+        });
     } finally {
         paymentDisabled.value = false;
     }
@@ -197,13 +204,20 @@ const miniProgramPay = (pay_info: any) => {
             paySign: pay_info.paySign
         },
         success(res) {
-            showSuccessToast("支付成功");
+            uni.showToast({
+                title: "支付成功",
+                duration: 1500
+            });
             setTimeout(function () {
                 // uni.redirectTo()
             }, 1500);
         },
         fail(e) {
-            showFailToast("支付失败");
+            uni.showToast({
+                title: "支付失败",
+                duration: 1500,
+                icon: 'none'
+            });
             setTimeout(() => {
                 console.log("跳转用户订单页面");
                 // uni.redirectTo()

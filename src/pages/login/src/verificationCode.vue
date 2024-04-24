@@ -8,7 +8,6 @@
 <script setup lang="ts">
 import { ref, toRefs, onUnmounted, computed } from "vue";
 import Verify from "@/components/verifition/Verify.vue";
-import { showToast } from "vant";
 const props = defineProps({
     class: String,
     mobile: { type: String, default: "" },
@@ -50,7 +49,10 @@ const handBtn = async () => {
             verify_token: verifyToken.value
         });
         emit("update:verifyTokenData", verifyToken.value);
-        showToast("验证码已发送");
+        uni.showToast({
+            title: "验证码已发送",
+            duration: 1500
+        });
         startCountdown();
     } catch (error: any) {
         emit("mobileErrorCallback", error.message);

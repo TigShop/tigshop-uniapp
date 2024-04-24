@@ -16,26 +16,27 @@
                 <block v-for="(item, index) in cartList" :key="index">
                     <view class="cart_table" id="">
                         <view class="cart_store_title noborder">
-                            <van-checkbox v-model="item.is_checked" @click="onCheckAllItem(index)" checked-color="#ee0a24"></van-checkbox>
+                            <tigCheckbox v-model:checked="item.is_checked" @change="onCheckAllItem(index)" checked-color="#ee0a24"></tigCheckbox>
                             <view class="store_label">{{ item.store_title ? item.store_title : "自营" }}</view>
                         </view>
                         <view class="goods-list-cart">
                             <block v-for="(goods, index) in item.carts" :key="goods.product_id">
                                 <view class="cart_item">
-                                    <van-swipe-cell>
-                                        <view class="cart_list_con">
-                                            <van-checkbox
-                                                class="check-item"
-                                                v-model="goods.is_checked"
-                                                @click="onChangeCheck"
-                                                checked-color="#ee0a24"
-                                            ></van-checkbox>
-                                            <navigator :url="'/pages/productDetail/index?id=' + goods.cart_id" class="photo">
-                                                <image lazy-load  :src="imageFormat(goods.pic_thumb)" />
-                                                <view class="image_mask_sold_out" v-if="goods.storage == 0">
-                                                    <image lazy-load  src="/static/images/common/bg_soldout.png"></image>
-                                                </view>
-                                                <!-- <view
+                                    <uni-swipe-action>
+                                        <uni-swipe-action-item :threshold="0" autoClose>
+                                            <view class="cart_list_con">
+                                                <tigCheckbox
+                                                    class="check-item"
+                                                    v-model:checked="goods.is_checked"
+                                                    @change="onChangeCheck"
+                                                    checked-color="#ee0a24"
+                                                ></tigCheckbox>
+                                                <navigator :url="'/pages/productDetail/index?id=' + goods.cart_id" class="photo">
+                                                    <image lazy-load :src="imageFormat(goods.pic_thumb)" />
+                                                    <view class="image_mask_sold_out" v-if="goods.storage == 0">
+                                                        <image lazy-load src="/static/images/common/bg_soldout.png"></image>
+                                                    </view>
+                                                    <!-- <view
                                                         class="cart-notice-row"
                                                         v-if="goods.storage == 0"
                                                         >无货</view
@@ -53,35 +54,36 @@
                                                         v-if="goods.storage == goods.goods_number"
                                                         >仅剩{{ goods.storage }}件</view
                                                     > -->
-                                            </navigator>
-                                            <view class="cart-row">
-                                                <navigator target="_blank" :url="'/pages/productDetail/index?id=' + goods.product_id">
-                                                    <view class="name">
-                                                        {{ goods.product_name }}
-                                                    </view>
                                                 </navigator>
-                                                <view class="extra_info" v-if="goods.goods_attr">
-                                                    <text v-if="goods.goods_attr" class="desc">{{ goods.goods_attr }}</text>
-                                                </view>
-                                                <view class="cart-price">
-                                                    <view class="price-one">
-                                                        <FormatPrice :priceData="goods.price"></FormatPrice>
+                                                <view class="cart-row">
+                                                    <navigator target="_blank" :url="'/pages/productDetail/index?id=' + goods.product_id">
+                                                        <view class="name">
+                                                            {{ goods.product_name }}
+                                                        </view>
+                                                    </navigator>
+                                                    <view class="extra_info" v-if="goods.goods_attr">
+                                                        <text v-if="goods.goods_attr" class="desc">{{ goods.goods_attr }}</text>
                                                     </view>
-                                                    <view class="cart-num-box">
-                                                        <van-stepper v-model="goods.quantity" @change="updateCartItem(goods.cart_id, goods.quantity)" integer />
+                                                    <view class="cart-price">
+                                                        <view class="price-one">
+                                                            <FormatPrice :priceData="goods.price"></FormatPrice>
+                                                        </view>
+                                                        <view class="cart-num-box">
+                                                            <uni-number-box v-model="goods.quantity" @change="updateCartItem(goods.cart_id, goods.quantity)" />
+                                                        </view>
                                                     </view>
                                                 </view>
                                             </view>
-                                        </view>
-                                        <template #right>
-                                            <view class="cart-move-box">
-                                                <view class="btn-collect" @click="handleCollect(goods.cart_id)">
-                                                    <text>移入收藏</text>
+                                            <template #right>
+                                                <view class="cart-move-box">
+                                                    <view class="btn-collect" @click="handleCollect(goods.cart_id)">
+                                                        <text>移入收藏</text>
+                                                    </view>
+                                                    <view class="btn-del" @click="handleDel(goods.cart_id)"><text>删除</text></view>
                                                 </view>
-                                                <view class="btn-del" @click="handleDel(goods.cart_id)"><text>删除</text></view>
-                                            </view>
-                                        </template>
-                                    </van-swipe-cell>
+                                            </template>
+                                        </uni-swipe-action-item>
+                                    </uni-swipe-action>
                                 </view>
                             </block>
                         </view>
@@ -91,7 +93,7 @@
             <view class="checkOutBar" :style="{ bottom: configStore.tabbarHeight }">
                 <view class="bar-check">
                     <view class="checkbox-pad">
-                        <van-checkbox v-model="allChecked" @click="onCheckAll" checked-color="#ee0a24">全选</van-checkbox>
+                        <tigCheckbox v-model:checked="allChecked" @change="onCheckAll"></tigCheckbox>
                     </view>
                 </view>
                 <view class="edit-cart-action" v-if="cartManage">
@@ -112,7 +114,7 @@
                 </view>
             </view>
             <view class="noCart" v-if="cartList.length === 0">
-                <view class="pictrue"><image lazy-load  src="/static/images/cart_empty.png"></image></view>
+                <view class="pictrue"><image lazy-load src="/static/images/cart_empty.png"></image></view>
                 <view class="noCart_text">购物车内还没商品哦，去逛逛吧~</view>
             </view>
 
@@ -129,7 +131,7 @@
             </view>
             <view style="height: 100rpx"></view>
         </view>
-        <tabbar :currentActive="2"></tabbar>
+        <tabbar></tabbar>
     </view>
 </template>
 
@@ -137,11 +139,11 @@
 import { ref } from "vue";
 import navbar from "@/components/navbar/index.vue";
 import masonry from "@/components/masonry/masonry.vue";
+import tigCheckbox from "@/components/tigCheckbox/index.vue";
 import { onLoad, onPullDownRefresh, onShow } from "@dcloudio/uni-app";
 import { useConfigStore } from "@/store/config";
 import { getCart, updateCartItemData, updateCartCheck, clearCart, removeCartItemData } from "@/api/cart/cart";
 import type { updateCartCheckitem } from "@/types/cart/cart";
-import { showConfirmDialog } from "vant";
 import { imageFormat } from "@/utils/format";
 const configStore = useConfigStore();
 const parameter = ref({
@@ -255,39 +257,40 @@ const cartManageFun = () => {
     cartManage.value = !cartManage.value;
 };
 const checkClearCart = () => {
-    showConfirmDialog({
+    uni.showModal({
         title: "提示",
-        message: "确认要清空购物车吗？"
-    })
-        .then(async () => {
-            // return
-            const result = await clearCart();
-
-            getCartList();
-        })
-        .catch(() => {});
-};
-const delCartItem = () => {
-    showConfirmDialog({
-        title: "提示",
-        message: "确认要删除指定的商品吗？"
-    })
-        .then(async () => {
-            const cartIds: number[] = [];
-            cartList.value.forEach((item: any) => {
-                item.carts.forEach((product: any) => {
-                    if (product.is_checked) cartIds.push(product.cart_id);
-                });
-            });
-            try {
-                const result = await removeCartItemData({ cart_ids: cartIds });
+        content: "确认要清空购物车吗？",
+        success: async (res) => {
+            if (res.confirm) {
+                const result = await clearCart();
 
                 getCartList();
-            } catch (error) {
-                console.error(error);
             }
-        })
-        .catch(() => {});
+        }
+    });
+};
+const delCartItem = () => {
+    uni.showModal({
+        title: "提示",
+        content: "确认要删除指定的商品吗？",
+        success: async (res) => {
+            if (res.confirm) {
+                const cartIds: number[] = [];
+                cartList.value.forEach((item: any) => {
+                    item.carts.forEach((product: any) => {
+                        if (product.is_checked) cartIds.push(product.cart_id);
+                    });
+                });
+                try {
+                    const result = await removeCartItemData({ cart_ids: cartIds });
+
+                    getCartList();
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        }
+    });
 };
 const handleCheckout = () => {
     if (total.value.checked_count == 0) return;
@@ -299,7 +302,21 @@ const handleCollect = (cartId: number) => {
     console.log("收藏", cartId);
 };
 const handleDel = (cartId: number) => {
-    console.log("删除", cartId);
+    uni.showModal({
+        title: "提示",
+        content: "确认要删除该的商品吗？",
+        success: async (res) => {
+            if (res.confirm) {
+                try {
+                    const result = await removeCartItemData({ cart_ids: [cartId] });
+
+                    getCartList();
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        }
+    });
 };
 
 onShow(() => {
@@ -596,13 +613,7 @@ onShow(() => {
     padding: 0 8rpx;
     vertical-align: middle;
 }
-.cart_list_wrap .cart_store_title .check-item {
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 84rpx;
-}
+
 .cart_list_wrap .cart_store_title .store_label {
     display: inline-block;
     font-weight: bold;
@@ -639,6 +650,7 @@ onShow(() => {
     height: 150rpx;
     width: 150rpx;
     margin-bottom: 20rpx;
+    margin-left: 10rpx;
 }
 .goods-list-cart .cart_item .photo image {
     width: 150rpx;

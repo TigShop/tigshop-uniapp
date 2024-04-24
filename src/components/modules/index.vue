@@ -161,7 +161,7 @@ const imgUrl = ref();
 const currentColor = ref("");
 
 const onChangeCatNav = async (data: CatNav) => {
-    const { category_id, child_cat_info, brand_info, img_url, cat_color } = data;
+    const { category_id, cat_color } = data;
     if (category_id === cat_id.value) return;
     cat_id.value = category_id;
     loading.value = true;
@@ -170,9 +170,6 @@ const onChangeCatNav = async (data: CatNav) => {
     if (cat_id.value > 0) {
         showCatNav.value = 1;
         loading.value = false;
-        childCatInfo.value = child_cat_info;
-        brandInfo.value = brand_info;
-        imgUrl.value = img_url;
         currentColor.value = cat_color;
     }
     emit("load-goods-list", category_id);

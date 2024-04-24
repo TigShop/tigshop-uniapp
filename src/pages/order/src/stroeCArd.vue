@@ -10,7 +10,7 @@
                 <view class="store-card-item-content">
                     <navigator :url="'/pages/productDetail/index?id=' + subItem.product_id" class="flex">
                         <view class="store-card-item-content-left">
-                            <image lazy-load  :src="imageFormat(subItem.pic_thumb)"></image>
+                            <image lazy-load :src="imageFormat(subItem.pic_thumb)"></image>
                         </view>
                         <view class="store-card-item-content-right">
                             <view class="store-card-item-content-right-title">{{ subItem.product_name }}</view>
@@ -24,7 +24,7 @@
                 <view class="payment-title">配送方式</view>
                 <view class="payment-content" @click="handleDistributionMode(index)">
                     <view class="payment-text">{{ getShippingTypeText(index) }}</view>
-                    <image lazy-load  class="more-ico" src="/static/images/common/more.png"></image>
+                    <image lazy-load class="more-ico" src="/static/images/common/more.png"></image>
                 </view>
             </view>
         </view>
@@ -58,7 +58,6 @@ import { computed, ref, watch } from "vue";
 import type { CartList, StoreShippingType } from "@/types/order/check";
 import { imageFormat } from "@/utils/format";
 import popup from "@/components/popup/index.vue";
-import { showFailToast } from "vant";
 
 interface Props {
     cartList: CartList[];
@@ -78,7 +77,11 @@ const getShippingTypeText = (index: number) => {
 
 const handleDistributionMode = (index: number) => {
     if (props.shippingTypeList[index].length === 0) {
-        return showFailToast("该收货地址不支持配送");
+        return uni.showToast({
+            title: "该收货地址不支持配送",
+            duration: 1500,
+            icon: "none"
+        });
     }
     show.value = true;
     shippingTypeIndex.value = index;

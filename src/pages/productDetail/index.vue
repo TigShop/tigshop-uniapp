@@ -91,7 +91,7 @@
                         <text class="goods_number">{{ selectNumber }}</text>
                         件
                     </view>
-                    <image lazy-load  class="more-ico" src="/static/images/common/more.png"></image>
+                    <image lazy-load class="more-ico" src="/static/images/common/more.png"></image>
                 </view>
                 <!-- <view class="detail-li-con" style="padding-top: 15rpx">
                     <view class="title">服务</view>
@@ -164,6 +164,7 @@ const handleShare = () => {};
 const isCollect = ref(false);
 const handleCollect = () => {};
 const goodsService = () => {};
+const selecAttr = () => {};
 </script>
 <style lang="scss" scoped>
 .market-price {

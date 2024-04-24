@@ -42,6 +42,9 @@
 
                         <scroll-view class="item-cat_nav-con" :scroll-left="navLeft" :scroll-with-animation="true" :scroll-x="true">
                             <view class="cat-nav-list">
+                                <view :class="'nav-item ' + (current_cat_nav_id === 0 ? 'current' : '')" data-id="0">
+                                    <view class="tit" :style="'color: ' + module.text_color + ';'" @click="changeCatNav" data-id="0" data-cat_id="0">推荐</view>
+                                </view>
                                 <view
                                     :class="'nav-item ' + (current_cat_nav_id == nav.mobile_cat_nav_id ? 'current' : '')"
                                     @click="changeCatNav"
@@ -112,7 +115,7 @@ const handleSkip = () => {
 };
 
 const changeCatNav = (e: any) => {
-    const { id, category_id, cat_color, index, allData } = e.currentTarget.dataset;
+    const { id, category_id, cat_color, index } = e.currentTarget.dataset;
     let nav_left = e.currentTarget.offsetLeft - 10;
     nav_left = nav_left - nav_left / (index + 1) + 10;
     catColor.value = cat_color ?? "";
@@ -127,9 +130,6 @@ const changeCatNav = (e: any) => {
         category_id,
         show_cat_nav: showCatNav.value,
         cat_color: catColor.value,
-        brand_info: allData.brand_info,
-        img_url: allData.img_url,
-        child_cat_info: allData.child_cat_info
     });
 };
 </script>

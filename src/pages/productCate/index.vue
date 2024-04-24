@@ -202,7 +202,7 @@
                 </view>
             </block>
         </view>
-        <tabbar :currentActive="1"></tabbar>
+        <tabbar></tabbar>
     </view>
 </template>
 

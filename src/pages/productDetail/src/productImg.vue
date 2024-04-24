@@ -5,7 +5,7 @@
             <swiper :indicator-dots="false" :circular="true" interval="3000" duration="500" @change="swiperChange">
                 <block v-for="(item, index) in picList" :key="index">
                     <swiper-item>
-                        <image lazy-load  @click="swiperImagePreview(index)" :src="imageFormat(item.pic_url)" class="slide-image" />
+                        <image lazy-load @click="swiperImagePreview(index)" :src="imageFormat(item.pic_url)" class="slide-image" />
                     </swiper-item>
                 </block>
             </swiper>
@@ -17,7 +17,12 @@
         <view class="product-bg" v-if="picList.length == 0">
             <swiper :indicator-dots="false" :circular="true" interval="3000" duration="500">
                 <swiper-item>
-                    <image lazy-load  @click="imagePreview(imageFormat(productInfo?.pic_url || ''))" :src="imageFormat(productInfo?.pic_url || '')" class="slide-image" />
+                    <image
+                        lazy-load
+                        @click="imagePreview(imageFormat(productInfo?.pic_url || ''))"
+                        :src="imageFormat(productInfo?.pic_url || '')"
+                        class="slide-image"
+                    />
                 </swiper-item>
             </swiper>
         </view>
@@ -26,8 +31,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
-import { showImagePreview } from "vant";
+import { ref } from "vue";
 import { imageFormat } from "@/utils/format";
 import type { PicList, Item } from "@/types/product/product";
 interface Iprops {
@@ -41,15 +45,15 @@ const swiperChange = (e: any) => {
 };
 const swiperImagePreview = (index: number) => {
     const images = props.picList.map((item) => imageFormat(item.pic_url));
-    showImagePreview({
-        images,
-        startPosition: index
+    uni.previewImage({
+        current: images[index],
+        urls: images
     });
 };
 
 const imagePreview = (url: string) => {
-    showImagePreview({
-        images: [url]
+    uni.previewImage({
+        urls:  [url]
     });
 };
 </script>

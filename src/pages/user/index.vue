@@ -169,7 +169,7 @@
                 </view>
             </view>
         </view>
-        <tabbar :currentActive="3"></tabbar>
+        <tabbar></tabbar>
     </view>
 </template>
 

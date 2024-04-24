@@ -2,23 +2,17 @@ import { useConfigStore } from "@/store/config";
 
 // 格式化图片地址
 export function imageFormat(path: string) {
-    const config = useConfigStore();
+    const configStore = useConfigStore();
     if (!path) {
         return "";
     }
-    if (Number(config.get("storage_type")) > 0) {
-        // return path.includes("http") !== false ? path : config.get("storage_url") + path;
-        // return path.includes("http") !== false ? path : "https://oss.lyecs.com/" + path;
-        return path.includes("http") !== false ? path : "http://lyecs2.oss-cn-zhangjiakou.aliyuncs.com/" + path;
-    } else {
-        // return path.includes("http") !== false ? path : "https://oss.lyecs.com/" + path;
-        return path.includes("http") !== false ? path : "http://lyecs2.oss-cn-zhangjiakou.aliyuncs.com/" + path;
-    }
+
+    // return path.includes("http") !== false ? path : "http://lyecs2.oss-cn-zhangjiakou.aliyuncs.com/" + path;
+    return path.includes("http") !== false ? path : configStore.storageUrl + path;
 }
 // 格式化金额
 export function priceFormat(price: number | undefined, currencyFormat = true) {
-    const config = useConfigStore();
-    const currency = config.get("dollar_sign") ?? "¥";
+    const currency = "¥";
     price = price ? price : 0;
     const num = typeof price === "string" ? parseFloat(price) : price;
     if (currencyFormat) {

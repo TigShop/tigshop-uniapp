@@ -21,12 +21,8 @@
             <view class="bottomLoading" v-if="bottomLoading && categoryId > 0"><image lazy-load  class="loading" src="/static/images/common/loading.gif"></image></view>
             <view v-if="loadend && categoryId > 0" class="noMore">没有更多了~</view>
         </view>
-        <tabbar :currentActive="0"></tabbar>
-        <van-back-top right="6vw" bottom="6vh">
-            <block #default>
-                <image lazy-load  src="/src/static//images//common/scroll-to-top.png" mode="widthFix"></image>
-            </block>
-        </van-back-top>
+        <tabbar></tabbar>
+        <tigBackTop v-if="scrollTop > 100"></tigBackTop>
     </view>
 </template>
 
@@ -37,6 +33,7 @@ import { getIndex } from "@/api/home/home";
 import modules from "@/components/modules/index.vue";
 import navbar from "@/components/navbar/index.vue";
 import masonry from "@/components/masonry/masonry.vue";
+import tigBackTop from '@/components/tigBackTop/index.vue'
 import { getCateProduct } from "@/api/home/home";
 import type { GetProductFilterResult } from "@/types/home/home";
 import { useConfigStore } from "@/store/config";
@@ -583,8 +580,6 @@ page {
     width: 20%;
     flex-shrink: 0;
 }
-.index .overseas_cat swiper {
-}
 .index .overseas_cat .item .goods-item {
     padding: 10rpx 0;
 }
@@ -651,8 +646,7 @@ page {
     display: inline-block;
     padding-left: 20rpx;
 }
-.index .recommend {
-}
+
 
 /* 优惠券模块 */
 .index .tmcscoupon {
@@ -1664,8 +1658,6 @@ page {
 .live-list-warp {
     padding: 30rpx 30rpx 50rpx 30rpx;
     overflow: hidden;
-}
-.live-list {
 }
 .live-list .live-item {
     background: #fff;

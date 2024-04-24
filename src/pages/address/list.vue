@@ -50,7 +50,6 @@ import { getAddressList, delAddress, selectedAddress } from "@/api/user/address"
 import { reactive, ref } from "vue";
 import { onLoad, onReachBottom, onShow, onUnload } from "@dcloudio/uni-app";
 import type { AddressFilterResult } from "@/types/user/address";
-import { showConfirmDialog } from "vant";
 const pages = getCurrentPages();
 const parameter = reactive({
     navbar: "1",
@@ -87,13 +86,15 @@ onLoad(() => {
 });
 
 const handleDel = (id: number) => {
-    showConfirmDialog({
-        title: "确定删除吗？"
-    })
-        .then(async () => {
-            __delAddress(id);
-        })
-        .catch(() => {});
+    uni.showModal({
+        title: "提示",
+        content: "确定删除吗？",
+        success: async (res) => {
+            if (res.confirm) {
+                __delAddress(id);
+            }
+        }
+    });
 };
 const __delAddress = async (id: number) => {
     try {

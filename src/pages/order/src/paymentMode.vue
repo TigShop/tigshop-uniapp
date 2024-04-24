@@ -4,7 +4,7 @@
             <view class="payment-title">支付方式</view>
             <view class="payment-content" @click="handlePaymentMode">
                 <view class="payment-text">{{ paymentTypeText }}</view>
-                <image lazy-load  class="more-ico" src="/static/images/common/more.png"></image>
+                <image lazy-load class="more-ico" src="/static/images/common/more.png"></image>
             </view>
         </view>
 
@@ -38,7 +38,6 @@
 import popup from "@/components/popup/index.vue";
 import { ref, watch } from "vue";
 import type { AvailablePaymentType } from "@/types/order/check";
-import { showFailToast } from "vant";
 interface Props {
     availablePaymentType: AvailablePaymentType[];
     payTypeId: number;
@@ -54,7 +53,11 @@ watch(
             emit("update:payTypeId", 0);
             currentIndex.value = null;
             paymentTypeText.value = data[0].disabled_desc;
-            showFailToast(data[0].disabled_desc);
+            uni.showToast({
+                title: data[0].disabled_desc,
+                duration: 1500,
+                icon: "none"
+            });
         }
     }
 );
@@ -82,10 +85,14 @@ const handlecConfirm = () => {
     if (currentIndex.value !== null && currentIndex.value !== undefined && currentIndex.value >= 0) {
         paymentTypeText.value = props.availablePaymentType[currentIndex.value].type_name;
         emit("update:payTypeId", props.availablePaymentType[currentIndex.value].type_id);
-        emit("change")
+        emit("change");
         show.value = false;
     } else {
-        showFailToast("请选择付款方式");
+        uni.showToast({
+            title: "请选择付款方式",
+            duration: 1500,
+            icon: "none"
+        });
     }
 };
 </script>

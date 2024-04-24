@@ -66,7 +66,6 @@ import { computed, reactive, ref, watch } from "vue";
 import { getOrderCheckData, updateOrderCheckData, orderSubmit } from "@/api/order/check";
 import { onShow } from "@dcloudio/uni-app";
 import type { AddressList, AvailablePaymentType, CartList, Total, StoreShippingType } from "@/types/order/check";
-import { Toast, showFailToast } from "vant";
 const parameter = reactive({
     navbar: "1",
     return: "1",
@@ -148,7 +147,10 @@ const updateOrderCheck = async (type = "") => {
         shippingTypeList.value = result.store_shipping_type;
         return result;
     } catch (error: any) {
-        Toast(error.message);
+        uni.showToast({
+            title: error.message,
+            duration: 1500
+        });
     } finally {
         uni.hideLoading();
     }
@@ -165,8 +167,18 @@ const getBalanceStatus = (status: boolean) => {
 const submitLoading = ref(false);
 const submit = async () => {
     if (submitLoading.value) return;
-    if (formState.pay_type_id === 0) return showFailToast("请选择付款方式");
-    if (formState.shipping_type.length === 0) return showFailToast("请选择配送方式");
+    if (formState.pay_type_id === 0) {
+        return uni.showToast({
+            title: "请选择付款方式",
+            icon: "none"
+        });
+    }
+    if (formState.shipping_type.length === 0) {
+        return uni.showToast({
+            title: "请选择配送方式",
+            icon: "none"
+        });
+    }
     submitLoading.value = true;
     try {
         const result = await orderSubmit(formState);

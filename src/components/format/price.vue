@@ -1,5 +1,5 @@
 <template>
-    <view class="price align-bottom">
+    <view class="price-content align-bottom">
         <view
             v-if="props.currencyFormat"
             :class="{ 'align-top': currencyAlignment === 'top', 'align-bottom': currencyAlignment === 'bottom' }"
@@ -67,7 +67,7 @@ const price = computed(() => {
 });
 </script>
 <style lang="scss" scoped>
-.price {
+.price-content {
     display: inline-flex;
     align-items: stretch; /* 子元素高度拉伸以匹配最高的子元素 */
 

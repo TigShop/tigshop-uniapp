@@ -4,7 +4,7 @@
             <view class="coupon-title">优惠券</view>
             <view class="coupon-content" @click="handleCoupon">
                 <view class="coupon-text">优惠￥{{ couponAmount }}</view>
-                <image lazy-load  class="more-ico" src="/static/images/common/more.png"></image>
+                <image lazy-load class="more-ico" src="/static/images/common/more.png"></image>
             </view>
         </view>
         <view class="points">
@@ -18,7 +18,7 @@
                 <view class="points-text" v-if="pointsAmount > 0">共抵扣：￥{{ pointsAmount }}</view>
                 <view class="points-text" v-else-if="points === 0 && pointsAmount === 0">暂无可用积分</view>
                 <view class="points-text" v-else>最多可用{{ availablePoints }} 积分</view>
-                <image lazy-load  class="more-ico" src="/static/images/common/more.png"></image>
+                <image lazy-load class="more-ico" src="/static/images/common/more.png"></image>
             </view>
         </view>
         <view class="balance">
@@ -118,7 +118,6 @@ import type { CouponList, EnableCoupon } from "@/types/order/check";
 import { computed, ref, watch } from "vue";
 import { priceFormat } from "@/utils/format";
 import popup from "@/components/popup/index.vue";
-import { showFailToast } from "vant";
 interface Props {
     couponList: CouponList;
     useCouponIds: number[];
@@ -185,7 +184,11 @@ const validatorMessage = (val: any) => {
 
 const handlePoints = () => {
     if (props.points === 0 && props.pointsAmount === 0) {
-        return showFailToast("暂无可用积分");
+        return uni.showToast({
+            title: "暂无可用积分",
+            duration: 1500,
+            icon: "none"
+        });
     }
     showPoints.value = true;
 };

@@ -119,8 +119,6 @@ import navbar from "@/components/navbar/index.vue";
 import Verify from "@/components/verifition/Verify.vue";
 import { reactive, ref, computed } from "vue";
 import { sendMobileCode, userSignin } from "@/api/login/login";
-import { showToast } from "vant";
-import { onLoad } from "@dcloudio/uni-app";
 import { useUserStore } from "@/store/user";
 
 const userStore = useUserStore();
@@ -156,10 +154,21 @@ const mobileCodeInput = (e: any) => {
     mobileCode.value = e.detail.value;
 };
 const mobileErrorCallback = (msg: string) => {
-    showToast(msg);
+    uni.showToast({
+        title: msg,
+        duration: 1500,
+        icon: "none",
+    });
 };
 const mobileLogin = () => {
-    if (!is_checked.value) return showToast("请先同意用户协议");
+    if (!is_checked.value) {
+        return uni.showToast({
+            title: "请先同意用户协议",
+            duration: 1500,
+            icon: "none"
+        });
+    }
+
     signin();
 };
 
@@ -187,8 +196,12 @@ const signin = async () => {
             verify_token: verifyToken.value
         });
         userStore.setToken(result.token);
-        
-        showToast("登入成功");
+
+        uni.showToast({
+            title: "登入成功",
+            duration: 1500,
+            icon: "none"
+        });
         setTimeout(() => {
             if (pages[0].route === "pages/login/index") {
                 uni.reLaunch({
@@ -202,7 +215,10 @@ const signin = async () => {
         if (error.errcode == 1002 && verify.value) {
             verify.value.show();
         } else if (error.errcode > 0) {
-            showToast(error.message);
+            uni.showToast({
+                title: error.message,
+                duration: 1500,
+            });
             mobile.value = "";
             mobileCode.value = "";
             verifyToken.value = "";
@@ -533,5 +549,9 @@ page {
     align-items: center;
     justify-content: center;
     padding: 30rpx;
+}
+
+.my-toast {
+    padding: 20rpx;
 }
 </style>
