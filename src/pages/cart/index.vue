@@ -2,7 +2,7 @@
     <view style="height: 100%">
         <navbar :parameter="parameter"></navbar>
         <view class="cart-box shoppingCart">
-            <view class="top-text" v-if="cartList">
+            <view class="top-text" v-if="cartList.length > 0">
                 <view class="fl">
                     已选商品
                     <text class="num font-color">{{ total.checked_count }}</text>
@@ -12,7 +12,7 @@
                     <text class="manage-btn">{{ !cartManage ? "管理" : "完成" }}</text>
                 </view>
             </view>
-            <view class="cart_list_wrap" v-if="cartList">
+            <view class="cart_list_wrap" v-if="cartList.length > 0">
                 <block v-for="(item, index) in cartList" :key="index">
                     <view class="cart_table" id="">
                         <view class="cart_store_title noborder">
