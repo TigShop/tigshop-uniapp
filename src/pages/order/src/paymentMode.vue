@@ -7,8 +7,7 @@
                 <image lazy-load class="more-ico" src="/static/images/common/more.png"></image>
             </view>
         </view>
-
-        <popup v-model:show="show" title="选择支付方式">
+        <tigpopup v-model:show="show" title="选择支付方式">
             <view class="payment-popup">
                 <view class="payment-btn">
                     <block v-for="(item, index) in availablePaymentType" :key="item.type_id">
@@ -30,12 +29,11 @@
                     <van-button round type="danger" style="width: 100%" @click="handlecConfirm">确定</van-button>
                 </view>
             </view>
-        </popup>
+        </tigpopup>
     </view>
 </template>
 
 <script setup lang="ts">
-import popup from "@/components/popup/index.vue";
 import { ref, watch } from "vue";
 import type { AvailablePaymentType } from "@/types/order/check";
 interface Props {

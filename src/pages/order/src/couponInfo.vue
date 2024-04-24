@@ -32,8 +32,7 @@
                 <van-switch v-model="isBalance" active-color="#ee0a24" inactive-color="#dcdee0" @change="handleBalance" size="40rpx" />
             </view>
         </view>
-
-        <popup v-model:show="show" title="优惠券" height="60%" backgroundColor="#f5f5f5">
+        <tigpopup v-model:show="show" title="优惠券" height="60vh" backgroundColor="#f5f5f5">
             <van-tabs v-model:active="tabsActive" swipeable>
                 <van-tab title="可用优惠券">
                     <view class="coupon-list">
@@ -83,9 +82,9 @@
             <view class="button-position">
                 <van-button round type="danger" style="width: 100%" @click="handlecConfirm">确定</van-button>
             </view>
-        </popup>
+        </tigpopup>
 
-        <popup v-model:show="showPoints" title="积分" backgroundColor="#f5f5f5">
+        <tigpopup v-model:show="showPoints" title="积分" backgroundColor="#f5f5f5">
             <view class="points-popup">
                 <van-form @submit="onSubmit">
                     <van-cell-group inset>
@@ -109,7 +108,7 @@
 
                 <view class="points-popup-text">该订单最多可用{{ points }} 积分<text class="text-clolor">【如何获得积分？】</text></view>
             </view>
-        </popup>
+        </tigpopup>
     </view>
 </template>
 
@@ -117,7 +116,6 @@
 import type { CouponList, EnableCoupon } from "@/types/order/check";
 import { computed, ref, watch } from "vue";
 import { priceFormat } from "@/utils/format";
-import popup from "@/components/popup/index.vue";
 interface Props {
     couponList: CouponList;
     useCouponIds: number[];

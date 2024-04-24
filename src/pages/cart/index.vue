@@ -30,18 +30,24 @@
                                                     v-model:checked="goods.is_checked"
                                                     @change="onChangeCheck"
                                                     checked-color="#ee0a24"
+                                                    :disabled="goods.is_disabled"
                                                 ></tigCheckbox>
                                                 <navigator :url="'/pages/productDetail/index?id=' + goods.cart_id" class="photo">
                                                     <image lazy-load :src="imageFormat(goods.pic_thumb)" />
-                                                    <view class="image_mask_sold_out" v-if="goods.storage == 0">
-                                                        <image lazy-load src="/static/images/common/bg_soldout.png"></image>
+                                                    <view class="image_mask_sold_out" v-if="goods.product_status === 0">
+                                                        <image src="/static/images/common/bg_soldout.png"></image>
                                                     </view>
-                                                    <!-- <view
+                                                    <view
                                                         class="cart-notice-row"
-                                                        v-if="goods.storage == 0"
-                                                        >无货</view
+                                                        v-if="goods.stock === 0"
+                                                        >已售罄</view
                                                     >
                                                     <view
+                                                        class="cart-notice-row"
+                                                        v-if="goods.product_status === 0"
+                                                        >已下架</view
+                                                    >
+                                                    <!-- <view
                                                         class="cart-notice-row"
                                                         v-else-if="
                                                             goods.storage == goods.goods_number
@@ -69,7 +75,7 @@
                                                             <FormatPrice :priceData="goods.price"></FormatPrice>
                                                         </view>
                                                         <view class="cart-num-box">
-                                                            <uni-number-box v-model="goods.quantity" @change="updateCartItem(goods.cart_id, goods.quantity)" />
+                                                            <uni-number-box :disabled="goods.product_status === 0" v-model="goods.quantity" @change="updateCartItem(goods.cart_id, goods.quantity)" />
                                                         </view>
                                                     </view>
                                                 </view>
@@ -90,7 +96,7 @@
                     </view>
                 </block>
             </view>
-            <view class="checkOutBar" :style="{ bottom: configStore.tabbarHeight }">
+            <view v-if="cartList.length > 0" class="checkOutBar" :style="{ bottom: configStore.tabbarHeight }">
                 <view class="bar-check">
                     <view class="checkbox-pad">
                         <tigCheckbox v-model:checked="allChecked" @change="onCheckAll"></tigCheckbox>
