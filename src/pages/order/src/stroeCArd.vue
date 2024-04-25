@@ -46,7 +46,7 @@
                 </view>
 
                 <view class="button-position">
-                    <van-button round type="danger" style="width: 100%" @click="handlecConfirm">确定</van-button>
+                    <button hover-class="base-button-hover" class="base-button" @click="handlecConfirm">确定</button>
                 </view>
             </view>
         </tigpopup>

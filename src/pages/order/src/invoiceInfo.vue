@@ -4,11 +4,10 @@
             <view class="invoice-title">发票</view>
             <view class="invoice-content" @click="handleInvoice">
                 <view class="invoice-text">{{ typeCodeText || "" }}</view>
-                <image lazy-load  class="more-ico" src="/static/images/common/more.png"></image>
+                <image lazy-load class="more-ico" src="/static/images/common/more.png"></image>
             </view>
         </view>
-
-        <popup v-model:show="show" title="发票" height="70%" paddingBottom="50">
+        <tigpopup v-model:show="show" title="发票" height="70vh">
             <view class="invoice-popup-content">
                 <view class="invoice-typemenu">
                     <view class="invoice-typemenu-item" :class="{ active: formState.invoice_type === 1 }" @click="handleInvoiceType(1)">普通发票</view>
@@ -23,119 +22,154 @@
                 </view>
 
                 <view class="invoice-formState">
-                    <van-form @submit="onSubmit">
+                    <uni-forms ref="formRef" :modelValue="formState" :rules="rules" label-width="170rpx">
                         <block v-if="formState.invoice_type === 1">
-                            <van-cell-group inset>
-                                <van-field name="radio" label="发票抬头">
-                                    <template #input>
-                                        <van-radio-group @change="getTitleType" v-model="formState.title_type" direction="horizontal">
-                                            <van-radio checked-color="#ee0a24" :name="1">个人</van-radio>
-                                            <van-radio checked-color="#ee0a24" :name="2">企业</van-radio>
-                                        </van-radio-group>
-                                    </template>
-                                </van-field>
-                                <block v-if="formState.title_type === 1">
-                                    <van-field
+                            <uni-forms-item label="发票抬头" name="name">
+                                <view class="item-layout">
+                                    <radio-group @change="radioChange">
+                                        <radio
+                                            value="1"
+                                            activeBackgroundColor="#ee0a24"
+                                            :checked="formState.title_type == 1"
+                                            style="margin-right: 20rpx; transform: scale(0.9)"
+                                            >个人</radio
+                                        >
+                                        <radio value="2" activeBackgroundColor="#ee0a24" style="transform: scale(0.9)">企业</radio>
+                                    </radio-group>
+                                </view>
+                            </uni-forms-item>
+                            <block v-if="formState.title_type == 1">
+                                <uni-forms-item label="个人名称" name="company_name">
+                                    <uni-easyinput
+                                        primaryColor="rgb(192, 196, 204)"
+                                        :inputBorder="false"
                                         v-model="formState.company_name"
-                                        name="个人名称"
-                                        label="个人名称"
                                         placeholder="请输入个人名称"
-                                        :rules="[{ required: true, message: '个人名称不能为空!' }]"
                                     />
-                                </block>
-                                <block v-else="formState.title_type === 2">
-                                    <van-field
+                                </uni-forms-item>
+                            </block>
+                            <block v-else>
+                                <uni-forms-item label="企业名称" name="company_name">
+                                    <uni-easyinput
+                                        primaryColor="rgb(192, 196, 204)"
+                                        :inputBorder="false"
                                         v-model="formState.company_name"
-                                        name="企业名称"
-                                        label="企业名称"
                                         placeholder="请输入企业名称"
-                                        :rules="[{ required: true, message: '企业名称不能为空!' }]"
                                     />
-                                    <van-field
+                                </uni-forms-item>
+                                <uni-forms-item label="纳税人识号" name="company_code">
+                                    <uni-easyinput
+                                        primaryColor="rgb(192, 196, 204)"
+                                        :inputBorder="false"
                                         v-model="formState.company_code"
-                                        name="纳税人识号"
-                                        label="纳税人识号"
                                         placeholder="请输入纳税人识号"
-                                        :rules="[{ required: true, message: '纳税人识号不能为空!' }]"
                                     />
-                                    <van-field
+                                </uni-forms-item>
+                                <uni-forms-item label="单位地址" name="company_address">
+                                    <uni-easyinput
+                                        primaryColor="rgb(192, 196, 204)"
+                                        :inputBorder="false"
                                         v-model="formState.company_address"
-                                        name="单位地址"
-                                        label="单位地址"
                                         placeholder="请输入单位地址"
-                                        :rules="[{ required: true, message: '单位地址不能为空!' }]"
                                     />
-                                    <van-field
+                                </uni-forms-item>
+                                <uni-forms-item label="单位电话" name="company_phone">
+                                    <uni-easyinput
+                                        primaryColor="rgb(192, 196, 204)"
+                                        :inputBorder="false"
                                         v-model="formState.company_phone"
-                                        name="单位电话"
-                                        label="单位电话"
                                         placeholder="请输入单位电话"
-                                        :rules="[{ required: true, message: '单位电话不能为空!' }]"
                                     />
-                                    <van-field
+                                </uni-forms-item>
+                                <uni-forms-item label="开户银行" name="company_bank">
+                                    <uni-easyinput
+                                        primaryColor="rgb(192, 196, 204)"
+                                        :inputBorder="false"
                                         v-model="formState.company_bank"
-                                        name="开户银行"
-                                        label="开户银行"
                                         placeholder="请输入开户银行"
-                                        :rules="[{ required: true, message: '开户银行不能为空!' }]"
                                     />
-                                    <van-field
+                                </uni-forms-item>
+                                <uni-forms-item label="银行账户" name="company_account">
+                                    <uni-easyinput
+                                        primaryColor="rgb(192, 196, 204)"
+                                        :inputBorder="false"
                                         v-model="formState.company_account"
-                                        name="银行账户"
-                                        label="银行账户"
                                         placeholder="请输入银行账户"
-                                        :rules="[{ required: true, message: '银行账户不能为空!' }]"
                                     />
-                                </block>
-
-                                <van-field
+                                </uni-forms-item>
+                            </block>
+                            <uni-forms-item label="收票人手机" name="mobile">
+                                <uni-easyinput
+                                    primaryColor="rgb(192, 196, 204)"
+                                    :inputBorder="false"
                                     v-model="formState.mobile"
-                                    name="收票人手机"
-                                    label="收票人手机"
                                     placeholder="请输入收票人手机"
-                                    :rules="[{ required: true, message: '手机不能为空!' }]"
                                 />
-                                <van-field v-model="formState.email" name="收票人邮箱" label="收票人邮箱" placeholder="请输入收票人邮箱" />
-                            </van-cell-group>
+                            </uni-forms-item>
+                            <uni-forms-item label="收票人邮箱" name="email">
+                                <uni-easyinput
+                                    primaryColor="rgb(192, 196, 204)"
+                                    :inputBorder="false"
+                                    v-model="formState.email"
+                                    placeholder="请输入收票人邮箱"
+                                />
+                            </uni-forms-item>
                         </block>
                         <block v-else-if="formState.invoice_type === 2 && invoiceStatus">
-                            <van-cell-group inset>
-                                <van-field label="单位名称" :model-value="formState.company_name" readonly></van-field>
-                                <van-field label="纳税人识别码" :model-value="formState.company_code" readonly></van-field>
-                                <van-field label="注册地址" :model-value="formState.company_address" readonly></van-field>
-                                <van-field label="注册电话" :model-value="formState.company_phone" readonly></van-field>
-                                <van-field label="开户银行" :model-value="formState.company_bank" readonly></van-field>
-                                <van-field label="银行账户" :model-value="formState.company_account" readonly></van-field>
-                                <van-field
+                            <uni-forms-item label="单位名称" name="company_name">
+                                <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_name" />
+                            </uni-forms-item>
+                            <uni-forms-item label="纳税人识别码" name="company_code">
+                                <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_code" />
+                            </uni-forms-item>
+                            <uni-forms-item label="注册地址" name="company_address">
+                                <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_address" />
+                            </uni-forms-item>
+                            <uni-forms-item label="注册电话" name="company_phone">
+                                <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_phone" />
+                            </uni-forms-item>
+                            <uni-forms-item label="开户银行" name="company_bank">
+                                <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_bank" />
+                            </uni-forms-item>
+                            <uni-forms-item label="开户银行" name="company_account">
+                                <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_account" />
+                            </uni-forms-item>
+                            <uni-forms-item label="收票人手机" name="mobile">
+                                <uni-easyinput
+                                    primaryColor="rgb(192, 196, 204)"
+                                    :inputBorder="false"
                                     v-model="formState.mobile"
-                                    name="收票人手机"
-                                    label="收票人手机"
                                     placeholder="请输入收票人手机"
-                                    :rules="[{ required: true, message: '手机不能为空!' }]"
                                 />
-                                <van-field v-model="formState.email" name="收票人邮箱" label="收票人邮箱" placeholder="请输入收票人邮箱" />
-                            </van-cell-group>
+                            </uni-forms-item>
+                            <uni-forms-item label="收票人邮箱" name="email">
+                                <uni-easyinput
+                                    primaryColor="rgb(192, 196, 204)"
+                                    :inputBorder="false"
+                                    v-model="formState.email"
+                                    placeholder="请输入收票人邮箱"
+                                />
+                            </uni-forms-item>
                         </block>
                         <block v-else>
                             <view class="notPass">
                                 <view>您还未通过增票资质申请，暂时无法开具增值税专用发票 <text class="notPassBtn" @click="handleApply">去申请</text></view>
                             </view>
                         </block>
-                        <view class="button-position">
-                            <van-button :disabled="formState.invoice_type === 2 && !invoiceStatus" round block type="danger" native-type="submit">
-                                提交
-                            </van-button>
-                        </view>
-                    </van-form>
+                    </uni-forms>
+                </view>
+                <view class="button-position">
+                    <button :disabled="formState.invoice_type === 2 && !invoiceStatus" hover-class="base-button-hover" class="base-button" @click="onSubmit">
+                        提交
+                    </button>
                 </view>
             </view>
-        </popup>
+        </tigpopup>
     </view>
 </template>
 
 <script setup lang="ts">
-import popup from "@/components/popup/index.vue";
-import { computed, onMounted, reactive, ref, watch } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import { getInvoiceStatus, getCheckInvoice } from "@/api/order/invoice";
 
 const props = defineProps({
@@ -155,6 +189,36 @@ const emit = defineEmits(["update:invoiceInfo", "change"]);
 const typeCodeText = computed(() => {
     return props.typeCode === 1 ? "普通发票" : "增值税专用发票";
 });
+
+const rules: any = {
+    company_name: {
+        rules: [{ required: true, errorMessage: "名称不能为空" }]
+    },
+    company_code: {
+        rules: [{ required: true, errorMessage: "纳税人识号不能为空!" }]
+    },
+    company_address: {
+        rules: [{ required: true, errorMessage: "单位地址不能为空!" }]
+    },
+    company_phone: {
+        rules: [{ required: true, errorMessage: "单位电话不能为空!" }]
+    },
+    company_bank: {
+        rules: [{ required: true, errorMessage: "开户银行不能为空!" }]
+    },
+    company_account: {
+        rules: [{ required: true, errorMessage: "银行账户不能为空!" }]
+    },
+    mobile: {
+        rules: [{ required: true, errorMessage: "手机不能为空!" }]
+    },
+};
+
+const radioChange = (evt: any) => {
+    formState.title_type = evt.detail.value;
+    clearFormState();
+    __getCheckInvoice();
+};
 
 const formState = reactive({
     title_type: 1, // 抬头类型
@@ -239,11 +303,6 @@ const handleInvoice = () => {
     show.value = true;
 };
 
-const getTitleType = (val: number) => {
-    clearFormState();
-    __getCheckInvoice();
-};
-
 const handleInvoiceType = (type: number) => {
     formState.invoice_type = type;
     if (type === 2) {
@@ -255,13 +314,23 @@ const handleInvoiceType = (type: number) => {
     __getCheckInvoice();
 };
 
+const formRef = ref();
+
 const onSubmit = () => {
-    emit("update:invoiceInfo", formState);
+    formRef.value
+        .validate()
+        .then((res: any) => {
+            emit("update:invoiceInfo", formState);
+            show.value = false;
+        })
+        .catch((err: any) => {
+            console.log("表单错误信息：", err);
+        });
 };
 
 const handleApply = () => {
-  // uni.navigateTo()
-}
+    // uni.navigateTo()
+};
 </script>
 
 <style lang="scss" scoped>
@@ -320,11 +389,18 @@ const handleApply = () => {
         }
     }
 }
-:deep(.van-cell) {
-    padding-left: 0;
+
+.item-layout {
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
-:deep(.van-cell-group--inset) {
-    margin-left: 10rpx;
+
+:deep(.uni-forms-item) {
+    margin-bottom: 25rpx;
+}
+:deep(.uni-forms-item__error) {
+    top: 80%;
 }
 
 .button-position {
@@ -339,7 +415,7 @@ const handleApply = () => {
 .notPass {
     padding: 20rpx;
     .notPassBtn {
-      color: #ff3700;
+        color: #ff3700;
     }
 }
 </style>

@@ -23,7 +23,7 @@
                 v-model:useCouponIds="formState.use_coupon_ids"
                 v-model:use-point="formState.use_point"
                 @sendBalanceStatus="getBalanceStatus"
-                @change="updateOrderCheck"
+                @change="updateCoupon"
             ></couponInfo>
             <invoiceInfo
                 v-model:invoiceInfoData="formState.invoice_data"
@@ -63,7 +63,7 @@ import couponInfo from "./src/couponInfo.vue";
 import invoiceInfo from "./src/invoiceInfo.vue";
 import totalCard from "./src/totalCard.vue";
 import { computed, reactive, ref, watch } from "vue";
-import { getOrderCheckData, updateOrderCheckData, orderSubmit } from "@/api/order/check";
+import { getOrderCheckData, updateOrderCheckData, orderSubmit, updateCouponData } from "@/api/order/check";
 import { onShow } from "@dcloudio/uni-app";
 import type { AddressList, AvailablePaymentType, CartList, Total, StoreShippingType } from "@/types/order/check";
 const parameter = reactive({
@@ -84,7 +84,8 @@ const formState = reactive({
     invoice_data: {
         title_type: 1,
         invoice_type: 1
-    }
+    },
+    use_default_coupon_ids: 0
 });
 watch(
     formState,
@@ -151,6 +152,22 @@ const updateOrderCheck = async (type = "") => {
             title: error.message,
             duration: 1500
         });
+    } finally {
+        uni.hideLoading();
+    }
+};
+
+const updateCoupon = async () => {
+    uni.showLoading({
+        title: "加载中"
+    });
+    try {
+        formState.use_default_coupon_ids = formState.use_coupon_ids.length === 0 ? 0 : 1;
+        const result = await updateCouponData(formState);
+        couponList.value = result.coupon_list;
+        totalData.value = result.total;
+        return result;
+    } catch (error) {
     } finally {
         uni.hideLoading();
     }

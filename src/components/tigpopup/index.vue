@@ -1,10 +1,21 @@
 <template>
     <view>
-        <uni-popup ref="popup" type="bottom" :safe-area="false" style="z-index: 2000;" border-radius="10px 10px 0 0" @change="getPopupStatus">
-            <view class="popup-container" :class="{ 'popup-center': position === 'center','popup-bottom': position === 'bottom','popup-right': position === 'right','popup-left': position === 'left' }">
-                <view v-if="showClose" class="popup-close" @click="$emit('update:show', false)">
-                    <uni-icons type="close" size="26" style="color: #c8c9cc;"></uni-icons>
-                </view>
+        <uni-popup ref="popup" type="bottom" :safe-area="false" style="z-index: 2000" border-radius="10px 10px 0 0" @change="getPopupStatus">
+            <view
+                class="popup-container"
+                :class="{
+                    'popup-center': position === 'center',
+                    'popup-bottom': position === 'bottom',
+                    'popup-right': position === 'right',
+                    'popup-left': position === 'lefCt'
+                }"
+            >
+                <slot name="popupClose">
+                    <view v-if="showClose" class="popup-close" @click="$emit('update:show', false)">
+                        <uni-icons type="closeempty" size="24" style="color: #c8c9cc"></uni-icons>
+                    </view>
+                </slot>
+
                 <view class="popup-title" v-if="showTitle">{{ title }} </view>
                 <view class="popup-content">
                     <slot></slot>
