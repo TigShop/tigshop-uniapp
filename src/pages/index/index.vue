@@ -154,10 +154,6 @@ page {
     background-color: #f6f6f6 !important;
 }
 
-:deep(.van-back-top) {
-    background-color: #fff;
-}
-
 .line-through {
     text-decoration: line-through;
 }

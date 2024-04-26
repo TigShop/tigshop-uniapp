@@ -5,7 +5,10 @@
             <view class="total-card-item-right"><FormatPrice :priceData="total.product_amount"></FormatPrice></view>
         </view>
         <view class="total-card-item">
-            <view class="total-card-item-left">配送费用<van-icon class="total-card-ico" name="info-o" @click="handleDispatching" /></view>
+            <view class="total-card-item-left"
+                >配送费用
+                <uni-icons class="total-card-ico" color="#999" type="info" size="20" @click="handleDispatching"></uni-icons>
+            </view>
             <view class="total-card-item-right red">+ <FormatPrice :priceData="total.shipping_fee"></FormatPrice></view>
         </view>
         <view class="total-card-item" v-if="total.balance > 0">
@@ -22,7 +25,7 @@
         </view>
         <view class="total-card-tig"> * 该订单完成后，您将获得 <text class="special-text">111111</text> 积分 </view>
 
-        <popup v-model:show="show" title="配送费用" height="40%" width="75%" position="center">
+        <tigpopup v-model:show="show" title="配送费用" height="40vh" width="75vw" position="center">
             <view class="distribution">
                 <view class="distribution-content">
                     <view class="distribution-item" v-for="(item, index) in cartList" :key="index">
@@ -30,14 +33,13 @@
                     </view>
                 </view>
             </view>
-        </popup>
+        </tigpopup>
     </view>
 </template>
 
 <script setup lang="ts">
 import type { CartList } from "@/types/order/check";
-import popup from '@/components/popup/index.vue'
-import { ref } from 'vue';
+import { ref } from "vue";
 const props = defineProps({
     total: {
         type: Object,
@@ -51,7 +53,7 @@ const props = defineProps({
 const show = ref(false);
 const handleDispatching = () => {
     show.value = true;
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -66,6 +68,11 @@ const handleDispatching = () => {
         padding-bottom: 35rpx;
         display: flex;
         justify-content: space-between;
+
+        .total-card-item-left {
+            display: flex;
+            align-items: center;
+        }
 
         .red {
             color: #ff3700;

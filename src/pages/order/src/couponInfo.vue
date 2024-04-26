@@ -29,95 +29,101 @@
                 >
             </view>
             <view>
-                <van-switch v-model="isBalance" active-color="#ee0a24" inactive-color="#dcdee0" @change="handleBalance" size="40rpx" />
+                <switch :checked="isBalance" color="#ee0a24" @change="handleBalance" style="transform:scale(0.8)" />
             </view>
         </view>
+        <tigpopup v-model:show="show" title="优惠券" height="60vh" backgroundColor="#f5f5f5">
+            <view class="coupon-container">
+                <view class="coupon-menu">
+                    <view class="coupon-menu-item" :class="{ active: tabsActive === '可用优惠券' }" @click="handleTabsActive('可用优惠券')">可用优惠券</view>
+                    <view class="coupon-menu-item" :class="{ active: tabsActive === '不可用优惠券' }" @click="handleTabsActive('不可用优惠券')"
+                        >不可用优惠券</view
+                    >
+                </view>
 
-        <popup v-model:show="show" title="优惠券" height="60%" backgroundColor="#f5f5f5">
-            <van-tabs v-model:active="tabsActive" swipeable>
-                <van-tab title="可用优惠券">
-                    <view class="coupon-list">
-                        <view class="bonus-box">
-                            <view :class="'bonus-bd enable_select'" v-for="(item, idx) in couponList.enable_coupons" :key="idx">
-                                <view class="bonus-left">
-                                    <view class="bonus-amount price">
-                                        {{ item.coupon_type === 2 ? `${item.coupon_discount} 折` : priceFormat(Number(item.coupon_money)) }}
+                <view class="coupon-container-content">
+                    <block v-if="tabsActive === '可用优惠券'">
+                        <view class="coupon-list">
+                            <view class="bonus-box">
+                                <view :class="'bonus-bd enable_select'" v-for="(item, idx) in couponListData!.enable_coupons" :key="idx">
+                                    <view class="bonus-left">
+                                        <view class="bonus-amount price">
+                                            {{ item.coupon_type === 2 ? `${item.coupon_discount} 折` : priceFormat(Number(item.coupon_money)) }}
+                                        </view>
+                                        <view class="bonus-desc">{{ item.coupon_name }}</view>
                                     </view>
-                                    <view class="bonus-desc">{{ item.coupon_name }}</view>
-                                </view>
 
-                                <view class="bonus-right">
-                                    <view class="bonus-name">{{ item.is_global ? "[全场券]" : "" }} </view>
-                                    <view class="bonus-time">截止时间 {{ item.end_date }}</view>
-                                </view>
-                                <view class="coupon-btn">
-                                    <van-checkbox v-model="item.selected" checked-color="#ee0a24" @click="handleCheck(item)"></van-checkbox>
+                                    <view class="bonus-right">
+                                        <view class="bonus-name">{{ item.is_global ? "[全场券]" : "" }} </view>
+                                        <view class="bonus-time">截止时间 {{ item.end_date }}</view>
+                                    </view>
+                                    <view class="coupon-btn">
+                                        <tigCheckbox checked-color="#ee0a24" v-model:checked="item.selected" @change="handleCheck(item)"></tigCheckbox>
+                                    </view>
                                 </view>
                             </view>
                         </view>
-                    </view>
-                </van-tab>
-                <van-tab title="不可用优惠券">
-                    <view class="coupon-list">
-                        <view class="bonus-box">
-                            <view :class="'bonus-bd disabled'" v-for="(item, idx) in couponList.disable_coupons" :key="idx">
-                                <view class="bonus-left">
-                                    <view class="bonus-amount price">
-                                        {{ item.coupon_type === 2 ? `${item.coupon_discount} 折` : priceFormat(Number(item.coupon_money)) }}
+                    </block>
+                    <block v-if="tabsActive === '不可用优惠券'">
+                        <view class="coupon-list">
+                            <view class="bonus-box">
+                                <view :class="'bonus-bd disabled'" v-for="(item, idx) in couponListData!.disable_coupons" :key="idx">
+                                    <view class="bonus-left">
+                                        <view class="bonus-amount price">
+                                            {{ item.coupon_type === 2 ? `${item.coupon_discount} 折` : priceFormat(Number(item.coupon_money)) }}
+                                        </view>
+                                        <view class="bonus-desc">{{ item.coupon_name }}</view>
                                     </view>
-                                    <view class="bonus-desc">{{ item.coupon_name }}</view>
-                                </view>
 
-                                <view class="bonus-right">
-                                    <view class="bonus-name">{{ item.is_global ? "[全场券]" : "" }} </view>
-                                    <view class="bonus-time">截止时间 {{ item.end_date }}</view>
-                                </view>
-                                <view class="coupon-btn">
-                                    <van-checkbox disabled v-model="item.selected"></van-checkbox>
+                                    <view class="bonus-right">
+                                        <view class="bonus-name">{{ item.is_global ? "[全场券]" : "" }} </view>
+                                        <view class="bonus-time">截止时间 {{ item.end_date }}</view>
+                                    </view>
+                                    <view class="coupon-btn">
+                                        <tigCheckbox :disabled="true" v-model:checked="item.selected"></tigCheckbox>
+                                    </view>
                                 </view>
                             </view>
                         </view>
-                    </view>
-                </van-tab>
-            </van-tabs>
-            <view class="button-position">
-                <van-button round type="danger" style="width: 100%" @click="handlecConfirm">确定</van-button>
+                    </block>
+                </view>
             </view>
-        </popup>
+            <view class="button-position">
+                <button hover-class="base-button-hover" class="base-button" @click="handlecConfirm">确定</button>
+            </view>
+        </tigpopup>
 
-        <popup v-model:show="showPoints" title="积分" backgroundColor="#f5f5f5">
+        <tigpopup v-model:show="showPoints" title="积分" backgroundColor="#f5f5f5">
             <view class="points-popup">
-                <van-form @submit="onSubmit">
-                    <van-cell-group inset>
-                        <van-field
-                            name="validatorMessage"
-                            :rules="[{ validator: validatorMessage }]"
-                            :border="true"
-                            clickable
-                            colon
-                            v-model="usePoints"
-                            type="digit"
-                            label="使用积分"
-                            clearable
-                        >
-                        </van-field>
-                    </van-cell-group>
-                    <view class="button-position">
-                        <van-button round block type="danger" native-type="submit"> 确定 </van-button>
-                    </view>
-                </van-form>
+                <view class="form-usePoints">
+                    <uni-forms ref="pointsForm" :modelValue="formData">
+                        <uni-forms-item label="使用积分" name="usePoints">
+                            <uni-easyinput
+                                primaryColor="rgb(192, 196, 204)"
+                                :inputBorder="false"
+                                type="number"
+                                v-model="formData.usePoints"
+                                placeholder="请输入积分"
+                            />
+                        </uni-forms-item>
+                    </uni-forms>
+                </view>
+
+                <view class="button-position">
+                    <button hover-class="base-button-hover" class="base-button" @click="onSubmit">确定</button>
+                </view>
 
                 <view class="points-popup-text">该订单最多可用{{ points }} 积分<text class="text-clolor">【如何获得积分？】</text></view>
             </view>
-        </popup>
+        </tigpopup>
     </view>
 </template>
 
 <script lang="ts" setup>
 import type { CouponList, EnableCoupon } from "@/types/order/check";
-import { computed, ref, watch } from "vue";
+import tigCheckbox from "@/components/tigCheckbox/index.vue";
+import { reactive, ref, watch } from "vue";
 import { priceFormat } from "@/utils/format";
-import popup from "@/components/popup/index.vue";
 interface Props {
     couponList: CouponList;
     useCouponIds: number[];
@@ -132,10 +138,14 @@ const props = defineProps<Props>();
 const emit = defineEmits(["update:useCouponIds", "sendBalanceStatus", "change", "update:usePoint"]);
 
 const selectedDatas = ref<EnableCoupon[]>([]);
+const couponListData = ref<CouponList>({
+    enable_coupons: [],
+    disable_coupons: []
+});
 watch(
-    () => props.couponList.enable_coupons,
+    () => couponListData,
     (newVal) => {
-        selectedDatas.value = newVal.filter((item) => item.selected);
+        selectedDatas.value = newVal.value.enable_coupons.filter((item) => item.selected);
     },
     {
         deep: true,
@@ -145,16 +155,20 @@ watch(
 const show = ref(false);
 const isBalance = ref(false); // 是否使余额
 const tabsActive = ref("可用优惠券");
+const handleTabsActive = (str: string) => {
+    console.log("tabsActive", str);
+    tabsActive.value = str;
+};
 const handleCoupon = () => {
+    couponListData.value = JSON.parse(JSON.stringify(props.couponList));
     show.value = true;
-    usePoints.value = props.usePoint;
 };
 const handleCheck = (item: any) => {
     if (item.selected) {
         if (item.is_global) {
             selectedDatas.value.push(item);
         } else {
-            props.couponList.enable_coupons.forEach((data) => {
+            couponListData.value!.enable_coupons.forEach((data) => {
                 if (!data.is_global && data.id !== item.id) {
                     data.selected = false;
                 }
@@ -175,12 +189,32 @@ const handlecConfirm = () => {
 };
 
 const showPoints = ref(false);
-const usePoints = ref(0);
-const validatorMessage = (val: any) => {
-    if (val > props.availablePoints) return "积分不能大于可用积分";
-    if (val < 0) return "积分不能小于0";
-    return true;
+const formData = reactive({
+    usePoints: 0
+});
+const pointsForm = ref();
+const rules = {
+    usePoints: {
+        rules: [
+            { required: true, errorMessage: "请输入积分" },
+            {
+                validateFunction: function (rule: any, value: number, data: any, callback: any) {
+                    if (value > props.availablePoints) callback("积分不能大于可用积分");
+                    if (value < 0) callback("积分不能小于0");
+                    return true;
+                }
+            }
+        ]
+    }
 };
+watch(showPoints, (value) => {
+    if (value) {
+        setTimeout(() => {
+            console.log("pointsForm", pointsForm.value);
+            pointsForm.value.setRules(rules);
+        }, 1000);
+    }
+});
 
 const handlePoints = () => {
     if (props.points === 0 && props.pointsAmount === 0) {
@@ -191,30 +225,35 @@ const handlePoints = () => {
         });
     }
     showPoints.value = true;
+    formData.usePoints = props.usePoint;
 };
 
 const onSubmit = () => {
-    console.log(usePoints.value);
-    if (!usePoints.value) {
-        usePoints.value = 0;
-    }
+    pointsForm.value
+        .validate()
+        .then((res: any) => {
+            console.log(formData.usePoints);
+            if (!formData.usePoints) {
+                formData.usePoints = 0;
+            }
 
-    emit("update:usePoint", Number(usePoints.value));
-    emit("change");
+            emit("update:usePoint", Number(formData.usePoints));
+            emit("change");
 
-    showPoints.value = false;
+            showPoints.value = false;
+        })
+        .catch((err: any) => {
+            console.log("表单错误信息：", err);
+        });
 };
 
-const handleBalance = (value: any) => {
-    emit("sendBalanceStatus", value);
+const handleBalance = () => {
+    isBalance.value = !isBalance.value
+    emit("sendBalanceStatus", isBalance.value);
 };
 </script>
 
 <style lang="scss" scoped>
-:deep(.van-tabs__line) {
-    background: #ee0a24;
-}
-
 .coupon {
     border-radius: 18rpx 18rpx 0 0;
     background: #fff;
@@ -453,6 +492,52 @@ const handleBalance = (value: any) => {
 
         .text-clolor {
             color: #09f;
+        }
+    }
+
+    .form-usePoints {
+        background-color: #fff;
+        margin: 0 20rpx;
+        padding: 0 20rpx;
+    }
+}
+
+.coupon-container {
+    height: 100%;
+    width: 100%;
+    .coupon-menu {
+        height: 100rpx;
+        width: 100%;
+        background-color: #fff;
+        display: flex;
+        align-items: center;
+        box-sizing: content-box;
+        margin-bottom: 15rpx;
+
+        .coupon-menu-item {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28rpx;
+            color: #999;
+            position: relative;
+
+            &.active {
+                color: #333;
+                font-weight: bold;
+
+                &:after {
+                    content: "";
+                    position: absolute;
+                    bottom: 0;
+                    height: 5rpx;
+                    width: 80rpx;
+                    background-color: #e93b3d;
+                    border-radius: 10rpx;
+                }
+            }
         }
     }
 }

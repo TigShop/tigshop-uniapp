@@ -683,3 +683,14 @@ uni-checkbox:not([disabled]) .uni-checkbox-input:hover {
     padding-bottom: env(safe-area-inset-bottom);
     box-sizing: content-box;
 }
+
+/* button 基本样式 */
+.base-button {
+    border-radius: 50rpx;
+    background-color: #ee0a24;
+    color: #fff;
+}
+.base-button-hover {
+    opacity: 0.7;
+}
+

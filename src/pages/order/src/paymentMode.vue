@@ -7,11 +7,10 @@
                 <image lazy-load class="more-ico" src="/static/images/common/more.png"></image>
             </view>
         </view>
-
-        <popup v-model:show="show" title="选择支付方式">
+        <tigpopup v-model:show="show" title="选择支付方式">
             <view class="payment-popup">
                 <view class="payment-btn">
-                    <block v-for="(item, index) in availablePaymentType" :key="item.type_id">
+                    <block v-for="(item, index) in availablePaymentTypeData" :key="item.type_id">
                         <view
                             class="payment-btn-item"
                             :class="{ active: getActive(index, item.type_id), disabled: item.disabled }"
@@ -27,15 +26,14 @@
                 </view>
 
                 <view class="button-position">
-                    <van-button round type="danger" style="width: 100%" @click="handlecConfirm">确定</van-button>
+                    <button hover-class="base-button-hover" class="base-button" @click="handlecConfirm">确定</button>
                 </view>
             </view>
-        </popup>
+        </tigpopup>
     </view>
 </template>
 
 <script setup lang="ts">
-import popup from "@/components/popup/index.vue";
 import { ref, watch } from "vue";
 import type { AvailablePaymentType } from "@/types/order/check";
 interface Props {
@@ -45,10 +43,21 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits(["update:payTypeId", "change"]);
 
+const availablePaymentTypeData = ref<AvailablePaymentType[]>([]);
+const paymentTypeText = ref(props.availablePaymentType[0].type_name);
+const handlePaymentMode = () => {
+    availablePaymentTypeData.value = JSON.parse(JSON.stringify(props.availablePaymentType));
+    show.value = true;
+    const index = props.availablePaymentType.findIndex((item) => item.type_id === props.payTypeId);
+    if (index >= 0) {
+        currentIndex.value = index;
+    }
+};
+
 watch(
-    () => props.availablePaymentType,
+    () => availablePaymentTypeData,
     () => {
-        const data: AvailablePaymentType[] = props.availablePaymentType.filter((item) => item.disabled);
+        const data: AvailablePaymentType[] = availablePaymentTypeData.value.filter((item) => item.disabled);
         if (data[0] && data[0].type_id === props.payTypeId) {
             emit("update:payTypeId", 0);
             currentIndex.value = null;
@@ -61,8 +70,6 @@ watch(
         }
     }
 );
-
-const paymentTypeText = ref(props.availablePaymentType[0].type_name);
 
 const show = ref(false);
 const currentIndex = ref<null | number>();
@@ -77,14 +84,11 @@ const handlePaymentType = (index: number, disabled: boolean) => {
     if (disabled) return;
     currentIndex.value = index;
 };
-const handlePaymentMode = () => {
-    show.value = true;
-};
 
 const handlecConfirm = () => {
     if (currentIndex.value !== null && currentIndex.value !== undefined && currentIndex.value >= 0) {
-        paymentTypeText.value = props.availablePaymentType[currentIndex.value].type_name;
-        emit("update:payTypeId", props.availablePaymentType[currentIndex.value].type_id);
+        paymentTypeText.value = availablePaymentTypeData.value[currentIndex.value].type_name;
+        emit("update:payTypeId", availablePaymentTypeData.value[currentIndex.value].type_id);
         emit("change");
         show.value = false;
     } else {

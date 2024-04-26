@@ -28,7 +28,7 @@
                 </view>
             </view>
         </view>
-        <popup v-model:show="show" title="选择配送方式">
+        <tigpopup v-model:show="show" title="选择配送方式">
             <view class="payment-popup">
                 <view class="payment-btn">
                     <block v-for="(item, index) in shippingTypeList[shippingTypeIndex]" :key="item.shipping_type_id">
@@ -46,10 +46,10 @@
                 </view>
 
                 <view class="button-position">
-                    <van-button round type="danger" style="width: 100%" @click="handlecConfirm">确定</van-button>
+                    <button hover-class="base-button-hover" class="base-button" @click="handlecConfirm">确定</button>
                 </view>
             </view>
-        </popup>
+        </tigpopup>
     </view>
 </template>
 
@@ -57,7 +57,6 @@
 import { computed, ref, watch } from "vue";
 import type { CartList, StoreShippingType } from "@/types/order/check";
 import { imageFormat } from "@/utils/format";
-import popup from "@/components/popup/index.vue";
 
 interface Props {
     cartList: CartList[];

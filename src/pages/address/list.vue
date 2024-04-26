@@ -2,36 +2,43 @@
     <view>
         <navbar :parameter="parameter"></navbar>
         <view class="address-list">
-            <van-radio-group v-model="isChecked">
-                <block v-for="item in addressList" :key="item.address_id">
-                    <van-swipe-cell>
+            <radio-group @change="getCurrentAddress">
+                <uni-swipe-action>
+                    <block v-for="item in addressList" :key="item.address_id">
                         <view class="address-item">
-                            <view class="address-item-content">
-                                <view class="address-item-left flex-center">
-                                    <van-radio :name="item.address_id" checked-color="#ee0a24" @click="getCurrentAddress(item.address_id)"></van-radio>
-                                </view>
-                                <view class="address-item-middle">
-                                    <view class="user-info">
-                                        <view class="name">{{ item.consignee }}</view>
-
-                                        <view class="phone">{{ item.mobile }}</view>
+                            <uni-swipe-action-item :threshold="0" autoClose>
+                                <view class="address-item-content">
+                                    <view class="address-item-left flex-center">
+                                        <radio
+                                            :value="item.address_id"
+                                            activeBackgroundColor="#ee0a24"
+                                            :checked="item.is_selected === 1"
+                                            style="margin-right: 20rpx; transform: scale(0.9)"
+                                        ></radio>
                                     </view>
-                                    <view class="address">{{ item.region_name }} {{ item.address }}</view>
+                                    <view class="address-item-middle">
+                                        <view class="user-info">
+                                            <view class="name">{{ item.consignee }}</view>
+
+                                            <view class="phone">{{ item.mobile }}</view>
+                                        </view>
+                                        <view class="address">{{ item.region_name }} {{ item.address }}</view>
+                                    </view>
+                                    <view class="address-item-right flex-center" @click="handleEdit(item.address_id)">
+                                        <view class="iconfont icon-bianji"> </view>
+                                    </view>
                                 </view>
-                                <view class="address-item-right flex-center" @click="handleEdit(item.address_id)">
-                                    <view class="iconfont icon-bianji"> </view>
-                                </view>
-                            </view>
+                                <template #right>
+                                    <view class="address-del" @click="handleDel(item.address_id)"> 删除 </view>
+                                </template>
+                            </uni-swipe-action-item>
                         </view>
-                        <template #right>
-                            <view class="address-del" @click="handleDel(item.address_id)"> 删除 </view>
-                        </template>
-                    </van-swipe-cell>
-                </block>
-            </van-radio-group>
+                    </block>
+                </uni-swipe-action>
+            </radio-group>
         </view>
         <view class="loading-box" v-if="filterParams.page > 1">
-            <van-loading v-if="loaded" size="36rpx" type="spinner" />
+            <view class="bottomLoading" v-if="loaded"><image lazy-load  class="loading" src="/static/images/common/loading.gif"></image></view>
             <view v-else>没有更多了~</view>
         </view>
         <view style="height: 90rpx"></view>
@@ -63,7 +70,6 @@ const filterParams = reactive({
 });
 const total = ref(0);
 const loaded = ref(false);
-const isChecked = ref<number>();
 const __getAddressList = async () => {
     if (filterParams.page > 1) {
         loaded.value = true;
@@ -72,9 +78,6 @@ const __getAddressList = async () => {
         const result = await getAddressList({ ...filterParams });
         total.value = result.total;
         addressList.value = [...addressList.value, ...result.filter_result];
-        if (addressList.value.length > 0) {
-            isChecked.value = addressList.value.find((item) => item.is_selected === 1)?.address_id;
-        }
     } catch (error) {
         console.error(error);
     } finally {
@@ -122,8 +125,9 @@ const handleAdd = () => {
     });
 };
 
-const getCurrentAddress = (id: number) => {
-    isChecked.value = id;
+const isCheckedId = ref();
+const getCurrentAddress = (e: any) => {
+    isCheckedId.value = e.detail.value;
     __selectedAddress();
 };
 
@@ -132,10 +136,13 @@ const __selectedAddress = async () => {
         title: "切换中"
     });
     try {
-        const result = await selectedAddress({ id: isChecked.value });
-        console.log("pages", pages[0]);
+        const result = await selectedAddress({ id: isCheckedId.value });
+        filterParams.page = 1;
+        addressList.value = [];
         if (pages[0].route === "pages/order/check") {
             uni.navigateBack();
+        } else {
+            __getAddressList();
         }
     } catch (errore) {
         console.error(errore);
@@ -171,12 +178,11 @@ onReachBottom(() => {
     .address-item {
         border-radius: 10rpx;
         background-color: #fff;
-        padding: 20rpx;
         margin-bottom: 20rpx;
 
         .address-item-content {
             display: flex;
-
+            padding: 20rpx;
             .flex-center {
                 display: flex;
                 justify-content: center;
