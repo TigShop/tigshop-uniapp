@@ -1,18 +1,23 @@
 import request from "@/utils/request";
-import type { DataResponse, SearchFilterResult } from "@/types/productCate/productCate";
+import type { SearchFilterResult } from "@/types/productCate/productCate";
 // 获取商品分类
-export const getSearchFilter = (data: {}) => {
+export const getCategoryAll = () => {
     return request<SearchFilterResult>({
-        url: "search/get_filter/",
-        method: "get",
-        params: data
+        url: "/category/all",
+        method: "get"
     });
 };
-// 获取商品分类树
-export const getCategoryTree = (id?: string) => {
-    return request<DataResponse>({
-        url: "category/parent_tree",
+// 获取热门商品
+export const getCategoryHot = () => {
+    return request<SearchFilterResult>({
+        url: "/category/hot",
         method: "get",
-        params: { id }
+    });
+};
+// 获取分类树
+export const getCategoryTree = (id:number) => {
+    return request<SearchFilterResult>({
+        url: "/category/parent_tree",
+        method: "get",
     });
 };

@@ -219,14 +219,57 @@ button::after {
     height: 80rpx;
 }
 
-/* .price {
-    color: #f23030;
-    font-size: 30rpx;
-    font-weight: bold;
+/* //通用flex */
+.flex {
+    display: flex;
 }
-.price text {
-    font-size: 20rpx;
-    margin-right: 5rpx;
-    font-weight: normal;
-} */
+
+.flex-column {
+    flex-direction: column;
+}
+
+.justify-start {
+    justify-content: flex-start;
+}
+
+.justify-end {
+    justify-content: flex-end;
+    
+    
+    
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.justify-around {
+    justify-content: space-around;
+}
+
+.align-start {
+    align-items: flex-start;
+}
+
+.align-end {
+    align-items: flex-end;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.align-baseline {
+    align-items: baseline;
+}
+
+.flex-wrap {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 </style>
