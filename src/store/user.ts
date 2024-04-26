@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import { useConfigStore } from "@/store/config";
-const configStore = useConfigStore();
 
 export const useUserStore = defineStore("user", {
     state: () => ({
@@ -10,6 +9,7 @@ export const useUserStore = defineStore("user", {
     getters: {},
     actions: {
         logout() {
+            const configStore = useConfigStore();
             this.token = "";
             uni.removeStorageSync("token");
             uni.removeStorageSync("currentActiveValue");

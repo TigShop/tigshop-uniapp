@@ -34,7 +34,7 @@
             <block v-else>
                 <div class="image-ad-warp" :style="frameFormat.inner_padding">
                     <div class="image-ad-con">
-                        <template v-if="module.pic_list" v-for="(pic, key) in module.pic_list">
+                        <template v-if="module.pic_list" v-for="(pic, key) in module.pic_list" :key="key">
                             <div class="image-ad-item">
                                 <div class="item-content" :style="format.img_padding">
                                     <div class="item-img-a" :url="pic.pic_link ? pic.pic_link.link : ''">

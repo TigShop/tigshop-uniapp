@@ -38,7 +38,7 @@
             </radio-group>
         </view>
         <view class="loading-box" v-if="filterParams.page > 1">
-            <view class="bottomLoading" v-if="loaded"><image lazy-load  class="loading" src="/static/images/common/loading.gif"></image></view>
+            <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
             <view v-else>没有更多了~</view>
         </view>
         <view style="height: 90rpx"></view>
@@ -108,6 +108,8 @@ const __delAddress = async (id: number) => {
                 icon: "none"
             });
         }
+        filterParams.page = 1;
+        addressList.value = [];
         __getAddressList();
     } catch (error) {
         console.error(error);

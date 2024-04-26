@@ -36,18 +36,7 @@
                     <FormatPrice :priceData="totalData?.unpaid_amount"></FormatPrice>
                 </view>
                 <view>
-                    <van-button
-                        :loading="submitLoading"
-                        loading-type="spinner"
-                        round
-                        block
-                        type="danger"
-                        size="normal"
-                        style="width: 260rpx; height: 70rpx"
-                        @click="submit"
-                    >
-                        提交
-                    </van-button>
+                    <button :loading="submitLoading" class="submit-btn-content" @click="submit">提交</button>
                 </view>
             </view>
         </view>
@@ -240,6 +229,18 @@ onShow(() => {
             padding-bottom: 5rpx;
             font-weight: normal;
         }
+    }
+
+    .submit-btn-content {
+        width: 260rpx;
+        height: 70rpx;
+        background-color: #ee0a24;
+        color: #fff;
+        border-radius: 40rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24rpx;
     }
 }
 </style>

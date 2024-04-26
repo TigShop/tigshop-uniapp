@@ -66,18 +66,9 @@
                                 ></view>
                             </view>
                         </block>
-                        <van-button
-                            :loading="loginLoading"
-                            loading-type="spinner"
-                            round
-                            :disabled="isloginDisabled"
-                            @click="mobileLogin"
-                            class="btn2-css3 submit_btn"
-                            type="danger"
-                            >确 认</van-button
-                        >
+                        <button :loading="loginLoading" @click="mobileLogin" class="btn2-css3 submit_btn" :disabled="isloginDisabled">确 认</button>
                         <view class="rule-text">
-                            <van-checkbox v-model="is_checked" icon-size="32rpx" checked-color="#ee0a24"></van-checkbox>
+                            <tigCheckbox v-model:checked="is_checked" checked-color="#ee0a24"></tigCheckbox>
                             <view class="rule-xieyi">
                                 <text>登录即为同意</text>
                                 <text class="red" @chick="showAgreement">《商城用户服务协议》</text>
@@ -98,11 +89,11 @@
                     <text class="line2 line"></text>
                 </view>
                 <view class="quick-type-box">
-                    <view class="quick-type" @click="handleLoginType" v-if="loginType === 'mobile'">
+                    <view class="quick-type" @click="handleLoginType" v-if="loginType === 'password'">
                         <view class="go-link icon-mobile"></view>
                         <view class="text">手机号登录</view>
                     </view>
-                    <view class="quick-type" @click="handleLoginType" v-if="loginType === 'password'">
+                    <view class="quick-type" @click="handleLoginType" v-if="loginType === 'mobile'">
                         <view class="go-link icon-userlogin"></view>
                         <view class="text">账号登入</view>
                     </view>
@@ -117,6 +108,7 @@
 import verificationCode from "./src/verificationCode.vue";
 import navbar from "@/components/navbar/index.vue";
 import Verify from "@/components/verifition/Verify.vue";
+import tigCheckbox from "@/components/tigCheckbox/index.vue";
 import { reactive, ref, computed } from "vue";
 import { sendMobileCode, userSignin } from "@/api/login/login";
 import { useUserStore } from "@/store/user";
@@ -157,7 +149,7 @@ const mobileErrorCallback = (msg: string) => {
     uni.showToast({
         title: msg,
         duration: 1500,
-        icon: "none",
+        icon: "none"
     });
 };
 const mobileLogin = () => {
@@ -217,7 +209,7 @@ const signin = async () => {
         } else if (error.errcode > 0) {
             uni.showToast({
                 title: error.message,
-                duration: 1500,
+                duration: 1500
             });
             mobile.value = "";
             mobileCode.value = "";
@@ -469,7 +461,7 @@ page {
 .rule-text {
     font-size: 23rpx;
     color: #999;
-    margin-top: 20rpx;
+    margin-top: 30rpx;
     display: flex;
     align-items: center;
 }
@@ -553,5 +545,11 @@ page {
 
 .my-toast {
     padding: 20rpx;
+}
+
+:deep(.uni-checkbox-wrapper) {
+    transform: scale(0.9);
+    margin: 0;
+    padding: 0;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
     <view>
-        <van-button @click.stop="handBtn" type="default" round :disabled="countdown <= 0">{{ btnText }}</van-button>
+        <button @click="handBtn" class="btn-verify">{{ btnText }}</button>
         <Verify ref="verify" mode="pop" captchaType="blockPuzzle" :imgSize="{ width: '310px', height: '155px' }" @okCallback="okCallback"></Verify>
     </view>
 </template>
@@ -22,7 +22,7 @@ const btnText = computed(() => {
     if (countdown.value === 61) {
         return "获取验证码";
     } else if (countdown.value > 0) {
-        return countdown.value + "秒后重发";
+        return countdown.value + "秒后可重发";
     }
 });
 const countdown = ref(61);
@@ -94,7 +94,13 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
-:deep(.van-button__text) {
-    font-size: 26rpx;
+:deep(.btn-verify) {
+    font-size: 24rpx;
+    border-radius: 30rpx;
+    background-color: #fff;
+    color: #333;
+    border: 1rpx solid #333;
+    min-width: 200rpx;
+    padding: 0 5rpx;
 }
 </style>

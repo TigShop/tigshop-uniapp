@@ -1,6 +1,6 @@
 <template>
     <view>
-        <uni-popup ref="popup" type="bottom" :safe-area="false" style="z-index: 2000" border-radius="10px 10px 0 0" @change="getPopupStatus">
+        <uni-popup ref="popup" type="bottom" :safe-area="true" style="z-index: 2000" @change="getPopupStatus">
             <view
                 class="popup-container"
                 :class="{
@@ -61,6 +61,10 @@ const props = defineProps({
     position: {
         type: String,
         default: "bottom"
+    },
+    paddingBottom:{
+        type: String,
+        default: "220rpx"
     }
 });
 const emit = defineEmits(["update:show"]);
@@ -88,6 +92,7 @@ const getPopupStatus = (e: any) => {
     position: relative;
     background-color: v-bind("props.backgroundColor");
     overflow: hidden;
+    padding-bottom: v-bind("props.paddingBottom");
     .popup-close {
         position: absolute;
         top: 26rpx;
@@ -129,6 +134,6 @@ const getPopupStatus = (e: any) => {
     top: 123rpx;
     overflow: hidden;
     overflow-y: auto;
-    height: calc(100% - 123px);
+    height: 100%;
 }
 </style>

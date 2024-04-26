@@ -3,11 +3,11 @@
         <view class="preview-box" v-if="configStore.previewId > 0">
             <view class="container">预览：&emsp;<text>移动端</text></view>
         </view>
-        <view v-if="configStore.previewId > 0" style="padding: 58rpx;"></view>
+        <view v-if="configStore.previewId > 0" style="padding: 58rpx"></view>
         <navbar :parameter="parameter" :logoUrl="logoUrl || ''" v-if="showCatNav == 0"></navbar>
         <view>
             <view class="index_empty" v-if="loading">
-                <image lazy-load  src="/static/images/common/index_empty.png" mode="widthFix"></image>
+                <image lazy-load src="/static/images/common/index_empty.png" mode="widthFix"></image>
             </view>
             <view class="index" v-else>
                 <view class="decorate-page-window">
@@ -18,7 +18,9 @@
             <view class="goods-container" v-if="categoryId > 0">
                 <masonry :commodityList="commodityList"></masonry>
             </view>
-            <view class="bottomLoading" v-if="bottomLoading && categoryId > 0"><image lazy-load  class="loading" src="/static/images/common/loading.gif"></image></view>
+            <view class="bottomLoading" v-if="bottomLoading && categoryId > 0"
+                ><image lazy-load class="loading" src="/static/images/common/loading.gif"></image
+            ></view>
             <view v-if="loadend && categoryId > 0" class="noMore">没有更多了~</view>
         </view>
         <tabbar></tabbar>
@@ -30,15 +32,18 @@
 import { ref } from "vue";
 import { onLoad, onReachBottom, onPageScroll, onHide, onShow, onPullDownRefresh } from "@dcloudio/uni-app";
 import { getIndex } from "@/api/home/home";
+import { getMobileNav } from "@/api/tabbar";
 import modules from "@/components/modules/index.vue";
 import navbar from "@/components/navbar/index.vue";
 import masonry from "@/components/masonry/masonry.vue";
-import tigBackTop from '@/components/tigBackTop/index.vue'
+import tigBackTop from "@/components/tigBackTop/index.vue";
 import { getCateProduct } from "@/api/home/home";
 import type { GetProductFilterResult } from "@/types/home/home";
 import { useConfigStore } from "@/store/config";
 
-const configStore = useConfigStore()
+
+const configStore = useConfigStore();
+
 
 const showCatNav = ref(0);
 const parameter = ref({
@@ -101,7 +106,20 @@ const getIndexData = async () => {
     }
 };
 
+const __getMobileNav = async () => {
+        try {
+            const result = await getMobileNav();
+            console.log("tabbarList", result);
+        } catch (err) {
+            console.log("tabbarList", err);
+        }
+};
+
 onLoad((options: any) => {
+    
+    __getMobileNav()
+    const getWindowInfo = uni.getWindowInfo();
+    console.log("getWindowInfo", getWindowInfo);
     if (options && options.preview_id) {
         configStore.previewId = options.preview_id;
     }
@@ -642,7 +660,6 @@ page {
     display: inline-block;
     padding-left: 20rpx;
 }
-
 
 /* 优惠券模块 */
 .index .tmcscoupon {

@@ -39,7 +39,7 @@
                                 </view>
                             </uni-forms-item>
                             <block v-if="formState.title_type == 1">
-                                <uni-forms-item label="个人名称" name="company_name">
+                                <uni-forms-item label="个人名称" name="company_name" :rules="[{'required': true,errorMessage: '个人名称不能为空'}]">
                                     <uni-easyinput
                                         primaryColor="rgb(192, 196, 204)"
                                         :inputBorder="false"
@@ -49,7 +49,7 @@
                                 </uni-forms-item>
                             </block>
                             <block v-else>
-                                <uni-forms-item label="企业名称" name="company_name">
+                                <uni-forms-item label="企业名称" name="company_name" :rules="[{'required': true,errorMessage: '企业名称不能为空'}]" >
                                     <uni-easyinput
                                         primaryColor="rgb(192, 196, 204)"
                                         :inputBorder="false"
@@ -191,9 +191,9 @@ const typeCodeText = computed(() => {
 });
 
 const rules: any = {
-    company_name: {
-        rules: [{ required: true, errorMessage: "名称不能为空" }]
-    },
+    // company_name: {
+    //     rules: [{ required: true, errorMessage: "名称不能为空" }]
+    // },
     company_code: {
         rules: [{ required: true, errorMessage: "纳税人识号不能为空!" }]
     },
@@ -397,12 +397,18 @@ const handleApply = () => {
 }
 
 :deep(.uni-forms-item) {
-    margin-bottom: 25rpx;
+    margin-bottom: 30rpx;
 }
 :deep(.uni-forms-item__error) {
-    top: 80%;
+    top: 90%;
+    left: 18rpx
 }
-
+:deep(.uni-easyinput__placeholder-class) {
+    font-size: 26rpx;
+}
+:deep(.uni-forms-item__label) {
+    font-size: 26rpx;
+}
 .button-position {
     position: fixed;
     bottom: 30rpx;

@@ -1,4 +1,4 @@
-@import "https://at.alicdn.com/t/c/font_4483982_yjn36f1byz.css";
+/* @import "https://at.alicdn.com/t/c/font_4483982_yjn36f1byz.css"; */
 page {
     font-family: "PingFang SC", miui, system-ui, -apple-system, BlinkMacSystemFont, Helvetica Neue, Helvetica, sans-serif;
 }
@@ -693,4 +693,15 @@ uni-checkbox:not([disabled]) .uni-checkbox-input:hover {
 .base-button-hover {
     opacity: 0.7;
 }
-
+.button-position {
+    position: fixed;
+    bottom: 30rpx;
+    left: 0;
+    right: 0;
+    padding: 0 30rpx;
+    /* 兼容 iOS */
+    padding-bottom: constant(safe-area-inset-bottom);
+    /* 兼容 iOS >= 11.2 */
+    padding-bottom: env(safe-area-inset-bottom);
+    box-sizing: content-box;
+}

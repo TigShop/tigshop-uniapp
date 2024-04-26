@@ -9,7 +9,7 @@ export default defineConfig({
         host: "0.0.0.0",
         proxy: {
             "/api": {
-                target: "http://www.tigshop.com",
+                target: "http://www.tigshop.com", 
                 // target: "http://192.168.5.106:82",
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/api/, "")
@@ -20,7 +20,7 @@ export default defineConfig({
         minify: "terser",
         terserOptions: {
             compress: {
-                drop_console: true
+                drop_console: false
             }
         }
     }

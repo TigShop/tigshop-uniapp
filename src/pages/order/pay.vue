@@ -17,42 +17,47 @@
             <block v-if="paymentList?.length > 1">
                 <view class="pay-list">
                     <radio-group class="radio-group" @change="paymentChange">
-                        <van-radio-group v-model="paymentType">
-                            <block v-for="(payment, idx) in paymentList" :key="idx">
-                                <view class="item">
-                                    <view class="payment-info">
-                                        <view class="payment-info-text">
-                                            {{ paymentText[payment] }}
-                                        </view>
-
-                                        <image
-                                            v-if="payment !== 'offline'"
-                                            class="payment-info-img"
-                                            :src="'/src/static/images/payment/pay_' + payment + '.png'"
-                                        ></image>
+                        <block v-for="(payment, idx) in paymentList" :key="idx">
+                            <view class="item">
+                                <view class="payment-info">
+                                    <view class="payment-info-text">
+                                        {{ paymentText[payment] }}
                                     </view>
-                                    <van-radio :name="payment" checked-color="#ee0a24"> </van-radio>
+
+                                    <image
+                                        v-if="payment !== 'offline'"
+                                        class="payment-info-img"
+                                        :src="'/src/static/images/payment/pay_' + payment + '.png'"
+                                    ></image>
                                 </view>
-                            </block>
-                        </van-radio-group>
+                                <radio
+                                    :value="payment"
+                                    activeBackgroundColor="#ee0a24"
+                                    :checked="payment === paymentType"
+                                    style="margin-right: 20rpx; transform: scale(0.9)"
+                                ></radio>
+                            </view>
+                        </block>
                     </radio-group>
                 </view>
             </block>
 
             <block v-if="paymentType === 'offline'">
                 <view class="offline-warp">
-                    <van-tabs v-model:active="activeName" swipeable>
-                        <van-tab title="银行汇款">
-                            <view class="offline-content">
-                                <rich-text :nodes="offline_payment_list?.offline_pay_bank"></rich-text>
-                            </view>
-                        </van-tab>
-                        <van-tab title="企业汇款">
-                            <view class="offline-content">
-                                <rich-text :nodes="offline_payment_list?.offline_pay_company"></rich-text>
-                            </view>
-                        </van-tab>
-                    </van-tabs>
+                    <view class="offline-menu">
+                        <view class="offline-menu-item" :class="{ active: activeName === '银行汇款' }" @click="handleTabsActive('银行汇款')">可用优惠券</view>
+                        <view class="offline-menu-item" :class="{ active: activeName === '企业汇款' }" @click="handleTabsActive('企业汇款')">不可用优惠券</view>
+                    </view>
+                    <block v-if="activeName === '银行汇款'">
+                        <view class="offline-content">
+                            <rich-text :nodes="offline_payment_list?.offline_pay_bank"></rich-text>
+                        </view>
+                    </block>
+                    <block v-if="activeName === '企业汇款'">
+                        <view class="offline-content">
+                            <rich-text :nodes="offline_payment_list?.offline_pay_company"></rich-text>
+                        </view>
+                    </block>
                 </view>
             </block>
             <view class="other-info">
@@ -70,12 +75,8 @@
                     <text>{{ order.add_time }}</text>
                 </view>
             </view>
-            <view class="pay-btn-warp x_bottom_fix">
-                <view class="pay-btn">
-                    <van-button :disabled="paymentDisabled" round block type="danger" size="normal" style="height: 100%" @click="handlePay">
-                        立即支付
-                    </van-button>
-                </view>
+            <view class="button-position">
+                <button :disabled="paymentDisabled" hover-class="base-button-hover" class="base-button" @click="handlePay">立即支付</button>
             </view>
         </view>
         <!-- #ifdef H5 -->
@@ -98,6 +99,11 @@ const parameter = reactive({
     title: "订单支付",
     returnUrl: "/pages/order/list"
 });
+const paymentText = {
+    wechat: "微信支付",
+    alipay: "支付宝支付",
+    offline: "线下支付"
+};
 const loading = ref(false);
 const paymentList = ref<string[]>([]);
 const paymentDisabled = ref(false);
@@ -114,6 +120,10 @@ onLoad((options) => {
         loadOrderPayInfo();
     }
 });
+
+const handleTabsActive = (str: string) => {
+    activeName.value = str;
+};
 
 const loadOrderPayInfo = async () => {
     loading.value = true;
@@ -132,7 +142,7 @@ const loadOrderPayInfo = async () => {
         uni.showToast({
             title: error.message,
             duration: 1500,
-            icon: 'none'
+            icon: "none"
         });
         // 跳转用户订单页面
     } finally {
@@ -140,7 +150,9 @@ const loadOrderPayInfo = async () => {
     }
 };
 
-const paymentChange = () => {};
+const paymentChange = (e: any) => {
+    paymentType.value = e.detail.value;
+};
 const handlePay = async () => {
     paymentDisabled.value = true;
 
@@ -177,7 +189,7 @@ const handlePay = async () => {
         uni.showToast({
             title: error.message,
             duration: 1500,
-            icon: 'none'
+            icon: "none"
         });
     } finally {
         paymentDisabled.value = false;
@@ -216,7 +228,7 @@ const miniProgramPay = (pay_info: any) => {
             uni.showToast({
                 title: "支付失败",
                 duration: 1500,
-                icon: 'none'
+                icon: "none"
             });
             setTimeout(() => {
                 console.log("跳转用户订单页面");
@@ -245,9 +257,6 @@ const miniProgramPay = (pay_info: any) => {
 </script>
 
 <style lang="scss" scoped>
-:deep(.van-tabs__line) {
-    background: #ee0a24;
-}
 .order-pay-warp {
     padding-bottom: 100rpx;
 }
@@ -258,9 +267,6 @@ const miniProgramPay = (pay_info: any) => {
     border-radius: 0 0 18rpx 18rpx;
 }
 .order_infos .order_amount {
-    color: #777;
-}
-.order_infos .price {
     font-size: 46rpx;
     color: #f23030;
     font-weight: bold;
@@ -270,14 +276,6 @@ const miniProgramPay = (pay_info: any) => {
         position: relative;
         top: -5rpx;
     }
-}
-.order_infos .order_sn {
-    color: #888;
-    font-size: 24rpx;
-    padding-top: 20rpx;
-}
-.order_infos .order_sn text {
-    color: #333;
 }
 
 .pay-list {
@@ -305,7 +303,7 @@ const miniProgramPay = (pay_info: any) => {
         align-items: center;
 
         .payment-info-text {
-            min-width: 110rpx;
+            min-width: 145rpx;
         }
 
         .payment-info-img {
@@ -357,6 +355,42 @@ const miniProgramPay = (pay_info: any) => {
     background-color: #fff;
     margin: 20rpx 0 0;
     overflow: hidden;
+
+    .offline-menu {
+        height: 100rpx;
+        width: 100%;
+        background-color: #fff;
+        display: flex;
+        align-items: center;
+        box-sizing: content-box;
+        margin-bottom: 15rpx;
+
+        .offline-menu-item {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28rpx;
+            color: #999;
+            position: relative;
+
+            &.active {
+                color: #333;
+                font-weight: bold;
+
+                &:after {
+                    content: "";
+                    position: absolute;
+                    bottom: 0;
+                    height: 5rpx;
+                    width: 80rpx;
+                    background-color: #e93b3d;
+                    border-radius: 10rpx;
+                }
+            }
+        }
+    }
 }
 .offline-content {
     padding: 20rpx;

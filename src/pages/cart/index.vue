@@ -96,7 +96,7 @@
                     </view>
                 </block>
             </view>
-            <view v-if="cartList.length > 0" class="checkOutBar" :style="{ bottom: configStore.tabbarHeight }">
+            <view v-if="cartList.length > 0" class="checkOutBar" :style="{ bottom: tabbarStore.tabbarHeight }">
                 <view class="bar-check">
                     <view class="checkbox-pad">
                         <tigCheckbox v-model:checked="allChecked" @change="onCheckAll"></tigCheckbox>
@@ -147,11 +147,11 @@ import navbar from "@/components/navbar/index.vue";
 import masonry from "@/components/masonry/masonry.vue";
 import tigCheckbox from "@/components/tigCheckbox/index.vue";
 import { onLoad, onPullDownRefresh, onShow } from "@dcloudio/uni-app";
-import { useConfigStore } from "@/store/config";
+import { usetabbarStore } from "@/store/tabbar";
 import { getCart, updateCartItemData, updateCartCheck, clearCart, removeCartItemData } from "@/api/cart/cart";
 import type { updateCartCheckitem } from "@/types/cart/cart";
 import { imageFormat } from "@/utils/format";
-const configStore = useConfigStore();
+const tabbarStore = usetabbarStore();
 const parameter = ref({
     navbar: "1",
     return: "0",

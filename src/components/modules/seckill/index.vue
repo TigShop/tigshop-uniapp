@@ -44,14 +44,11 @@
                                 <view class="item-con">
                                     <view class="item-photo">
                                         <navigator :url="''" class="item-image-a">
-                                            <van-image :src="imageFormat(item.pic_thumb)">
-                                                <template v-slot:error>加载失败</template>
-                                            </van-image>
-                                            <!-- <image lazy-load  :src="imageFormat(item.pic_thumb)" mode="widthFix" /> -->
+                                            <image lazy-load  :src="imageFormat(item.pic_thumb)" mode="widthFix" />
                                         </navigator>
                                         <view :class="'cap-seckill-goods__tag ' + className">
                                             <text class="cap-seckill-goods__tag-title" v-if="module?.style === 1"> 秒杀 </text>
-                                            <van-count-down title="" format="HH:mm:ss" :time="time" />
+                                            <uni-countdown color="#fff"  splitorColor="#fff" :show-day="false" :hour="1" :minute="2" :second="3" />
                                         </view>
                                     </view>
                                     <view class="item-info">
@@ -168,12 +165,6 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    :deep(.van-count-down) {
-        color: #fff;
-        font-weight: 700;
-        font-size: 20rpx;
-    }
-
     &.flex-end {
         justify-content: flex-end;
     }
