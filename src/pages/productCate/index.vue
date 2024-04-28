@@ -11,7 +11,7 @@
                             <view class="txt"> 点击搜索商品信息 </view>
                         </view>
                     </view>
-                    <view class="aside" :style="'top:' + navH + 'rpx;margin-top:98rpx'">
+                    <view class="aside" :style="'top:' + navH + 'rpx;margin-top:98rpx;padding-bottom:' + tabbarStore.tabbarHeight">
                         <view :class="'item acea-row row-center-wrapper ' + (cat_id == 0 ? 'on' : '')" data-cat_id="0" @click="changeCat(0)"
                             ><text>推荐</text></view
                         >
@@ -82,6 +82,7 @@
                 </view>
             </block>
         </view>
+        <view :style="{ height: tabbarStore.tabbarHeight }"></view>
         <tabbar></tabbar>
     </view>
 </template>
@@ -91,9 +92,12 @@ import navbar from "@/components/navbar/index.vue";
 import { ref } from "vue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import { useConfigStore } from "@/store/config";
+import { usetabbarStore } from "@/store/tabbar";
+
 import { imageFormat, priceFormat } from "@/utils/format";
 import { getCategoryAll, getCategoryHot } from "@/api/productCate/productCate";
 import type { filterSeleted } from "@/types/productCate/productCate";
+const tabbarStore = usetabbarStore();
 const configStore = useConfigStore();
 
 const productList = ref<any>([]);

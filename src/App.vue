@@ -2,15 +2,15 @@
 import { getCurrentInstance } from "vue";
 import { onLaunch, onShow, onExit } from "@dcloudio/uni-app";
 import { useConfigStore } from "@/store/config";
-import { usetabbarStore} from '@/store/tabbar'
+import { usetabbarStore } from "@/store/tabbar";
 const configStore = useConfigStore();
-const tabbarStore = usetabbarStore()
+const tabbarStore = usetabbarStore();
 onLaunch(() => {
     // const instance = getCurrentInstance();
     // const query = uni.createSelectorQuery().in(instance)
     configStore.getNavHeight();
     configStore.setXClientType();
-    tabbarStore.getTabbarList()
+    tabbarStore.getTabbarList();
 });
 onShow(() => {
     uni.hideTabBar();
@@ -239,11 +239,7 @@ button::after {
 
 .justify-end {
     justify-content: flex-end;
-    
-    
-    
 }
-
 .justify-center {
     justify-content: center;
 }
@@ -277,4 +273,10 @@ button::after {
     flex-wrap: wrap;
 }
 
+/* 触底加载 */
+.loading-box {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 30rpx;
+}
 </style>

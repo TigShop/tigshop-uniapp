@@ -1,8 +1,6 @@
 <template>
     <view style="height: 100%; padding-bottom: 20rpx">
         <navbar :parameter="parameter"></navbar>
-        <view class="page-loading" v-if="loading && !loadend"><view class="ico"></view></view>
-
         <block v-if="!loading && couponList && couponList.length">
             <view class="tmcscoupon-list">
                 <view class="tmcscoupon-item-1" v-for="(item, index) in couponList" :key="index">
@@ -10,8 +8,9 @@
                         <view class="tmcscoupon-item_m" @click="handleDetail(item.coupon_id)">
                             <view class="tmcscoupon-item_m-info">
                                 <view class="price">
-                                    {{ priceFormat(Number(item.coupon_money)) }}
-                                    <text>{{ item.coupon_name }}</text>
+                                    <!-- {{ priceFormat(Number(item.coupon_money)) }} -->
+                                    <FormatPrice :priceData="item.coupon_money"></FormatPrice>
+                                    <text class="tmcscoupon-name">{{ item.coupon_name }}</text>
                                 </view>
                             </view>
                             <view class="tmcscoupon-item_m-rule">{{ item.coupon_desc }}</view>
@@ -23,12 +22,14 @@
                         </view>
                     </view>
                 </view>
-                <view v-if="loadend" class="noMore">没有更多了~</view>
-                <view class="bottomLoading" v-if="bottomLoading"><image lazy-load  class="loading" src="/static/images/common/loading.gif"></image></view>
+                <view class="loading-box" v-if="params.page > 1">
+                    <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
+                    <view v-else>没有更多了~</view>
+                </view>
             </view>
         </block>
         <view class="empty-box" v-if="!loading && couponList && couponList.length === 0">
-            <view class="pictrue"><image lazy-load  src="/static/images/common/data_empty.png"></image></view>
+            <view class="pictrue"><image lazy-load src="/static/images/common/data_empty.png"></image></view>
             <view class="txt">暂无优惠券！</view>
         </view>
     </view>
@@ -57,25 +58,21 @@ const params = reactive<CouponFilterParams>({
 });
 const couponList = ref<CouponFilterResult[]>([]);
 const loading = ref(false);
-const loadend = ref(false);
-const bottomLoading = ref(false);
+const loaded = ref(false);
 const __getCouponList = async () => {
-    if (couponList.value.length === 0) {
-        loading.value = true;
-    } else {
-        bottomLoading.value = true;
-    }
-
+   
+    uni.showLoading({
+        title: "加载中..."
+    });
     try {
         const result = await getCouponList(params);
-        if (result.filter_result.length === 0) return (loadend.value = true);
+        if (result.filter_result.length === 0) return (loaded.value = true);
         couponList.value = [...couponList.value, ...result.filter_result];
-        loadend.value = false;
+
     } catch (error) {
         console.error(error);
     } finally {
-        loading.value = false;
-        bottomLoading.value = false;
+        uni.hideLoading();
     }
 };
 const handleDetail = (id: number) => {};
@@ -85,21 +82,30 @@ onLoad((options) => {
     __getCouponList();
 });
 onReachBottom(() => {
-    if (!loading.value && !loadend.value && !loadend.value) {
-        params.page++;
-        __getCouponList();
-    }
+    // if (!loading.value && !loaded.value && !loaded.value) {
+    //     params.page++;
+    //     __getCouponList();
+    // }
 });
 </script>
 
-<style>
+<style lang="scss" scoped>
 /* 优惠券 */
-.price text {
-    font-size: 28rpx;
+.price {
+    .tmcscoupon-name {
+        font-size: 26rpx;
+        padding-left: 20rpx;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        display: inline-block;
+        width: 280rpx;
+    }
 }
 .price {
-    font-size: 50rpx;
+    font-size: 48rpx;
     color: #666;
+    display: flex;
 }
 
 .tmcscoupon-list .tmcscoupon-item-1 {

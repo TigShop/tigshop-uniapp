@@ -8,3 +8,12 @@ export const getProductDetail = (id: string) => {
         params: { id }
     });
 };
+
+// 添加到购物车
+export const addToCart = (params: { id: number; number: number; sku_id?: number; is_quick?: number }) => {
+    return request({
+        url: "product/add_to_cart/",
+        method: "post",
+        data: params
+    });
+};

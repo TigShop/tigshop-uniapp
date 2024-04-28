@@ -38,16 +38,8 @@
                                                     <view class="image_mask_sold_out" v-if="goods.product_status === 0">
                                                         <image src="/static/images/common/bg_soldout.png"></image>
                                                     </view>
-                                                    <view
-                                                        class="cart-notice-row"
-                                                        v-if="goods.stock === 0"
-                                                        >已售罄</view
-                                                    >
-                                                    <view
-                                                        class="cart-notice-row"
-                                                        v-if="goods.product_status === 0"
-                                                        >已下架</view
-                                                    >
+                                                    <view class="cart-notice-row" v-if="goods.stock === 0">已售罄</view>
+                                                    <view class="cart-notice-row" v-if="goods.product_status === 0">已下架</view>
                                                     <!-- <view
                                                         class="cart-notice-row"
                                                         v-else-if="
@@ -76,7 +68,11 @@
                                                             <FormatPrice :priceData="goods.price"></FormatPrice>
                                                         </view>
                                                         <view class="cart-num-box">
-                                                            <uni-number-box :disabled="goods.product_status === 0" v-model="goods.quantity" @change="updateCartItem(goods.cart_id, goods.quantity)" />
+                                                            <uni-number-box
+                                                                :disabled="goods.product_status === 0"
+                                                                v-model="goods.quantity"
+                                                                @change="updateCartItem(goods.cart_id, goods.quantity)"
+                                                            />
                                                         </view>
                                                     </view>
                                                 </view>
@@ -126,17 +122,21 @@
             </view>
 
             <view class="recommend_wrapper">
-                <view class="title" v-if="loaded">
+                <view class="title" v-if="guessLike.length > 0">
                     <view class="text">
                         <view class="name">猜你喜欢</view>
                         <view class="desc">您还可以逛一逛</view>
                     </view>
                 </view>
                 <view class="recommend">
-                    <masonry :commodityList="guessLike"></masonry>
+                    <masonry :commodityList="guessLike" @callback="getCartList"></masonry>
+                </view>
+                <view class="loading-box" v-if="page > 1">
+                    <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
+                    <view v-else>没有更多了~</view>
                 </view>
             </view>
-            <view style="height: 100rpx"></view>
+            <view :style="{ height: tabbarStore.tabbarHeightNum + 100 + 'rpx' }"></view>
         </view>
         <tabbar></tabbar>
     </view>
@@ -147,9 +147,11 @@ import { ref } from "vue";
 import navbar from "@/components/navbar/index.vue";
 import masonry from "@/components/masonry/masonry.vue";
 import tigCheckbox from "@/components/tigCheckbox/index.vue";
-import { onLoad, onPullDownRefresh, onShow } from "@dcloudio/uni-app";
+import { onLoad, onShow, onReachBottom } from "@dcloudio/uni-app";
 import { usetabbarStore } from "@/store/tabbar";
 import { getCart, updateCartItemData, updateCartCheck, clearCart, removeCartItemData } from "@/api/cart/cart";
+import { getGuessLike } from "@/api/common";
+import type { GuessLikeProductList } from "@/types/common";
 import type { updateCartCheckitem } from "@/types/cart/cart";
 import { imageFormat } from "@/utils/format";
 const tabbarStore = usetabbarStore();
@@ -163,7 +165,6 @@ const cartList = ref<any>([]);
 const total = ref<any>({});
 const loaded = ref(false);
 const cartManage = ref(false);
-const guessLike = ref<any>([]);
 
 const allChecked = ref(false);
 const onCheckAll = () => {
@@ -214,10 +215,9 @@ const updateCheckData = async () => {
         console.error(error);
     }
 };
-
-onPullDownRefresh(() => {});
 onLoad(() => {
     getCartList();
+    __getGuessLike();
 });
 const getCartList = async () => {
     uni.showLoading({
@@ -234,8 +234,31 @@ const getCartList = async () => {
         console.error(error);
     }
     uni.hideLoading();
-    loaded.value = true;
+    
 };
+
+const guessLike = ref<GuessLikeProductList[]>([]);
+const page = ref(0);
+const __getGuessLike = async () => {
+    if(page.value > 1){
+        loaded.value = true;
+    }
+    try {
+        const result = await getGuessLike({ page: page.value });
+        guessLike.value = [...guessLike.value, ...result.product_list];
+    } catch (error) {
+        console.error(error);
+    } finally {
+        loaded.value = false
+    }
+};
+
+onReachBottom(() => {
+    if (page.value < 5) {
+        page.value++;
+        __getGuessLike();
+    }
+});
 
 let delayTimer: number | null = null; // 延时定时器
 const startDelayTimer = (cart_id: number, quantity: number) => {

@@ -1,7 +1,7 @@
 <template>
     <view :class="'item-li list-' + masonryListClass">
         <view class="photo">
-            <navigator :url="'/pages/goods_details/index?id=' + item.product_id + '&is_exchange=' + item.is_exchange">
+            <navigator :url="'/pages/productDetail/index?id=' + item.product_id + '&is_exchange=' + item.is_exchange">
                 <!-- <image lazy-load :src="imageFormat(item.pic_thumb)" mode="widthFix"></image> -->
                 <tigImage v-model:src="item.pic_thumb" mode="widthFix"></tigImage>
 
@@ -10,10 +10,10 @@
         </view>
         <view class="info">
             <view class="detail">
-                <navigator :url="'/pages/goods_details/index?id=' + item.product_id + '&is_exchange=' + item.is_exchange" class="name">{{
+                <navigator :url="'/pages/productDetail/index?id=' + item.product_id + '&is_exchange=' + item.is_exchange" class="name">{{
                     item.product_name
                 }}</navigator>
-                <navigator :url="'/pages/goods_details/index?id=' + item.product_id + '&is_exchange=' + item.is_exchange" class="brief" v-if="item.brief">{{
+                <navigator :url="'/pages/productDetail/index?id=' + item.product_id + '&is_exchange=' + item.is_exchange" class="brief" v-if="item.brief">{{
                     item.brief
                 }}</navigator>
             </view>
@@ -21,15 +21,17 @@
                 <view class="pricenum">
                     <FormatPrice :priceData="item.product_price"></FormatPrice>
                 </view>
-
-                <view @click.stop="buy" class="buy_btn"><image lazy-load src="/static/images/common/cart.png"></image></view>
+                <productBuy :id="item.product_id" :disabled="item.product_stock == 0" @callback="getCallback">
+                    <view class="buy_btn"><image lazy-load src="/static/images/common/cart.png"></image></view>
+                </productBuy>
+                
             </view>
         </view>
     </view>
 </template>
 
 <script lang="ts" setup>
-import { imageFormat } from "@/utils/format";
+import productBuy from '@/components/productBuy/index.vue'
 const props = defineProps({
     item: {
         type: Object,
@@ -40,7 +42,10 @@ const props = defineProps({
         default: ""
     }
 });
-const buy = (e: any) => {};
+const emit = defineEmits(["callback"]);
+const getCallback = () => {
+    emit("callback");
+}
 </script>
 <style lang="scss" scoped>
 .item-li {

@@ -1,18 +1,19 @@
 <template>
     <view class="menu-card">
         <block v-for="(item, index) in commodityList" :key="index">
-            <goods-item :item="item"></goods-item>
+            <goods-item :item="item" @callback="$emit('callback')"></goods-item>
         </block>
     </view>
 </template>
 
 <script lang="ts" setup>
 import goodsItem from "@/components/productItem/index.vue";
-import type { GetProductFilterResult } from "@/types/home";
+import type { GetProductFilterResult } from "@/types/home/home";
 interface Iprops {
     commodityList: GetProductFilterResult[];
 }
 const props = defineProps<Iprops>();
+const emits = defineEmits(["callback"]);
 </script>
 <style>
 .menu-card {
@@ -21,4 +22,3 @@ const props = defineProps<Iprops>();
     grid-gap: 0 15rpx;
 }
 </style>
-@/types/home/home

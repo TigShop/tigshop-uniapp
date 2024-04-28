@@ -11,22 +11,22 @@ const props = defineProps({
         default: "",
         required: true
     },
-    mode:{
-        type:String,
-        default:""
+    mode: {
+        type: String,
+        default: ""
     }
 });
 const emit = defineEmits(["update:src"]);
-const srcData = ref('')
+const srcData = ref("");
 watch(
     () => props.src,
     (newVal) => {
-            if(!newVal) return emit("update:src", "/src/static/images/common/empty-img-bg3.png");
-           if(newVal.includes("/src")){
-               srcData.value = newVal
-           }else{
-               srcData.value = imageFormat(newVal)
-           }
+        if (!newVal) return emit("update:src", "/src/static/images/common/empty-img-bg3.png");
+        if (newVal.includes("/src")) {
+            srcData.value = newVal;
+        } else {
+            srcData.value = imageFormat(newVal);
+        }
     },
     {
         immediate: true
@@ -34,7 +34,7 @@ watch(
 );
 
 const handleError = (e: Event) => {
-    console.log('handleError',e)
+    console.log("handleError", e);
     emit("update:src", "/src/static/images/common/empty-img-bg3.png");
 };
 </script>

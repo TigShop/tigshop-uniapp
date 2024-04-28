@@ -16,7 +16,7 @@ export const usetabbarStore = defineStore("tabbar", {
                 {
                     pagePath: "/pages/index/index",
                     image: "/static/images/common/ico_1.png",
-                    pic_active_thumb: "/static/images/common/ico_1h.png",
+                    activeImage: "/static/images/common/ico_1h.png",
                     text: "首页"
                 },
                 {

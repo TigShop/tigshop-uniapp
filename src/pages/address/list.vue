@@ -259,9 +259,5 @@ onReachBottom(() => {
     }
 }
 
-.loading-box {
-    display: flex;
-    justify-content: center;
-    padding-bottom: 30rpx;
-}
+
 </style>

@@ -35,7 +35,7 @@ export function urlFormat(params: string | { path: string; [key: string]: any })
                 return "/list/?cat=" + params.id;
             case "base":
                 // 基础页面
-                return "/" + params.link;
+                return "/pages/" + params.link;
             case "custom":
                 // 自定义页面
                 return "/" + params.link;
