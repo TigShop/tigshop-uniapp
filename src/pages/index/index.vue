@@ -40,10 +40,7 @@ import tigBackTop from "@/components/tigBackTop/index.vue";
 import { getCateProduct } from "@/api/home/home";
 import type { GetProductFilterResult } from "@/types/home/home";
 import { useConfigStore } from "@/store/config";
-
-
 const configStore = useConfigStore();
-
 
 const showCatNav = ref(0);
 const parameter = ref({
@@ -106,18 +103,7 @@ const getIndexData = async () => {
     }
 };
 
-const __getMobileNav = async () => {
-        try {
-            const result = await getMobileNav();
-            console.log("tabbarList", result);
-        } catch (err) {
-            console.log("tabbarList", err);
-        }
-};
-
 onLoad((options: any) => {
-    
-    __getMobileNav()
     const getWindowInfo = uni.getWindowInfo();
     console.log("getWindowInfo", getWindowInfo);
     if (options && options.preview_id) {

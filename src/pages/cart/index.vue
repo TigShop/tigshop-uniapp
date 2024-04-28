@@ -33,7 +33,8 @@
                                                     :disabled="goods.is_disabled"
                                                 ></tigCheckbox>
                                                 <navigator :url="'/pages/productDetail/index?id=' + goods.cart_id" class="photo">
-                                                    <image lazy-load :src="imageFormat(goods.pic_thumb)" />
+                                                    <!-- <image lazy-load :src="imageFormat(goods.pic_thumb)" /> -->
+                                                    <tigImage v-model:src="goods.pic_thumb"></tigImage>
                                                     <view class="image_mask_sold_out" v-if="goods.product_status === 0">
                                                         <image src="/static/images/common/bg_soldout.png"></image>
                                                     </view>

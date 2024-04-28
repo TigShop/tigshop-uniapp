@@ -49,7 +49,7 @@
             <view class="dOne">
                 <view class="wrap">
                     <view class="bg">
-                        <image lazy-load  :src="module.background.pic_thumb_format" mode="" />
+                        <image lazy-load :src="module.background.pic_thumb_format" mode="" />
                     </view>
                     <view style="z-index: 1">
                         <view class="dOne-title">
@@ -63,9 +63,10 @@
                                 <block v-if="module.goods_list" v-for="(goods, index) in module.goods_list" :key="index">
                                     <view class="goods-li">
                                         <view class="pic">
-                                            <navigator :url="goods.url" class="item-image-a"
-                                                ><image lazy-load  class="img" :src="goods.goods_thumb" mode="widthFix"
-                                            /></navigator>
+                                            <navigator :url="goods.url" class="item-image-a">
+                                                <!-- <image lazy-load class="img" :src="goods.goods_thumb" mode="widthFix" /> -->
+                                                <tigImage v-model:src="goods.goods_thumb" mode="widthFix"></tigImage>
+                                            </navigator>
                                         </view>
                                         <view class="info">
                                             <block v-if="module.show_name">
@@ -121,16 +122,12 @@ const goods = ref({
     market_price: ""
 });
 
-const monitorCurrent = (e: any) => {
+const monitorCurrent = (e: any) => {};
 
-}
-
-const buy = () => {
-    
-}
+const buy = () => {};
 </script>
 <style>
-@import '../../../static/css/modules.css';
+@import "../../../static/css/modules.css";
 
 /*定制模块一*/
 .dOne {

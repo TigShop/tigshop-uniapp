@@ -44,7 +44,8 @@
                                 <view class="item-con">
                                     <view class="item-photo">
                                         <navigator :url="''" class="item-image-a">
-                                            <image lazy-load  :src="imageFormat(item.pic_thumb)" mode="widthFix" />
+                                            <!-- <image lazy-load  :src="imageFormat(item.pic_thumb)" mode="widthFix" /> -->
+                                            <tigImage v-model:src="item.pic_thumb" mode="widthFix"></tigImage>
                                         </navigator>
                                         <view :class="'cap-seckill-goods__tag ' + className">
                                             <text class="cap-seckill-goods__tag-title" v-if="module?.style === 1"> 秒杀 </text>

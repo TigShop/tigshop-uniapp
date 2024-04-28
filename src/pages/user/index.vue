@@ -7,9 +7,7 @@
                 <view class="user_header user_bg_color">
                     <view class="picTxt">
                         <view>
-                            <button open-type="chooseAvatar" class="pictrue pic-btn" @chooseavatar="onChooseAvatar">
-                                <image lazy-load v-if="member.user_photo" :src="member.user_photo"></image>
-                            </button>
+                            <tigImage class="pictrue pic-btn" v-model:src="member.avatar"> </tigImage>
                         </view>
                         <view class="text">
                             <view class="acea-row row-middle">
@@ -180,14 +178,12 @@ import { useUserStore } from "@/store/user";
 import { imageFormat } from "@/utils/format";
 import { ref } from "vue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
-import {getUser} from '@/api/user/user'
-import type { UserItem} from '@/types/user/user'
+import { getUser } from "@/api/user/user";
+import type { UserItem } from "@/types/user/user";
 
 const userStore = useUserStore();
 
-const jumpLogin = ref(false);
 const loading = ref(false);
-const img_domain = ref("");
 const parameter = ref({
     navbar: "1",
     return: "0",
@@ -216,7 +212,8 @@ const guess_like = ref([]);
 const __getUser = async () => {
     try {
         const result = await getUser();
-        userStore.setUserInfo(result.item)
+        member.value = result.item;
+        userStore.setUserInfo(result.item);
     } catch (error) {
         console.error(error);
     }
