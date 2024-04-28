@@ -20,7 +20,6 @@
                 <view class="pricenum">
                     <FormatPrice :priceData="item.product_price"></FormatPrice>
                 </view>
-
                 <view @click.stop="buy" class="buy_btn"><image lazy-load src="/static/images/common/cart.png" role="img"></image></view>
             </view>
         </view>

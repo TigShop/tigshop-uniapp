@@ -16,39 +16,83 @@
                         <text class="iconfont-h5 icon-xiajiantou" :class="{order: item.order === 'desc'}"></text>
                     </view>
                 </view>
-                <view class="item">
+                <view class="item" @click="showDrawer">
                     <text>筛选</text>
                     <text class="iconfont-h5 icon-sanjiaoright"></text>
                 </view>
             </view>
             <view class="tag-row">
-                <view class="tag-list flex align-center">
-                    <view class="tag-item">
-                        <text>配饰 x</text>
+                <view class="tag-list flex-wrap align-center">
+                    <view class="tag-item mr10">
+                        <text>搜索关键词"1"</text>
+                        <uni-icons type="closeempty" size="10"></uni-icons>
                     </view>
-                    <view class="tag-interval">></view>
-                    <view class="tag-item">
-                        <text>帽子 x</text>
+                    <view class="tag-item mr10">
+                        <text>骆驼</text>
+                        <uni-icons type="closeempty" size="10"></uni-icons>
                     </view>
-                    <view class="tag-interval">></view>
+                    <view class="tag-item mr10">
+                        <text>122 - 444</text>
+                        <uni-icons type="closeempty" size="10"></uni-icons>
+                    </view>
                     <view class="tag-item">
-                        <text>小黑伞 x</text>
+                        <text>配饰</text>
+                        <uni-icons type="closeempty" size="10"></uni-icons>
+                    </view>
+                    <view class="tag-interval">
+                        <uni-icons type="right" size="10"></uni-icons>
+                    </view>
+                    <view class="tag-item">
+                        <text>帽子</text>
+                        <uni-icons type="closeempty" size="10"></uni-icons>
+                    </view>
+                    <view class="tag-interval">
+                        <uni-icons type="right" size="10"></uni-icons>
+                    </view>
+                    <view class="tag-item">
+                        <text>小黑伞</text>
+                        <uni-icons type="closeempty" size="10"></uni-icons>
                     </view>
                 </view>
             </view>
+			<!-- 加载商品模块 -->
+		<!-- 	<view class="goods-container" v-if="categoryId > 0">
+			    <masonry :commodityList="commodityList"></masonry>
+			</view> -->
+			<uni-drawer ref="showDrawerRef" mode="right" :width="380">
+				<view class="search_condition">
+					<view class="tab_box" v-if="json.category">
+						<view class="title-box flex justify-between">
+							<view class="txt">
+								分类
+							</view>
+							<view class="more">
+								<uni-icons type="up" size="16" color="#bfbfbf"></uni-icons>
+								<uni-icons type="down" size="16" color="#bfbfbf"></uni-icons>
+							</view>
+						</view>
+						<view class="tabs flex-wrap">
+							<view class="item" v-for="(item, index) in json.category" :key="index" @click="filterParams.cat = item.category_id" :class="{'active': filterParams.cat == item.category_id}">
+								<uni-icons type="checkmarkempty" size="12"></uni-icons>
+								{{item.category_name}}
+							</view>
+						</view>
+					</view>
+				</view>
+			</uni-drawer>
         </view>
     </view>
 </template>
 
 <script lang="ts" setup>
 import navbar from "@/components/navbar/index.vue";
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import { useConfigStore } from "@/store/config";
+import masonry from "@/components/masonry/masonry.vue";
 import { imageFormat } from "@/utils/format";
 import type { Brand, filterSeleted, ProductFilterParams, ProductList } from "@/types/search/search";
 import { getCategoryTree, getCategoryProductFilter, getCategoryProduct } from "@/api/search/search";
-import { Label } from "@dcloudio/uni-h5";
 const configStore = useConfigStore();
 const parameter = ref({
     navbar: "1",
@@ -57,6 +101,18 @@ const parameter = ref({
 });
 const navH = configStore.navHeight;
 const loading = ref(true);
+const filterParams = reactive<ProductFilterParams>({   //初始化用于查询的参数
+    page: 1,
+    size: 20,
+    sort: '',
+    order: 'asc',
+    keyword: '',
+	max: 0,
+	min: 0,
+	cat: 0,
+	brand: [],
+	page_type: 'search'
+});
 const tabIndex = ref('default')
 const tabList = ref([
     {
@@ -73,7 +129,6 @@ const tabList = ref([
         order: "desc"
     }
 ]);
-
 const onChangeTab = (item:any) => {
     if(item.value == 'price'){
         item.order = item.order === 'desc' ? 'asc' : 'desc';
@@ -83,16 +138,126 @@ const onChangeTab = (item:any) => {
     tabIndex.value = item.value;
     console.log('筛选条件:',item)
 };
+
+const showDrawerRef = ref<any>("")
+// 打开窗口
+const showDrawer = () => {
+	showDrawerRef.value.open()
+}
+// 关闭窗口
+const closeDrawer = () => {
+	showDrawerRef.value.close()
+}
+
+
 const toSearch = () => {
     uni.navigateTo({
         url: "/pages/search/index"
     });
 };
-onLoad(() => {});
+onLoad(() => {
+});
 
 onShow(() => {
     uni.hideTabBar();
 });
+const json = {
+    "category": [
+        {
+            "category_id": 85,
+            "category_name": "女单鞋"
+        },
+        {
+            "category_id": 86,
+            "category_name": "女休闲鞋"
+        },
+        {
+            "category_id": 87,
+            "category_name": "女靴"
+        },
+        {
+            "category_id": 88,
+            "category_name": "男休闲鞋"
+        },
+        {
+            "category_id": 89,
+            "category_name": "男商务鞋"
+        },
+        {
+            "category_id": 90,
+            "category_name": "女包"
+        },
+        {
+            "category_id": 91,
+            "category_name": "男包"
+        }
+    ],
+    "brand": [
+        {
+            "brand_id": 1,
+            "brand_name": "PRICH22",
+            "brand_logo": "img/gallery/202306/1687857585PUWPIq3otyfgAdLZ2e!!pic.jpeg",
+            "first_word": "P",
+            "is_show": 1
+        },
+        {
+            "brand_id": 6,
+            "brand_name": "纳纹",
+            "brand_logo": "img/demo/brand/202304/1680589636G6nqvy9rts2roi8TJg!!pic.png",
+            "first_word": "N",
+            "is_show": 1
+        },
+        {
+            "brand_id": 21,
+            "brand_name": "骆驼",
+            "brand_logo": "img/demo/brand/202304/1680762356jFjxymSXUvj809DUnB!!pic.png",
+            "first_word": "L",
+            "is_show": 1
+        },
+        {
+            "brand_id": 25,
+            "brand_name": "马克华菲",
+            "brand_logo": "img/demo/brand/202304/16807624781UftvQVXIJP3rBXPvs!!pic.png",
+            "first_word": "M",
+            "is_show": 1
+        },
+        {
+            "brand_id": 91,
+            "brand_name": "接吻猫",
+            "brand_logo": "img/demo/brand/202304/1680835503yg9nki0rZiAu93UaZJ!!pic.png",
+            "first_word": "J",
+            "is_show": 1
+        },
+        {
+            "brand_id": 92,
+            "brand_name": "欧利萨斯",
+            "brand_logo": "img/demo/brand/202304/1680835646O0BmQQOr3v4NXJeCnk!!pic.png",
+            "first_word": "O",
+            "is_show": 1
+        },
+        {
+            "brand_id": 93,
+            "brand_name": "大洋洲•袋鼠",
+            "brand_logo": "img/demo/brand/202304/1680835674a5uZwTOvWTe7QMnzOu!!pic.png",
+            "first_word": "D",
+            "is_show": 1
+        },
+        {
+            "brand_id": 94,
+            "brand_name": "木林森",
+            "brand_logo": "img/demo/brand/202304/1680835756LUDq4FMmnGD2dmitP1!!pic.png",
+            "first_word": "M",
+            "is_show": 1
+        },
+        {
+            "brand_id": 95,
+            "brand_name": "ECCO",
+            "brand_logo": "img/demo/brand/202304/16808358287OMqggz3sfP8jqOE4A!!pic.png",
+            "first_word": "E",
+            "is_show": 1
+        }
+    ]
+}
 </script>
 <style lang="scss" scoped>
 .productSort .header {
@@ -135,28 +300,28 @@ onShow(() => {
             margin-left: 10rpx;
             .icon-shangjiantou, .icon-xiajiantou {
                 font-size: 12rpx;
-                color: #c3c0c0;
+                color: $tig-color-grey;
             }
             .order{
-                color: #39bf3e;
+                color: $tig-color-primary;
             }
         }
         .icon-sanjiaoright {
             font-size: 22rpx;
             margin-left: 5rpx;
+            color: $tig-color-grey;
         }
     }
     .active{
-        color: #39bf3e;
+        color: $tig-color-primary;
     }
 }
 .tag-row{
     background-color: #fff;
-    padding: 0rpx 30rpx 20rpx 30rpx;
+    padding: 0rpx 30rpx 0rpx 30rpx;
     .tag-list{
         .tag-item{
-            padding: 10rpx;
-            overflow: hidden;
+            padding: 5rpx 10rpx;
             white-space: nowrap;
             text-overflow: ellipsis;
             text-align: center;
@@ -169,28 +334,71 @@ onShow(() => {
             vertical-align: middle;
             color: #232326;
             background-color: #f7f7f7;
+            margin-bottom: 20rpx;
+            text{
+                margin:0 5rpx;
+                display: inline-block;
+            }
+        }
+        .mr10{
+            margin-right: 10rpx;
         }
         .tag-interval{
             margin: 0 10rpx;
+            margin-bottom: 20rpx;
             font-size: 18rpx;
         }
     }
 }
+.pageMain{
+	:deep(.uni-drawer__content) {
+		border-radius: 15rpx 0 0 15rpx;
+	}
+	.search_condition{
+		.tab_box{
+			padding: 20rpx;
+			.title-box{
+				color: #666;
+				padding: 10rpx 0;
+				margin-bottom: 10rpx;
+			}
+			.tabs{
+				.item{
+					margin-top: 10px;
+					width: 30%;
+					text-align: center;
+					line-height: 29px;
+					background-color: #f0f2f5;
+					border: 1px solid #f0f2f5;
+					border-radius: 5px;
+					overflow: hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+					font-size: 20rpx;
+					margin: 10rpx;
+				}
+				.active{
+					border: 1px solid $tig-color-error;
+					color: $tig-color-error;
+					:deep(.uni-icons){
+						color: $tig-color-error !important;
+					}
+				}
+			}
+		}
+	}
+}
 </style>
 <!-- 
-    <view class="tag-row">
-                <view class="tag-list">
-                    <view class="tag-item">
-                        <text>配饰x</text>
-                    </view>
-                    <view class="tag-interval">></view>
-                    <view class="tag-item">
-                        <text>帽子x</text>
-                    </view>
-                    <view class="tag-interval">></view>
-                    <view class="tag-item">
-                        <text>小黑伞x</text>
-                    </view>
-                </view>
-            </view>
+<view class="search_condition">
+	<view class="tab_box" v-if="json.category">
+
+		<view class="tabs flex-wrap">
+			<view class="item" v-for="(item, index) in json.category" :key="index" @click="filterParams.cat = item.category_id" :class="{'active': filterParams.cat == item.category_id}">
+				<uni-icons type="checkmarkempty" size="12"></uni-icons>
+				{{item.category_name}}
+			</view>
+		</view>
+	</view>
+</view>
  -->

@@ -31,7 +31,7 @@ export interface ProductFilterParams {
     min?: number;  //最低价
     keyword?: string;
     cat?: number; //分类id
-    brand?: number; //品牌id
+    brand?: number[]; //品牌id
     page_type?: string; //分类筛选项类型:search
 }
 

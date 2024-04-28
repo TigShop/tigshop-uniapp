@@ -239,9 +239,6 @@ button::after {
 
 .justify-end {
     justify-content: flex-end;
-    
-    
-    
 }
 
 .justify-center {
