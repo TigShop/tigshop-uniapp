@@ -59,27 +59,60 @@
 		<!-- 	<view class="goods-container" v-if="categoryId > 0">
 			    <masonry :commodityList="commodityList"></masonry>
 			</view> -->
-			<uni-drawer ref="showDrawerRef" mode="right" :width="380">
-				<view class="search_condition">
-					<view class="tab_box" v-if="json.category">
-						<view class="title-box flex justify-between">
-							<view class="txt">
-								分类
-							</view>
-							<view class="more">
-								<uni-icons type="up" size="16" color="#bfbfbf"></uni-icons>
-								<uni-icons type="down" size="16" color="#bfbfbf"></uni-icons>
-							</view>
-						</view>
-						<view class="tabs flex-wrap">
-							<view class="item" v-for="(item, index) in json.category" :key="index" @click="filterParams.cat = item.category_id" :class="{'active': filterParams.cat == item.category_id}">
-								<uni-icons type="checkmarkempty" size="12"></uni-icons>
-								{{item.category_name}}
-							</view>
-						</view>
+			<tigpopup v-model:show="showDrawerRef" width="88vw" position="right" :showClose="false" :showTitle="false" paddingBottom="0">
+			    <view class="search_condition">
+			    	<view class="tab_box" v-if="json.category">
+			    		<view class="title-box flex justify-between">
+			    			<view class="txt">
+			    				分类
+			    			</view>
+			    			<view class="more" @click="categoryShow = !categoryShow">
+			    				<uni-icons v-if="categoryShow" type="up" size="16" color="#bfbfbf"></uni-icons>
+			    				<uni-icons v-else type="down" size="16" color="#bfbfbf"></uni-icons>
+			    			</view>
+			    		</view>
+			    		<view class="tabs flex-wrap">
+			    			<view class="item" v-for="(item, index) in (categoryShow ? json.category : json.category.slice(0, 3))" :key="index" @click="filterParams.cat = item.category_id" :class="{'active': filterParams.cat == item.category_id}">
+			    				<uni-icons v-if="filterParams.cat == item.category_id" type="checkmarkempty" size="12"></uni-icons>
+			    				{{item.category_name}}
+			    			</view>
+			    		</view>
+			    	</view>
+			    	<view class="tab_box" v-if="json.brand">
+			    		<view class="title-box flex justify-between">
+			    			<view class="txt">
+			    				品牌
+			    			</view>
+			    			<view class="more" @click="brandShow = !brandShow">
+			    				<uni-icons v-if="brandShow" type="up" size="16" color="#bfbfbf"></uni-icons>
+			    				<uni-icons v-else type="down" size="16" color="#bfbfbf"></uni-icons>
+			    			</view>
+			    		</view>
+			    		<view class="tabs flex-wrap">
+			    			<view class="item" v-for="(item, index) in (brandShow ? json.brand : json.brand.slice(0, 3))" @click="onChangeBrand(item.brand_id)" :key="index" :class="{'active': filterParams.brand.includes(item.brand_id)}">
+			    				<uni-icons v-if="filterParams.brand.includes(item.brand_id)" type="checkmarkempty" size="12"></uni-icons>
+			    				{{item.brand_name}}  
+			    			</view>
+			    		</view>
+			    	</view>
+			    	<view class="tab_box">
+			    		<view class="title-box flex justify-between">
+			    			<view class="txt">
+			    				价格
+			    			</view>
+			    		</view>
+			    		<view class="tabs flex justify-between align-center">
+			    			<input class="uni-input" type="number" v-model="filterParams.min" placeholder="最低价" />
+			    			<view class="xian"></view>
+			    			<input class="uni-input" type="number" v-model="filterParams.max" placeholder="最高价" />
+			    		</view>
+			    	</view>
+					<view class="btn-box flex">
+						<view class="btn">重置</view>
+						<view class="btn submit" @click="submit">确定</view>
 					</view>
-				</view>
-			</uni-drawer>
+			    </view>
+			</tigpopup>
         </view>
     </view>
 </template>
@@ -107,8 +140,8 @@ const filterParams = reactive<ProductFilterParams>({   //初始化用于查询�
     sort: '',
     order: 'asc',
     keyword: '',
-	max: 0,
-	min: 0,
+	max: '',
+	min: '',
 	cat: 0,
 	brand: [],
 	page_type: 'search'
@@ -139,16 +172,15 @@ const onChangeTab = (item:any) => {
     console.log('筛选条件:',item)
 };
 
-const showDrawerRef = ref<any>("")
+const showDrawerRef = ref<boolean>(false)
 // 打开窗口
 const showDrawer = () => {
-	showDrawerRef.value.open()
+	showDrawerRef.value = true;
 }
 // 关闭窗口
 const closeDrawer = () => {
-	showDrawerRef.value.close()
+	showDrawerRef.value = false;
 }
-
 
 const toSearch = () => {
     uni.navigateTo({
@@ -161,6 +193,25 @@ onLoad(() => {
 onShow(() => {
     uni.hideTabBar();
 });
+const categoryShow = ref<boolean>(false)
+const brandShow = ref<boolean>(false)
+
+const onChangeBrand = (id:number) => {
+	let index = filterParams.brand.indexOf(id); // 查找新书在数组中的下标
+	if (index !== -1) {
+	  filterParams.brand.splice(index,1)
+	} else {
+	  filterParams.brand.push(id);
+	}
+}
+const submit = () => {
+    // if(Number(filterParams.min) > Number(filterParams.max)){
+        uni.showToast({
+            title: '最低价不能大于最高价',
+            icon: 'none'
+        });
+    // }
+}
 const json = {
     "category": [
         {
@@ -351,10 +402,12 @@ const json = {
     }
 }
 .pageMain{
-	:deep(.uni-drawer__content) {
-		border-radius: 15rpx 0 0 15rpx;
+	:deep(.popup-container) {
+		border-radius: 15rpx 0 0 0;
 	}
 	.search_condition{
+		position: relative;
+		height: 100%;
 		.tab_box{
 			padding: 20rpx;
 			.title-box{
@@ -384,21 +437,38 @@ const json = {
 						color: $tig-color-error !important;
 					}
 				}
+				.uni-input{
+					width: 42%;
+					background-color: #f0f2f5;
+					padding: 10rpx;
+					font-size:22rpx;
+					text-align:center;
+					border-radius: 5px;
+				}
+				.xian{
+					width: 16rpx;
+					margin:0 10rpx;
+					border-bottom: 2rpx solid #848689;
+				}
+			}
+		}
+		.btn-box{
+			position: absolute;
+			bottom: 0;
+			left:0;
+			width: 100%;
+			box-shadow: 0px -1px 3px #d7d7d7;
+			.btn{
+				width:50%;
+				background-color: #fff;
+				padding: 20rpx 0;
+				text-align: center;
+			}
+			.submit{
+				background-color: $tig-color-error;
+				color: #fff;
 			}
 		}
 	}
 }
 </style>
-<!-- 
-<view class="search_condition">
-	<view class="tab_box" v-if="json.category">
-
-		<view class="tabs flex-wrap">
-			<view class="item" v-for="(item, index) in json.category" :key="index" @click="filterParams.cat = item.category_id" :class="{'active': filterParams.cat == item.category_id}">
-				<uni-icons type="checkmarkempty" size="12"></uni-icons>
-				{{item.category_name}}
-			</view>
-		</view>
-	</view>
-</view>
- -->
