@@ -10,7 +10,8 @@
                 <view class="store-card-item-content">
                     <navigator :url="'/pages/productDetail/index?id=' + subItem.product_id" class="flex">
                         <view class="store-card-item-content-left">
-                            <image lazy-load :src="imageFormat(subItem.pic_thumb)"></image>
+                            <!-- <image lazy-load :src="imageFormat(subItem.pic_thumb)"></image> -->
+                            <tigImage v-model:src="subItem.pic_thumb"></tigImage>
                         </view>
                         <view class="store-card-item-content-right">
                             <view class="store-card-item-content-right-title">{{ subItem.product_name }}</view>

@@ -12,11 +12,13 @@ export const useUserStore = defineStore("user", {
             const configStore = useConfigStore();
             this.token = "";
             uni.removeStorageSync("token");
+            uni.removeStorageSync("userInfo");
             uni.removeStorageSync("currentActiveValue");
             configStore.currentActiveValue = 0;
         },
         setUserInfo(data: any) {
             this.userInfo = data;
+            uni.setStorageSync("userInfo", data);
         },
         setToken(token: string) {
             this.token = token;

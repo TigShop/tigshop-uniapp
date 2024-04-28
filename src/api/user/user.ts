@@ -1,7 +1,8 @@
 import request from "@/utils/request";
+import type { UserDataResponse } from "@/types/user/user";
 
 export const getUser = () => {
-    return request<any>({
+    return request<UserDataResponse>({
         url: "/user/info/",
         method: "get"
     });
@@ -16,8 +17,8 @@ export const getMemberCenter = () => {
 //最近浏览
 export const getHistoryProduct = (params?: any) => {
     return request<any>({
-        url: 'user/user/history_product',
-        method: 'get',
-        params,
+        url: "user/user/history_product",
+        method: "get",
+        params
     });
-}
+};

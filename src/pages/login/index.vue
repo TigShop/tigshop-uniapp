@@ -111,6 +111,7 @@ import Verify from "@/components/verifition/Verify.vue";
 import tigCheckbox from "@/components/tigCheckbox/index.vue";
 import { reactive, ref, computed } from "vue";
 import { sendMobileCode, userSignin } from "@/api/login/login";
+import { getUser } from "@/api/user/user";
 import { useUserStore } from "@/store/user";
 
 const userStore = useUserStore();
@@ -188,12 +189,12 @@ const signin = async () => {
             verify_token: verifyToken.value
         });
         userStore.setToken(result.token);
-
         uni.showToast({
             title: "登入成功",
             duration: 1500,
             icon: "none"
         });
+
         setTimeout(() => {
             if (pages[0].route === "pages/login/index") {
                 uni.reLaunch({
@@ -221,6 +222,8 @@ const signin = async () => {
         loginLoading.value = false;
     }
 };
+
+
 
 const okCallback = (e: any) => {
     verifyToken.value = e.verifyToken;

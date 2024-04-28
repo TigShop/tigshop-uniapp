@@ -45,9 +45,10 @@
                                     <view class="item-content" :style="allFormat.goods_padding">
                                         <view class="item-con">
                                             <view class="item-photo">
-                                                <navigator :url="urlFormat(subItem.url)" class="item-image-a"
-                                                    ><image lazy-load  :src="imageFormat(subItem.pic_thumb)" mode="widthFix"
-                                                /></navigator>
+                                                <navigator :url="urlFormat(subItem.url)" class="item-image-a">
+                                                    <!-- <image lazy-load :src="imageFormat(subItem.pic_thumb)" mode="widthFix" /> -->
+                                                    <tigImage v-model:src="subItem.pic_thumb" mode="widthFix"></tigImage>
+                                                </navigator>
                                             </view>
                                             <view class="item-info">
                                                 <block v-if="module.show_name">
@@ -87,9 +88,10 @@
                                 <view class="item-content" :style="allFormat.goods_padding">
                                     <view class="item-con">
                                         <view class="item-photo">
-                                            <navigator :url="urlFormat({ path: 'product', id: item.product_id })" class="item-image-a"
-                                                ><image lazy-load  :src="imageFormat(item.pic_thumb)" mode="widthFix"
-                                            /></navigator>
+                                            <navigator :url="urlFormat({ path: 'product', id: item.product_id })" class="item-image-a">
+                                                <!-- <image lazy-load :src="imageFormat(item.pic_thumb)" mode="widthFix" /> -->
+                                                <tigImage v-model:src="item.pic_thumb" mode="widthFix"></tigImage>
+                                            </navigator>
                                         </view>
                                         <view class="item-info">
                                             <block v-if="module.show_name">

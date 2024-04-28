@@ -22,7 +22,8 @@
                                 <div class="image-ad-item">
                                     <div class="item-content" :style="format.img_padding">
                                         <div class="item-img-a" :url="item.pic_link ? item.pic_link.link : ''">
-                                            <image lazy-load  class="item-img" :src="imageFormat(item.pic_url)" mode="widthFix"></image>
+                                            <!-- <image lazy-load  class="item-img" :src="imageFormat(item.pic_url)" mode="widthFix"></image> -->
+                                            <tigImage class="item-img" v-model:src="item.pic_url" mode="widthFix"></tigImage>
                                         </div>
                                     </div>
                                 </div>
@@ -38,7 +39,8 @@
                             <div class="image-ad-item">
                                 <div class="item-content" :style="format.img_padding">
                                     <div class="item-img-a" :url="pic.pic_link ? pic.pic_link.link : ''">
-                                        <image lazy-load  class="item-img" :src="imageFormat(pic.pic_url)" mode="widthFix"></image>
+                                        <tigImage class="item-img" v-model:src="pic.pic_url" mode="widthFix"></tigImage>
+                                        <!-- <image lazy-load  class="item-img" :src="imageFormat(pic.pic_url)" mode="widthFix"></image> -->
                                     </div>
                                 </div>
                             </div>

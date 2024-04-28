@@ -25,24 +25,27 @@
                                 <view class="image-square-layout image-square-layout-height2">
                                     <view class="image-ad-item">
                                         <view class="item-content" :style="format.img_padding">
-                                            <navigator class="item-img-a" :url="urlFormat(module.pic_list[0].pic_link)"
-                                                ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[0]?.pic_url)" mode=""></image
-                                            ></navigator>
+                                            <navigator class="item-img-a" :url="urlFormat(module.pic_list[0].pic_link)">
+                                                <!-- <image lazy-load class="item-img" :src="imageFormat(module.pic_list[0]?.pic_url)" mode=""></image> -->
+                                                <tigImage class="item-img" v-model:src="module.pic_list[0].pic_url"></tigImage>
+                                            </navigator>
                                         </view>
                                     </view>
                                     <view class="grid-layout-2">
                                         <view class="image-ad-item">
                                             <view class="item-content" :style="format.img_padding">
-                                                <navigator class="item-img-a" :url="urlFormat(module.pic_list[1].pic_link)"
-                                                    ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[1]?.pic_url)" mode=""></image
-                                                ></navigator>
+                                                <navigator class="item-img-a" :url="urlFormat(module.pic_list[1].pic_link)">
+                                                    <!-- <image lazy-load class="item-img" :src="imageFormat(module.pic_list[1]?.pic_url)" mode=""></image> -->
+                                                    <tigImage class="item-img" v-model:src="module.pic_list[1].pic_url"></tigImage>
+                                                </navigator>
                                             </view>
                                         </view>
                                         <view class="image-ad-item">
                                             <view class="item-content" :style="format.img_padding">
-                                                <navigator class="item-img-a" :url="urlFormat(module.pic_list[2].pic_link)"
-                                                    ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[2]?.pic_url)" mode=""></image
-                                                ></navigator>
+                                                <navigator class="item-img-a" :url="urlFormat(module.pic_list[2].pic_link)">
+                                                    <!-- <image lazy-load class="item-img" :src="imageFormat(module.pic_list[2]?.pic_url)" mode=""></image> -->
+                                                    <tigImage class="item-img" v-model:src="module.pic_list[2].pic_url"></tigImage>
+                                                </navigator>
                                             </view>
                                         </view>
                                     </view>
@@ -52,24 +55,27 @@
                                 <view class="image-square-layout2">
                                     <view class="image-ad-item">
                                         <view class="item-content" :style="format.img_padding">
-                                            <navigator class="item-img-a" :url="urlFormat(module.pic_list[0].pic_link)"
-                                                ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[0]?.pic_url)" mode="widthFix"></image
-                                            ></navigator>
+                                            <navigator class="item-img-a" :url="urlFormat(module.pic_list[0].pic_link)">
+                                                <!-- <image lazy-load class="item-img" :src="imageFormat(module.pic_list[0]?.pic_url)" mode="widthFix"></image> -->
+                                                <tigImage class="item-img" v-model:src="module.pic_list[0].pic_url" mode="widthFix"></tigImage>
+                                            </navigator>
                                         </view>
                                     </view>
                                     <view class="grid-layout-2">
                                         <view class="image-ad-item">
                                             <view class="item-content" :style="format.img_padding">
-                                                <navigator class="item-img-a" :url="urlFormat(module.pic_list[1].pic_link)"
-                                                    ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[1]?.pic_url)" mode="widthFix"></image
-                                                ></navigator>
+                                                <navigator class="item-img-a" :url="urlFormat(module.pic_list[1].pic_link)">
+                                                    <!-- <image lazy-load class="item-img" :src="imageFormat(module.pic_list[1]?.pic_url)" mode="widthFix"></image> -->
+                                                    <tigImage class="item-img" v-model:src="module.pic_list[1].pic_url" mode="widthFix"></tigImage>
+                                                </navigator>
                                             </view>
                                         </view>
                                         <view class="image-ad-item">
                                             <view class="item-content" :style="format.img_padding">
-                                                <navigator class="item-img-a" :url="urlFormat(module.pic_list[2].pic_link)"
-                                                    ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[2]?.pic_url)" mode="widthFix"></image
-                                                ></navigator>
+                                                <navigator class="item-img-a" :url="urlFormat(module.pic_list[2].pic_link)">
+                                                    <!-- <image lazy-load class="item-img" :src="imageFormat(module.pic_list[2]?.pic_url)" mode="widthFix"></image> -->
+                                                    <tigImage class="item-img" v-model:src="module.pic_list[2].pic_url" mode="widthFix"></tigImage>
+                                                </navigator>
                                             </view>
                                         </view>
                                     </view>
@@ -79,18 +85,20 @@
                                 <view class="image-square-layout image-square-layout3 image-square-layout-height2">
                                     <view class="image-ad-item">
                                         <view class="item-content" :style="format.img_padding">
-                                            <navigator class="item-img-a" :url="urlFormat(module.pic_list[0].pic_link)"
-                                                ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[0]?.pic_url)" mode=""></image
-                                            ></navigator>
+                                            <navigator class="item-img-a" :url="urlFormat(module.pic_list[0].pic_link)">
+                                                <!-- <image lazy-load class="item-img" :src="imageFormat(module.pic_list[0]?.pic_url)" mode=""></image> -->
+                                                <tigImage class="item-img" v-model:src="module.pic_list[0].pic_url"></tigImage>
+                                            </navigator>
                                         </view>
                                     </view>
                                     <view class="grid-layout-2">
                                         <view>
                                             <view class="image-ad-item">
                                                 <view class="item-content" :style="format.img_padding">
-                                                    <navigator class="item-img-a" :url="urlFormat(module.pic_list[1].pic_link)"
-                                                        ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[1]?.pic_url)" mode=""></image
-                                                    ></navigator>
+                                                    <navigator class="item-img-a" :url="urlFormat(module.pic_list[1].pic_link)">
+                                                        <!-- <image lazy-load class="item-img" :src="imageFormat(module.pic_list[1]?.pic_url)" mode=""></image> -->
+                                                        <tigImage class="item-img" v-model:src="module.pic_list[1].pic_url" mode="widthFix"></tigImage>
+                                                    </navigator>
                                                 </view>
                                             </view>
                                         </view>
@@ -98,15 +106,16 @@
                                             <view class="image-ad-item">
                                                 <view class="item-content" :style="format.img_padding">
                                                     <navigator class="item-img-a" :url="urlFormat(module.pic_list[2].pic_link)"
-                                                        ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[2]?.pic_url)" mode=""></image
+                                                        ><image lazy-load class="item-img" :src="imageFormat(module.pic_list[2]?.pic_url)" mode="widthFix"></image
                                                     ></navigator>
                                                 </view>
                                             </view>
                                             <view class="image-ad-item">
                                                 <view class="item-content" :style="format.img_padding">
-                                                    <navigator class="item-img-a" :url="urlFormat(module.pic_list[3].pic_link)"
-                                                        ><image lazy-load  class="item-img" :src="imageFormat(module.pic_list[3]?.pic_url)" mode=""></image
-                                                    ></navigator>
+                                                    <navigator class="item-img-a" :url="urlFormat(module.pic_list[3].pic_link)">
+                                                        <!-- <image lazy-load class="item-img" :src="imageFormat(module.pic_list[3]?.pic_url)" mode=""></image> -->
+                                                        <tigImage class="item-img" v-model:src="module.pic_list[3].pic_url" mode="widthFix"></tigImage>
+                                                    </navigator>
                                                 </view>
                                             </view>
                                         </view>
@@ -118,7 +127,8 @@
                                     <view class="image-ad-item" v-for="(pic, key) in module.pic_list" :key="key">
                                         <view class="item-content" :style="format.img_padding">
                                             <view class="item-img-a" :url="pic.pic_link ? pic.pic_link.link : ''">
-                                                <img class="item-img" :src="imageFormat(pic.pic_url)" />
+                                                <!-- <img class="item-img" :src="imageFormat(pic.pic_url)" /> -->
+                                                <tigImage class="item-img" v-model:src="pic.pic_url" mode="widthFix"></tigImage>
                                             </view>
                                         </view>
                                     </view>

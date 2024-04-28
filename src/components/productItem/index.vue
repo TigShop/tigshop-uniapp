@@ -2,7 +2,8 @@
     <view :class="'item-li list-' + masonryListClass">
         <view class="photo">
             <navigator :url="'/pages/goods_details/index?id=' + item.product_id + '&is_exchange=' + item.is_exchange">
-                <image lazy-load :src="imageFormat(item.pic_thumb)" mode="widthFix"></image>
+                <!-- <image lazy-load :src="imageFormat(item.pic_thumb)" mode="widthFix"></image> -->
+                <tigImage v-model:src="item.pic_thumb" mode="widthFix"></tigImage>
 
                 <view v-if="item.product_stock == 0" class="outsale">售罄</view>
             </navigator>
@@ -20,7 +21,7 @@
                 <view class="pricenum">
                     <FormatPrice :priceData="item.product_price"></FormatPrice>
                 </view>
-                <view @click.stop="buy" class="buy_btn"><image lazy-load src="/static/images/common/cart.png" role="img"></image></view>
+                <view @click.stop="buy" class="buy_btn"><image lazy-load src="/static/images/common/cart.png"></image></view>
             </view>
         </view>
     </view>
