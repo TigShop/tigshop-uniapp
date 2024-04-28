@@ -223,7 +223,10 @@ button::after {
     width: 100%;
     height: 80rpx;
 }
-
+/* 将toast的z-index设置为最高 */
+uni-toast {
+    z-index: 9999 !important;
+}
 /* //通用flex */
 .flex {
     display: flex;

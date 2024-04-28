@@ -37,7 +37,7 @@
                                         <block v-for="(hot, index) in hotCat" :key="index">
                                             <navigator
                                                 hover-class="none"
-                                                :url="'/pages/search/index?category=' + hot.category_id + '&title=' + hot.category_name"
+                                                :url="'/pages/search/result?category_id=' + hot.category_id"
                                                 class="item acea-row row-column row-middle"
                                             >
                                                 <view class="picture">
@@ -50,12 +50,12 @@
                                     </view>
                                 </view>
                             </block>
-                            <block v-if="cat_id > 0" v-for="(cat, index) in childCat" :key="index">
-                                <view class="listw" :id="'b' + index">
+                            <block v-if="cat_id > 0">
+                                <view class="listw" v-for="(cat, index) in childCat" :key="index" :id="'b' + index">
                                     <view class="title acea-row row-center-wrapper">
                                         <navigator
                                             hover-class="none"
-                                            :url="'/pages/search/index?category=' + cat.category_id + '&title=' + cat.category_name"
+                                            :url="'/pages/search/result?category_id=' + cat.category_id"
                                             class="item acea-row row-column row-middle"
                                         >
                                             <view class="name">{{ cat.category_name }}</view>
@@ -65,7 +65,7 @@
                                         <block v-for="(childCatItem, index1) in cat.children" :key="index1">
                                             <navigator
                                                 hover-class="none"
-                                                :url="'/pages/search/index?category=' + childCatItem.category_id + '&title=' + childCatItem.category_name"
+                                                :url="'/pages/search/result?category_id=' + childCatItem.category_id"
                                                 class="item acea-row row-column row-middle"
                                             >
                                                 <!-- <view class="picture" v-if="childCatItem.cat_pic"

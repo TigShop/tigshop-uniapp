@@ -24,7 +24,7 @@
                 <productBuy :id="item.product_id" :disabled="item.product_stock == 0" @callback="getCallback">
                     <view class="buy_btn"><image lazy-load src="/static/images/common/cart.png"></image></view>
                 </productBuy>
-                
+        
             </view>
         </view>
     </view>

@@ -1,16 +1,16 @@
 
 export interface filterSeleted {
     category_id?: number;
-    category_name?: stringnumber;
-    keywords?: stringnumber;
-    category_desc?: stringnumber;
+    category_name?: string;
+    keywords?: string;
+    category_desc?: string;
     nparent_id?: number;
     sort_order?: number;
-    measure_unit?: stringnumber;
+    measure_unit?: string;
     is_show?: number;
-    seo_title?: stringnumber;
-    short_name?: stringnumber;
-    category_pic?: stringnumber;
+    seo_title?: string;
+    short_name?: string;
+    category_pic?: string;
     category_ico?: number;
     is_hot?: number;
     search_keywords?: string;
@@ -27,24 +27,24 @@ export interface ProductFilterParams {
     size: number,
     sort?: string,  //销量:sale 新品:time 价格: price
     order?: string, //升序:asc 降序:desc
-    max?: number;  //最高价
-    min?: number;  //最低价
+    max: any;  //最高价
+    min: any;  //最低价
     keyword?: string;
     cat?: number; //分类id
-    brand?: number; //品牌id
+    brand: number[]; //品牌id
     page_type?: string; //分类筛选项类型:search
 }
 
 export interface ProductFilterResult {
     product_list: ProductList[];
     filter: {
-        brand?: Brand[];
-        category?: filterSeleted[];
+        brand: Brand[];
+        category: filterSeleted[];
     }
     errcode: number;
 }
 export interface Brand {
-    brand_id?: number;
+    brand_id: number;
     brand_name?: string;
     brand_logo?: string;
     is_show?:number;
