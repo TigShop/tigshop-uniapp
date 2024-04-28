@@ -21,4 +21,3 @@ dist
 *.sw?
 vite.config.ts
 src/config/index.config.ts
-vite.config.ts
