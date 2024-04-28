@@ -4,11 +4,11 @@
         <view>
             <view class="page-loading" v-if="loading"><view class="ico"></view></view>
             <view class="user">
-                <view class="user_header user_bg_color" style="_height: 190rpx">
+                <view class="user_header user_bg_color">
                     <view class="picTxt">
                         <view>
                             <button open-type="chooseAvatar" class="pictrue pic-btn" @chooseavatar="onChooseAvatar">
-                                <image lazy-load  v-if="member.user_photo" :src="member.user_photo"></image>
+                                <image lazy-load v-if="member.user_photo" :src="member.user_photo"></image>
                             </button>
                         </view>
                         <view class="text">
@@ -115,7 +115,7 @@
                     <block v-if="wap_user_center_ads.ad_list" v-for="(ads, index) in wap_user_center_ads.ad_list" :key="index">
                         <view style="margin-top: 10px">
                             <view class="item" @click="goPages(ads.ad_link)">
-                                <image lazy-load  :src="ads.pic_url" mode="widthFix" style="width: 100%; display: block"></image>
+                                <image lazy-load :src="ads.pic_url" mode="widthFix" style="width: 100%; display: block"></image>
                             </view>
                         </view>
                     </block>
@@ -123,30 +123,30 @@
                         <view class="title acea-row row-middle">我的服务</view>
                         <view class="serviceList acea-row row-middle">
                             <view class="item" @click="goPages('/pages/user_profile/index')">
-                                <view class="pic"><image lazy-load  src="/static/images/user/zhanghaoguanli.png"></image></view>
+                                <view class="pic"><image lazy-load src="/static/images/user/zhanghaoguanli.png"></image></view>
                                 <view>账号管理</view>
                             </view>
                             <view class="item" @click="goPages('/pages/user_address_list/index')">
-                                <view class="pic"><image lazy-load  src="/static/images/user/shouhuodizhi.png"></image></view>
+                                <view class="pic"><image lazy-load src="/static/images/user/shouhuodizhi.png"></image></view>
                                 <view>收货地址</view>
                             </view>
                             <view class="item" @click="goPages('/pages/user_security/index')">
-                                <view class="pic"><image lazy-load  src="/static/images/user/anquanzhongxin.png"></image></view>
+                                <view class="pic"><image lazy-load src="/static/images/user/anquanzhongxin.png"></image></view>
                                 <view>安全中心</view>
                             </view>
                             <view class="item" @click="goPages('/pages/user_invoice/index')">
                                 <view class="pic">
-                                    <image lazy-load  src="/static/images/user/fapiao.png"></image>
+                                    <image lazy-load src="/static/images/user/fapiao.png"></image>
                                 </view>
                                 <view>发票管理</view>
                             </view>
                             <view class="item" @click="goPages('/pages/user_message/index')">
-                                <view class="pic"><image lazy-load  src="/static/images/user/xiaoxi.png"></image></view>
+                                <view class="pic"><image lazy-load src="/static/images/user/xiaoxi.png"></image></view>
                                 <view>站内消息</view>
                             </view>
                             <view class="item" @click="goPages('/pages/pin_order/index')">
                                 <view class="pic">
-                                    <image lazy-load  src="/static/images/user/dingdan.png"></image>
+                                    <image lazy-load src="/static/images/user/dingdan.png"></image>
                                 </view>
                                 <view>拼团订单</view>
                             </view>
@@ -176,8 +176,14 @@
 <script lang="ts" setup>
 import navbar from "@/components/navbar/index.vue";
 import masonry from "@/components/masonry/masonry.vue";
+import { useUserStore } from "@/store/user";
+import { imageFormat } from "@/utils/format";
 import { ref } from "vue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
+import {getUser} from '@/api/user/user'
+import type { UserItem} from '@/types/user/user'
+
+const userStore = useUserStore();
 
 const jumpLogin = ref(false);
 const loading = ref(false);
@@ -189,19 +195,7 @@ const parameter = ref({
     color: false,
     class: "user"
 });
-const member = ref<any>({
-    user_photo: "",
-    nickname: "",
-    user_name_formated: "",
-
-    rank: {
-        rank_name: ""
-    },
-
-    user_name: "",
-    user_money: 0,
-    pay_points: 0
-});
+const member = ref<UserItem>();
 const count = ref({
     collect_count: 0,
     collect_store_count: 0,
@@ -219,820 +213,13 @@ const ads = ref({
 });
 const guess_like = ref([]);
 
-const getUserInfo = async () => {
-    const result: any = {
-        data: {
-            app_domain: "https:\/\/demo2.lyecs.com\/mobile\/",
-            domain: "https:\/\/demo2.lyecs.com\/",
-            img_domain: "https:\/\/demo2.lyecs.com\/",
-            wap_domain: "https:\/\/demo2.lyecs.com\/mobile\/",
-            pname: "member",
-            module_edit: false,
-            wechat_app: 1,
-            userid: 69,
-            from_mould_id: 0,
-            action: "default",
-            page_title: "会员中心 - LYECS",
-            page_keywords: "",
-            page_desc: "",
-            crumb: [{ title: "会员中心" }],
-            page_subtitle: "会员中心",
-            stats_code: null,
-            shop_name: "LYECS",
-            points_name: "积分",
-            searchkeywords: [
-                { value: "手机N5", real_value: "手机N5" },
-                { value: "儿童手表5C", real_value: "儿童手表5C" },
-                { value: "儿童机器人", real_value: "儿童机器人" },
-                { value: "安全路由", real_value: "安全路由" },
-                { value: "<b>iphone 6<\/b>", real_value: "iphone 6<\/b>" },
-                { value: "苹果手机", real_value: "苹果手机" }
-            ],
-            his_count: 0,
-            collection_goods_list: {
-                "284": {
-                    goods_id: 284,
-                    goods_name: "WATCH GT3 46mm  两周续航\/\/血氧检测智能手表",
-                    market_price: "1388.00",
-                    goods_thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680840755a9AIBubnFaWyI7Ygqv!!pic400x400.jpeg",
-                    goods_basesell: 1,
-                    org_price: "1188.00",
-                    shop_price: "1188.00",
-                    promote_price: "",
-                    promote_start_date: 0,
-                    promote_end_date: 0,
-                    rec_id: 25,
-                    is_attention: 0,
-                    _promote_price: "0.00",
-                    id: 284,
-                    name: "WATCH GT3 46mm  两周续航\/\/血氧检测智能手表",
-                    selled_count: 1,
-                    brief: null,
-                    _shop_price: 1188,
-                    zk: "8.6",
-                    thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680840755a9AIBubnFaWyI7Ygqv!!pic400x400.jpeg",
-                    goods_img: "",
-                    url: "\/pages\/goods_details\/index?id=284"
-                }
-            },
-            member: {
-                user_id: 69,
-                email: "",
-                user_name: "18679689385",
-                nickname: "",
-                password: "",
-                password_code: "",
-                question: "",
-                answer: "",
-                sex: 0,
-                birthday: "0000-00-00",
-                user_money: "0.00",
-                frozen_money: "0.00",
-                pay_points: 5,
-                rank_points: 5,
-                address_id: 0,
-                shipping_id: 0,
-                reg_time: 1710313135,
-                last_login: 1710469146,
-                last_time: "0000-00-00 00:00:00",
-                last_ip: "106.228.51.7",
-                visit_count: 6,
-                user_rank: 0,
-                is_special: 0,
-                encrypt_str: null,
-                salt: "0",
-                parent_id: 0,
-                flag: 0,
-                alias: "",
-                msn: "",
-                qq: "",
-                office_phone: "",
-                home_phone: "",
-                mobile_phone: "18679689385",
-                is_validated: 0,
-                credit_line: "0.00",
-                passwd_question: null,
-                passwd_answer: null,
-                user_photo: "https:\/\/demo2.lyecs.com\/img\/user_photos\/face.gif",
-                mobile_is_validated: 1,
-                aite_id: "",
-                wxid: "",
-                pay_password: "",
-                lyecs_wxOpen_id: "",
-                lyecs_wx_validated: 0,
-                lyecs_wx_name: "",
-                old_wch_user_id: 0,
-                default_regions: "",
-                zone_code: "",
-                from_tag: 2,
-                svip_expire_time: 0,
-                is_svip: 0,
-                username: "18679689385",
-                formated_user_money: "0.00",
-                formated_frozen_money: "0.00",
-                integral_name: "积分",
-                user_name_formated: "186****9385",
-                mobile_phone_formated: "186****9385",
-                all_money: "0.00",
-                parent_name: "总店",
-                rank: { rank_id: 0, rank_zk: 100, rank_name: "注册会员", special_rank: 1 },
-                security_lv: 1
-            },
-            count: {
-                all: 2,
-                re_pay: 0,
-                re_shipping: 0,
-                re_receive: 0,
-                re_comment: 1,
-                re_peihuo: 0,
-                op_order: 0,
-                bonus: 0,
-                stay_comment_order: 1,
-                user_message: 0,
-                return_count: 0,
-                collect_count: 1,
-                collect_store_count: 0
-            },
-            comment_send_point: "5",
-            show_send_point: "5",
-            user_notice: null,
-            guess_like: [
-                {
-                    goods_id: 284,
-                    goods_sn: "SN000284",
-                    goods_name: "WATCH GT3 46mm  两周续航\/\/血氧检测智能手表",
-                    goods_basesell: 1,
-                    goods_number: 9999,
-                    goods_name_style: "+",
-                    market_price: "1388.00",
-                    org_price: "1188.00",
-                    promote_price: "",
-                    goods_tag: "",
-                    shop_price: "1188.00",
-                    promote_start_date: 0,
-                    promote_end_date: 0,
-                    goods_brief: "",
-                    goods_thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680840755a9AIBubnFaWyI7Ygqv!!pic400x400.jpeg",
-                    goods_img: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680840755a9AIBubnFaWyI7Ygqv!!pic400x400.jpeg",
-                    brand_name: "华为",
-                    goods_active_border: "",
-                    _promote_price: "0.00",
-                    id: 284,
-                    name: "WATCH GT3 46mm  两周续航\/\/血氧检测智能手表",
-                    selled_count: 1,
-                    brief: "",
-                    _shop_price: 1188,
-                    zk: "8.6",
-                    thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680840755a9AIBubnFaWyI7Ygqv!!pic400x400.jpeg",
-                    url: "\/pages\/goods_details\/index?id=284"
-                },
-                {
-                    goods_id: 285,
-                    goods_sn: "SN000285",
-                    goods_name: "FreeBuds 5i 主动降噪真无线蓝牙耳机",
-                    goods_basesell: 18,
-                    goods_number: 9996,
-                    goods_name_style: "+",
-                    market_price: "599.00",
-                    org_price: "399.00",
-                    promote_price: "",
-                    goods_tag: "",
-                    shop_price: "399.00",
-                    promote_start_date: 0,
-                    promote_end_date: 0,
-                    goods_brief: "",
-                    goods_thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680840767Fcx1Y4UrOSLemzJ71C!!pic400x400.jpeg",
-                    goods_img: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680840767Fcx1Y4UrOSLemzJ71C!!pic400x400.jpeg",
-                    brand_name: "华为",
-                    goods_active_border: "",
-                    _promote_price: "0.00",
-                    id: 285,
-                    name: "FreeBuds 5i 主动降噪真无线蓝牙耳机",
-                    selled_count: 18,
-                    brief: "",
-                    _shop_price: 399,
-                    zk: "6.7",
-                    thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680840767Fcx1Y4UrOSLemzJ71C!!pic400x400.jpeg",
-                    url: "\/pages\/goods_details\/index?id=285"
-                },
-                {
-                    goods_id: 288,
-                    goods_sn: "SN000288",
-                    goods_name: "米兔儿童电话手表5C4G全网通高清视频防水GPS定位智能手表",
-                    goods_basesell: 11,
-                    goods_number: 9991,
-                    goods_name_style: "+",
-                    market_price: "399.00",
-                    org_price: "329.00",
-                    promote_price: "",
-                    goods_tag: "",
-                    shop_price: "329.00",
-                    promote_start_date: 0,
-                    promote_end_date: 0,
-                    goods_brief: "",
-                    goods_thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680840816z8TjkExShi1JKfYaOf!!pic400x400.jpeg",
-                    goods_img: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680840816z8TjkExShi1JKfYaOf!!pic400x400.jpeg",
-                    brand_name: "小米",
-                    goods_active_border: "",
-                    _promote_price: "0.00",
-                    id: 288,
-                    name: "米兔儿童电话手表5C4G全网通高清视频防水GPS定位智能手表",
-                    selled_count: 11,
-                    brief: "",
-                    _shop_price: 329,
-                    zk: "8.2",
-                    thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680840816z8TjkExShi1JKfYaOf!!pic400x400.jpeg",
-                    url: "\/pages\/goods_details\/index?id=288"
-                },
-                {
-                    goods_id: 289,
-                    goods_sn: "SN000289",
-                    goods_name: "Redmi K60骁龙8+处理器2K高光屏6400万超清相机",
-                    goods_basesell: 3,
-                    goods_number: 9998,
-                    goods_name_style: "+",
-                    market_price: "2999.00",
-                    org_price: "2699.00",
-                    promote_price: "",
-                    goods_tag: "",
-                    shop_price: "2699.00",
-                    promote_start_date: 0,
-                    promote_end_date: 0,
-                    goods_brief: "",
-                    goods_thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680840827Lc4Heqj1NgNOxRmXTm!!pic400x400.jpeg",
-                    goods_img: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680840827Lc4Heqj1NgNOxRmXTm!!pic400x400.jpeg",
-                    brand_name: "小米",
-                    goods_active_border: "",
-                    _promote_price: "0.00",
-                    id: 289,
-                    name: "Redmi K60骁龙8+处理器2K高光屏6400万超清相机",
-                    selled_count: 3,
-                    brief: "",
-                    _shop_price: 2699,
-                    zk: "9.0",
-                    thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680840827Lc4Heqj1NgNOxRmXTm!!pic400x400.jpeg",
-                    url: "\/pages\/goods_details\/index?id=289"
-                },
-                {
-                    goods_id: 226,
-                    goods_sn: "SN000226",
-                    goods_name: "iPhone 13 双卡双待 128G 全网通 5G手机",
-                    goods_basesell: 1,
-                    goods_number: 9999,
-                    goods_name_style: "+",
-                    market_price: "5999.00",
-                    org_price: "4849.00",
-                    promote_price: "",
-                    goods_tag: "",
-                    shop_price: "4849.00",
-                    promote_start_date: 0,
-                    promote_end_date: 0,
-                    goods_brief: "",
-                    goods_thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680837131chss4BRVnfkTf8HlAo!!pic400x400.jpeg",
-                    goods_img: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680837131chss4BRVnfkTf8HlAo!!pic400x400.jpeg",
-                    brand_name: "苹果",
-                    goods_active_border: "",
-                    _promote_price: "0.00",
-                    id: 226,
-                    name: "iPhone 13 双卡双待 128G 全网通 5G手机",
-                    selled_count: 1,
-                    brief: "",
-                    _shop_price: 4849,
-                    zk: "8.1",
-                    thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680837131chss4BRVnfkTf8HlAo!!pic400x400.jpeg",
-                    url: "\/pages\/goods_details\/index?id=226"
-                },
-                {
-                    goods_id: 228,
-                    goods_sn: "SN000228",
-                    goods_name: "AirPods Pro(第一代)无线充电主动降噪无线蓝牙耳机",
-                    goods_basesell: 0,
-                    goods_number: 9999,
-                    goods_name_style: "+",
-                    market_price: "1999.00",
-                    org_price: "1349.00",
-                    promote_price: "",
-                    goods_tag: "",
-                    shop_price: "1349.00",
-                    promote_start_date: 0,
-                    promote_end_date: 0,
-                    goods_brief: "",
-                    goods_thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680837160MPSIFOVuTOzboYNDx4!!pic400x400.jpeg",
-                    goods_img: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680837160MPSIFOVuTOzboYNDx4!!pic400x400.jpeg",
-                    brand_name: "苹果",
-                    goods_active_border: "",
-                    _promote_price: "0.00",
-                    id: 228,
-                    name: "AirPods Pro(第一代)无线充电主动降噪无线蓝牙耳机",
-                    selled_count: 0,
-                    brief: "",
-                    _shop_price: 1349,
-                    zk: "6.7",
-                    thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680837160MPSIFOVuTOzboYNDx4!!pic400x400.jpeg",
-                    url: "\/pages\/goods_details\/index?id=228"
-                },
-                {
-                    goods_id: 198,
-                    goods_sn: "SN000198",
-                    goods_name: "烟筒靴女 粗跟时装靴切尔西短靴 型塑273183",
-                    goods_basesell: 0,
-                    goods_number: 9999,
-                    goods_name_style: "+",
-                    market_price: "2199.00",
-                    org_price: "1386.00",
-                    promote_price: "",
-                    goods_tag: "",
-                    shop_price: "1386.00",
-                    promote_start_date: 0,
-                    promote_end_date: 0,
-                    goods_brief: "",
-                    goods_thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680835831tDFmh4501ZzT4Hyuhf!!pic400x400.jpeg",
-                    goods_img: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680835831tDFmh4501ZzT4Hyuhf!!pic400x400.jpeg",
-                    brand_name: "ECCO",
-                    goods_active_border: "",
-                    _promote_price: "0.00",
-                    id: 198,
-                    name: "烟筒靴女 粗跟时装靴切尔西短靴 型塑273183",
-                    selled_count: 0,
-                    brief: "",
-                    _shop_price: 1386,
-                    zk: "6.3",
-                    thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680835831tDFmh4501ZzT4Hyuhf!!pic400x400.jpeg",
-                    url: "\/pages\/goods_details\/index?id=198"
-                },
-                {
-                    goods_id: 199,
-                    goods_sn: "SN000199",
-                    goods_name: "【舒适有型】春款牛皮革女靴英伦风休闲百搭马丁靴女",
-                    goods_basesell: 0,
-                    goods_number: 9999,
-                    goods_name_style: "+",
-                    market_price: "1209.00",
-                    org_price: "335.00",
-                    promote_price: "",
-                    goods_tag: "",
-                    shop_price: "335.00",
-                    promote_start_date: 0,
-                    promote_end_date: 0,
-                    goods_brief: "",
-                    goods_thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680835845in5ozzioXajVrP4jCu!!pic400x400.jpeg",
-                    goods_img: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680835845in5ozzioXajVrP4jCu!!pic400x400.jpeg",
-                    brand_name: "骆驼",
-                    goods_active_border: "",
-                    _promote_price: "0.00",
-                    id: 199,
-                    name: "【舒适有型】春款牛皮革女靴英伦风休闲百搭马丁靴女",
-                    selled_count: 0,
-                    brief: "",
-                    _shop_price: 335,
-                    zk: "2.8",
-                    thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680835845in5ozzioXajVrP4jCu!!pic400x400.jpeg",
-                    url: "\/pages\/goods_details\/index?id=199"
-                },
-                {
-                    goods_id: 1,
-                    goods_sn: "SN000000",
-                    goods_name: "夏季简约通勤泡泡袖V领衬衫女时尚肌理感上衣",
-                    goods_basesell: 4,
-                    goods_number: 9998,
-                    goods_name_style: "+",
-                    market_price: "739.00",
-                    org_price: "140.00",
-                    promote_price: "",
-                    goods_tag: "",
-                    shop_price: "140.00",
-                    promote_start_date: 1709683200,
-                    promote_end_date: 1709769600,
-                    goods_brief: "",
-                    goods_thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680588975c7TFE65L3FX4ZAe4pB!!pic400x400.jpeg",
-                    goods_img: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680588975c7TFE65L3FX4ZAe4pB!!pic400x400.jpeg",
-                    brand_name: "BANANA BABY",
-                    goods_active_border: "",
-                    _promote_price: 0,
-                    id: 1,
-                    name: "夏季简约通勤泡泡袖V领衬衫女时尚肌理感上衣",
-                    selled_count: 4,
-                    brief: "",
-                    _shop_price: 140,
-                    zk: "1.9",
-                    thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680588975c7TFE65L3FX4ZAe4pB!!pic400x400.jpeg",
-                    url: "\/pages\/goods_details\/index?id=1"
-                },
-                {
-                    goods_id: 6,
-                    goods_sn: "SN000006",
-                    goods_name: "法式U领露锁骨短袖T恤女2023年夏季奶系温柔泡泡袖上衣",
-                    goods_basesell: 0,
-                    goods_number: 9999,
-                    goods_name_style: "+",
-                    market_price: "328.00",
-                    org_price: "78.00",
-                    promote_price: "",
-                    goods_tag: "",
-                    shop_price: "78.00",
-                    promote_start_date: 1709683200,
-                    promote_end_date: 1709769600,
-                    goods_brief: "",
-                    goods_thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680589546tPrOZyKK683sfEOCq7!!pic400x400.jpeg",
-                    goods_img: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680589546tPrOZyKK683sfEOCq7!!pic400x400.jpeg",
-                    brand_name: "KUHNMARVIN",
-                    goods_active_border: "",
-                    _promote_price: 0,
-                    id: 6,
-                    name: "法式U领露锁骨短袖T恤女2023年夏季奶系温柔泡泡袖上衣",
-                    selled_count: 0,
-                    brief: "",
-                    _shop_price: 78,
-                    zk: "2.4",
-                    thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680589546tPrOZyKK683sfEOCq7!!pic400x400.jpeg",
-                    url: "\/pages\/goods_details\/index?id=6"
-                }
-            ],
-            user_type_on: 0,
-            orders: [
-                {
-                    order_id: 91,
-                    user_id: 69,
-                    parent_order_id: 0,
-                    order_sn: "20240314994543",
-                    add_time: 1710395530,
-                    comment_status: 0,
-                    invoice_no: "",
-                    order_amount: "0.00",
-                    consignee: "测试",
-                    invoice_apply_id: 0,
-                    shipping_name: "商家配送",
-                    shipping_id: 27,
-                    shipping_fee: "0.00",
-                    order_status: 1,
-                    shipping_status: 2,
-                    pay_status: 2,
-                    pay_id: 0,
-                    pay_name: "",
-                    pay_type: 0,
-                    distribution_status: 0,
-                    total_fee: "399.00",
-                    detail_status: {
-                        order_id: 91,
-                        user_id: 69,
-                        parent_order_id: 0,
-                        order_sn: "20240314994543",
-                        add_time: 1710395530,
-                        comment_status: 0,
-                        invoice_no: "",
-                        order_amount: "0.00",
-                        consignee: "测试",
-                        invoice_apply_id: 0,
-                        shipping_name: "商家配送",
-                        shipping_id: 27,
-                        shipping_fee: "0.00",
-                        order_status: 1,
-                        shipping_status: 2,
-                        pay_status: 2,
-                        pay_id: 0,
-                        pay_name: "",
-                        pay_type: 0,
-                        distribution_status: 0,
-                        total_fee: "399.00",
-                        handler: {
-                            order_view: {
-                                name: "订单详情",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/member\/order\/detail.html?order_id=91",
-                                url_wechat: "\/pages\/user_order_detail\/index?order_id=91"
-                            },
-                            order_cancel: {
-                                name: "取消订单",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/member\/order\/cancel\/?order_id=91",
-                                url_wechat: "\/pages\/cancel_order\/index?id=91",
-                                confirm: "您确定要取消该订单吗？如果订单已付款，款项将在3个工作日内原路退回！"
-                            },
-                            order_gopay: {
-                                name: "去付款",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/order\/pay\/?id=91",
-                                url_wechat: "\/pages\/order_pay\/index?id=91"
-                            },
-                            order_rebuy: {
-                                name: "再次购买",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/member\/order\/rebuy\/?order_id=91",
-                                url_wechat: "\/pages\/order_pay\/index?id=91",
-                                enabled: true
-                            },
-                            order_return: {
-                                name: "申请售后",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/member\/return\/list.html?order_id=91",
-                                url_wechat: "\/pages\/user_return_list\/index",
-                                enabled: true,
-                                show: true
-                            },
-                            order_received: {
-                                name: "确认收货",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/member\/order\/affirm_received\/?order_id=91",
-                                url_wechat: "\/pages\/order_pay\/index?id=91",
-                                confirm: "你确认已经收到货物了吗？"
-                            },
-                            order_del: {
-                                name: "删除订单",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/member\/order\/del\/?order_id=91",
-                                url_wechat: "\/pages\/order_pay\/index?id=91",
-                                confirm: "您确定要删除该订单吗？"
-                            },
-                            order_comment: {
-                                name: "晒单",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/member\/order\/comment_info\/?order_id=91",
-                                url_wechat: "\/pages\/order_pay\/index?id=91",
-                                enabled: true
-                            },
-                            order_ask: {
-                                name: "订单咨询",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/member\/message\/list.html?order_id=91",
-                                url_wechat: "\/pages\/order_pay\/index?id=91"
-                            }
-                        },
-                        o_status: "已完成"
-                    },
-                    goods_list: [
-                        {
-                            rec_id: 254,
-                            goods_id: 285,
-                            goods_name: "FreeBuds 5i 主动降噪真无线蓝牙耳机",
-                            goods_sn: "SN000285",
-                            goods_thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680840767Fcx1Y4UrOSLemzJ71C!!pic200x200.jpeg",
-                            market_price: "599.00",
-                            goods_number: 1,
-                            goods_price: "399.00",
-                            goods_attr: "",
-                            is_real: 1,
-                            parent_id: 0,
-                            is_gift: 0,
-                            comment_status: 0,
-                            comment_show_status: 0,
-                            subtotal: "399.00",
-                            extension_code: "",
-                            url: "https:\/\/demo2.lyecs.com\/mobile\/item\/285.html",
-                            return_btn: {
-                                name: "申请售后",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/member\/return\/list.html?order_id=91",
-                                url_wechat: "\/pages\/user_return_list\/index",
-                                enabled: true,
-                                show: true
-                            }
-                        }
-                    ],
-                    item_count: 1,
-                    shipping_sn: "yto",
-                    comment_show: false,
-                    comment: false,
-                    enable_comment: 1,
-                    enable_comment_show: 1,
-                    order_time: "2024-03-14 13:52:10",
-                    old_total_fee: "399.00",
-                    order_amount_format: "0.00",
-                    pay_type_name: "在线支付"
-                },
-                {
-                    order_id: 88,
-                    user_id: 69,
-                    parent_order_id: 0,
-                    order_sn: "20240313395728",
-                    add_time: 1710313338,
-                    comment_status: 0,
-                    invoice_no: "",
-                    order_amount: "1188.00",
-                    consignee: "测试",
-                    invoice_apply_id: 0,
-                    shipping_name: "圆通速递",
-                    shipping_id: 27,
-                    shipping_fee: "0.00",
-                    order_status: 2,
-                    shipping_status: 0,
-                    pay_status: 0,
-                    pay_id: 0,
-                    pay_name: "",
-                    pay_type: 0,
-                    distribution_status: 0,
-                    total_fee: "1188.00",
-                    detail_status: {
-                        order_id: 88,
-                        user_id: 69,
-                        parent_order_id: 0,
-                        order_sn: "20240313395728",
-                        add_time: 1710313338,
-                        comment_status: 0,
-                        invoice_no: "",
-                        order_amount: "1188.00",
-                        consignee: "测试",
-                        invoice_apply_id: 0,
-                        shipping_name: "圆通速递",
-                        shipping_id: 27,
-                        shipping_fee: "0.00",
-                        order_status: 2,
-                        shipping_status: 0,
-                        pay_status: 0,
-                        pay_id: 0,
-                        pay_name: "",
-                        pay_type: 0,
-                        distribution_status: 0,
-                        total_fee: "1188.00",
-                        handler: {
-                            order_view: {
-                                name: "订单详情",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/member\/order\/detail.html?order_id=88",
-                                url_wechat: "\/pages\/user_order_detail\/index?order_id=88"
-                            },
-                            order_cancel: {
-                                name: "取消订单",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/member\/order\/cancel\/?order_id=88",
-                                url_wechat: "\/pages\/cancel_order\/index?id=88",
-                                confirm: "您确定要取消该订单吗？如果订单已付款，款项将在3个工作日内原路退回！"
-                            },
-                            order_gopay: {
-                                name: "去付款",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/order\/pay\/?id=88",
-                                url_wechat: "\/pages\/order_pay\/index?id=88"
-                            },
-                            order_rebuy: {
-                                name: "再次购买",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/member\/order\/rebuy\/?order_id=88",
-                                url_wechat: "\/pages\/order_pay\/index?id=88",
-                                enabled: true
-                            },
-                            order_return: {
-                                name: "申请售后",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/member\/return\/list.html?order_id=88",
-                                url_wechat: "\/pages\/user_return_list\/index"
-                            },
-                            order_received: {
-                                name: "确认收货",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/member\/order\/affirm_received\/?order_id=88",
-                                url_wechat: "\/pages\/order_pay\/index?id=88",
-                                confirm: "你确认已经收到货物了吗？"
-                            },
-                            order_del: {
-                                name: "删除订单",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/member\/order\/del\/?order_id=88",
-                                url_wechat: "\/pages\/order_pay\/index?id=88",
-                                confirm: "您确定要删除该订单吗？",
-                                show: true
-                            },
-                            order_comment: {
-                                name: "评价",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/member\/order\/comment_info\/?order_id=88",
-                                url_wechat: "\/pages\/order_pay\/index?id=88"
-                            },
-                            order_ask: {
-                                name: "订单咨询",
-                                url: "https:\/\/demo2.lyecs.com\/mobile\/member\/message\/list.html?order_id=88",
-                                url_wechat: "\/pages\/order_pay\/index?id=88"
-                            }
-                        },
-                        o_status: "已取消"
-                    },
-                    goods_list: [
-                        {
-                            rec_id: 223,
-                            goods_id: 284,
-                            goods_name: "WATCH GT3 46mm  两周续航\/\/血氧检测智能手表",
-                            goods_sn: "SN000284",
-                            goods_thumb: "https:\/\/oss.lyecs.com\/img\/item\/demo\/1680840755a9AIBubnFaWyI7Ygqv!!pic200x200.jpeg",
-                            market_price: "1388.00",
-                            goods_number: 1,
-                            goods_price: "1188.00",
-                            goods_attr: "",
-                            is_real: 1,
-                            parent_id: 0,
-                            is_gift: 0,
-                            comment_status: 0,
-                            comment_show_status: 0,
-                            subtotal: "1188.00",
-                            extension_code: "",
-                            url: "https:\/\/demo2.lyecs.com\/mobile\/item\/284.html"
-                        }
-                    ],
-                    item_count: 1,
-                    shipping_sn: "yto",
-                    comment_show: false,
-                    comment: false,
-                    order_time: "2024-03-13 15:02:18",
-                    old_total_fee: "1188.00",
-                    order_amount_format: "1188.00",
-                    pay_type_name: "在线支付"
-                }
-            ],
-            bottom_nav: [
-                {
-                    pic_org: "img\/gallery\/demo\/1680247587QG2y44h7a7f0M1dx9T!!pic.png",
-                    pic_org2: "img\/gallery\/demo\/16802475870v7jHejQtgFvn7Yd6e!!pic.png",
-                    pic_thumb: "img\/gallery\/demo\/1680247587QG2y44h7a7f0M1dx9T!!pic200x200.png",
-                    pic_thumb2: "img\/gallery\/demo\/16802475870v7jHejQtgFvn7Yd6e!!pic200x200.png",
-                    pic_title: "首页",
-                    pic_link: {
-                        link: "index.html",
-                        wechat_link: "\/pages\/index\/index",
-                        title: "商城首页"
-                    },
-                    pic_thumb_format: "https:\/\/demo2.lyecs.com\/img\/gallery\/demo\/1680247587QG2y44h7a7f0M1dx9T!!pic200x200.png",
-                    pic_org_format: "https:\/\/demo2.lyecs.com\/img\/gallery\/demo\/1680247587QG2y44h7a7f0M1dx9T!!pic.png",
-                    pic_thumb2_format: "https:\/\/demo2.lyecs.com\/img\/gallery\/demo\/16802475870v7jHejQtgFvn7Yd6e!!pic200x200.png",
-                    pic_org2_format: "https:\/\/demo2.lyecs.com\/img\/gallery\/demo\/16802475870v7jHejQtgFvn7Yd6e!!pic.png",
-                    pic_link_format: "https:\/\/demo2.lyecs.com\/mobile\/index.html"
-                },
-                {
-                    pic_org: "img\/gallery\/demo\/16802476274VrIgYXSKI9GN9O3yG!!pic.png",
-                    pic_org2: "img\/gallery\/demo\/1680247634WITeORzHMPv2y72Nxr!!pic.png",
-                    pic_thumb: "img\/gallery\/demo\/16802476274VrIgYXSKI9GN9O3yG!!pic200x200.png",
-                    pic_thumb2: "img\/gallery\/demo\/1680247634WITeORzHMPv2y72Nxr!!pic200x200.png",
-                    pic_title: "分类",
-                    pic_link: {
-                        link: "catalog.html",
-                        wechat_link: "\/pages\/goods_cate\/index",
-                        title: "分类页面（仅分类）"
-                    },
-                    pic_thumb_format: "https:\/\/demo2.lyecs.com\/img\/gallery\/demo\/16802476274VrIgYXSKI9GN9O3yG!!pic200x200.png",
-                    pic_org_format: "https:\/\/demo2.lyecs.com\/img\/gallery\/demo\/16802476274VrIgYXSKI9GN9O3yG!!pic.png",
-                    pic_thumb2_format: "https:\/\/demo2.lyecs.com\/img\/gallery\/demo\/1680247634WITeORzHMPv2y72Nxr!!pic200x200.png",
-                    pic_org2_format: "https:\/\/demo2.lyecs.com\/img\/gallery\/demo\/1680247634WITeORzHMPv2y72Nxr!!pic.png",
-                    pic_link_format: "https:\/\/demo2.lyecs.com\/mobile\/catalog.html"
-                },
-                {
-                    pic_org: "img\/gallery\/demo\/1680247656ZxrHGLra5jt3Wausu3!!pic.png",
-                    pic_org2: "img\/gallery\/demo\/1680247659hhhxwNMyQg7kBDrxnc!!pic.png",
-                    pic_thumb: "img\/gallery\/demo\/1680247656ZxrHGLra5jt3Wausu3!!pic200x200.png",
-                    pic_thumb2: "img\/gallery\/demo\/1680247659hhhxwNMyQg7kBDrxnc!!pic200x200.png",
-                    pic_title: "购物车",
-                    pic_link: {
-                        link: "cart.html",
-                        wechat_link: "\/pages\/cart\/index",
-                        title: "购物车"
-                    },
-                    pic_thumb_format: "https:\/\/demo2.lyecs.com\/img\/gallery\/demo\/1680247656ZxrHGLra5jt3Wausu3!!pic200x200.png",
-                    pic_org_format: "https:\/\/demo2.lyecs.com\/img\/gallery\/demo\/1680247656ZxrHGLra5jt3Wausu3!!pic.png",
-                    pic_thumb2_format: "https:\/\/demo2.lyecs.com\/img\/gallery\/demo\/1680247659hhhxwNMyQg7kBDrxnc!!pic200x200.png",
-                    pic_org2_format: "https:\/\/demo2.lyecs.com\/img\/gallery\/demo\/1680247659hhhxwNMyQg7kBDrxnc!!pic.png",
-                    pic_link_format: "https:\/\/demo2.lyecs.com\/mobile\/cart.html"
-                },
-                {
-                    pic_org: "img\/gallery\/demo\/1680247679vqWSO1Ci9sAGJCzzZa!!pic.png",
-                    pic_org2: "img\/gallery\/demo\/1680247682VX4iwQSO82hyzUedDz!!pic.png",
-                    pic_thumb: "img\/gallery\/demo\/1680247679vqWSO1Ci9sAGJCzzZa!!pic200x200.png",
-                    pic_thumb2: "img\/gallery\/demo\/1680247682VX4iwQSO82hyzUedDz!!pic200x200.png",
-                    pic_title: "个人中心",
-                    pic_link: {
-                        link: "member\/",
-                        wechat_link: "\/pages\/user\/user",
-                        title: "会员首页"
-                    },
-                    pic_thumb_format: "https:\/\/demo2.lyecs.com\/img\/gallery\/demo\/1680247679vqWSO1Ci9sAGJCzzZa!!pic200x200.png",
-                    pic_org_format: "https:\/\/demo2.lyecs.com\/img\/gallery\/demo\/1680247679vqWSO1Ci9sAGJCzzZa!!pic.png",
-                    pic_thumb2_format: "https:\/\/demo2.lyecs.com\/img\/gallery\/demo\/1680247682VX4iwQSO82hyzUedDz!!pic200x200.png",
-                    pic_org2_format: "https:\/\/demo2.lyecs.com\/img\/gallery\/demo\/1680247682VX4iwQSO82hyzUedDz!!pic.png",
-                    pic_link_format: "https:\/\/demo2.lyecs.com\/mobile\/member\/",
-                    active: true
-                }
-            ],
-            wap_user_center_ads: {
-                mould_ad: {
-                    mould_ad_id: 79,
-                    mould_ad_name: "会员中心页面通宽广告",
-                    mould_ad_sn: "wap_user_center_ads",
-                    mould_ad_data:
-                        'a:1:{i:0;a:6:{s:7:"ad_link";s:10:"index.html";s:8:"ad_title";s:0:"";s:7:"ad_desc";s:0:"";s:7:"pic_url";s:54:"img\/gallery\/demo\/16818893504X1tR2FM7F5yj0ohwb!!pic.png";s:9:"pic_thumb";s:61:"img\/gallery\/demo\/16818893504X1tR2FM7F5yj0ohwb!!pic200x200.png";s:7:"ad_sort";i:1;}}',
-                    mould_ad_type: "1",
-                    mould_ad_page: "WAP会员中心页",
-                    mould_ad_show: 1,
-                    mould_ad_target: 0,
-                    mould_ad_color: "",
-                    is_admin: 1,
-                    mould_ad_min_num: 1,
-                    mould_ad_max_num: 1,
-                    mould_ad_desc: "",
-                    mould_ad_sort: 50,
-                    mould_item_id: 0,
-                    mould_is_auto: 1,
-                    mould_margin: 0,
-                    mould_extend: "",
-                    mould_html: "",
-                    store_id: 0
-                },
-                ad_list: [
-                    {
-                        ad_link: "index.html",
-                        ad_title: "",
-                        ad_desc: "",
-                        pic_url: "https:\/\/demo2.lyecs.com\/img\/gallery\/demo\/16818893504X1tR2FM7F5yj0ohwb!!pic.png",
-                        pic_thumb: "img\/gallery\/demo\/16818893504X1tR2FM7F5yj0ohwb!!pic200x200.png",
-                        ad_sort: 1
-                    }
-                ],
-                ad_extend: []
-            }
-        }
-    };
-    member.value = result.data.member;
-    count.value = result.data.count;
-    history_count.value = "0";
-    img_domain.value = result.data.img_domain;
-    wap_user_center_ads.value = result.data.wap_user_center_ads;
-    guess_like.value = result.data.guess_like;
+const __getUser = async () => {
+    try {
+        const result = await getUser();
+        userStore.setUserInfo(result.item)
+    } catch (error) {
+        console.error(error);
+    }
 };
 const goPages = (url: string) => {
     uni.navigateTo({
@@ -1041,10 +228,20 @@ const goPages = (url: string) => {
 };
 const onChooseAvatar = () => {};
 onLoad(() => {
-    getUserInfo();
+    if (!userStore.token) {
+        return uni.navigateTo({
+            url: "/pages/login/index"
+        });
+    }
+    __getUser();
 });
 
 onShow(() => {
+    if (!userStore.token) {
+        return uni.navigateTo({
+            url: "/pages/login/index"
+        });
+    }
     uni.hideTabBar();
 });
 </script>
