@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { getCurrentInstance } from "vue";
 import { onLaunch, onShow, onExit } from "@dcloudio/uni-app";
 import { useConfigStore } from "@/store/config";
 import { usetabbarStore} from '@/store/tabbar'
 const configStore = useConfigStore();
 const tabbarStore = usetabbarStore()
 onLaunch(() => {
-
+    // const instance = getCurrentInstance();
+    // const query = uni.createSelectorQuery().in(instance)
     configStore.getNavHeight();
-    
     configStore.setXClientType();
     tabbarStore.getTabbarList()
 });

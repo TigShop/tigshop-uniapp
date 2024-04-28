@@ -10,8 +10,8 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useConfigStore } from "@/store/config";
-const configStore = useConfigStore();
+import { usetabbarStore } from "@/store/tabbar";
+const tabbarStore = usetabbarStore();
 const props = defineProps({
     height: {
         type: Number,
@@ -38,7 +38,7 @@ const props = defineProps({
 const styleFormat = computed(() => {
     return {
         right: `right:${props.right}rpx;`,
-        bottom: `bottom:${props.bottom + configStore.tabbarHeightNum}rpx;`,
+        bottom: `bottom:${props.bottom + tabbarStore.tabbarHeightNum}rpx;`,
         width: `width:${props.width}rpx;`,
         height: `height:${props.height}rpx;`
     };

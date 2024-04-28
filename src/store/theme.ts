@@ -1,4 +1,5 @@
 // import { getTheme } from "@/api/user/user";
+import { defineStore } from "pinia";
 export const useThemeStore = defineStore("theme", {
     state: () => {
         return {

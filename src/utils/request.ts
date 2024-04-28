@@ -1,8 +1,9 @@
 import indexConfig from "@/config/index.config";
+import pinia from '@/store/index';
 import { useUserStore } from "@/store/user";
 import { useConfigStore } from "@/store/config"
-const userStore = useUserStore();
-const configStore = useConfigStore();
+const userStore = useUserStore(pinia);
+const configStore = useConfigStore(pinia);
 
 // 定义请求配置接口
 interface RequestConfig {

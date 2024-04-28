@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { getMobileNav } from "@/api/tabbar";
 export const usetabbarStore = defineStore("tabbar", {
     state: () => ({
         tabbarList: [] as any[],
@@ -11,11 +12,11 @@ export const usetabbarStore = defineStore("tabbar", {
     },
     actions: {
         async getTabbarList() {
-            this.tabbarList = [
+            const defaultTabbarList = [
                 {
                     pagePath: "/pages/index/index",
                     image: "/static/images/common/ico_1.png",
-                    activeImage: "/static/images/common/ico_1h.png",
+                    pic_active_thumb: "/static/images/common/ico_1h.png",
                     text: "首页"
                 },
                 {
@@ -37,8 +38,15 @@ export const usetabbarStore = defineStore("tabbar", {
                     text: "我的"
                 }
             ];
-
-
+            this.tabbarList = defaultTabbarList;
+            // try {
+            //     const result = await getMobileNav();
+            //     console.log(result)
+            //     this.tabbarList = result.item.data.nav_list;
+            // } catch (error) {
+            //     console.error(error);
+            //     this.tabbarList = defaultTabbarList;
+            // }
         }
     }
 });
