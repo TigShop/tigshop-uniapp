@@ -1,7 +1,8 @@
 <template>
     <view style="height: 100%">
         <navbar :parameter="parameter"></navbar>
-        <view class="pageMain productSort" v-if="loading">
+        <view class="page-loading" v-if="loading"><view class="ico"></view></view>
+        <view class="pageMain productSort">
             <view class="header acea-row row-center-wrapper" :style="'top:' + navH + 'rpx'">
                 <view @click.stop="toSearch" class="acea-row row-between-wrapper input">
                     <text class="iconfont-h5 icon-sousuo"></text>
@@ -9,7 +10,7 @@
                 </view>
             </view>
             <view class="tab-box flex align-center justify-between">
-                <view class="item flex align-center" v-for="(item, index) in tabList" :key="item.value" :class="{active: tabIndex === item.value}" @click="onChangeTab(item)">
+                <view class="item flex align-center" v-for="item in tabList" :key="item.value" :class="{active: tabIndex === item.value}" @click="onChangeTab(item)">
                     <text>{{ item.label }}</text>
                     <view class="price-ico-box flex flex-column" v-show="item.value === 'price' && tabIndex == item.value">
                         <text class="iconfont-h5 icon-shangjiantou" :class="{order: item.order === 'asc'}"></text>
@@ -23,45 +24,37 @@
             </view>
             <view class="tag-row">
                 <view class="tag-list flex-wrap align-center">
-                    <view class="tag-item mr10">
-                        <text>搜索关键词"1"</text>
+                    <view class="tag-item mr10" v-if="filterParams.keyword" @click="del('keyword')">
+                        <text>搜索关键词"{{ filterParams.keyword }}"</text>
                         <uni-icons type="closeempty" size="10"></uni-icons>
                     </view>
-                    <view class="tag-item mr10">
-                        <text>骆驼</text>
+                    <view class="tag-item mr10 brand" v-if="brandNameTree.length > 0" @click="del('brand')">
+                        <text>{{ brandNameTree.join(',') }}</text>
                         <uni-icons type="closeempty" size="10"></uni-icons>
                     </view>
-                    <view class="tag-item mr10">
-                        <text>122 - 444</text>
+                    <view class="tag-item mr10" v-if="filterParams.max || filterParams.min" @click="del('price')">
+                        <text>{{ filterParams.min || 0 }} - {{ filterParams.max || 0}}</text>
                         <uni-icons type="closeempty" size="10"></uni-icons>
                     </view>
-                    <view class="tag-item">
-                        <text>配饰</text>
-                        <uni-icons type="closeempty" size="10"></uni-icons>
-                    </view>
-                    <view class="tag-interval">
-                        <uni-icons type="right" size="10"></uni-icons>
-                    </view>
-                    <view class="tag-item">
-                        <text>帽子</text>
-                        <uni-icons type="closeempty" size="10"></uni-icons>
-                    </view>
-                    <view class="tag-interval">
-                        <uni-icons type="right" size="10"></uni-icons>
-                    </view>
-                    <view class="tag-item">
-                        <text>小黑伞</text>
-                        <uni-icons type="closeempty" size="10"></uni-icons>
+                    <view class="flex align-center" v-for="(item, index) in categoryTree" :key="index" @click="delCategory('category', index)">
+                        <view class="tag-item">
+                            <text>{{item.category_name}}</text>
+                            <uni-icons type="closeempty" size="10"></uni-icons>
+                        </view>
+                        <view class="tag-interval" v-if="index < categoryTree.length - 1">
+                            <uni-icons type="right" size="10"></uni-icons>
+                        </view>
                     </view>
                 </view>
             </view>
 			<!-- 加载商品模块 -->
-		<!-- 	<view class="goods-container" v-if="categoryId > 0">
-			    <masonry :commodityList="commodityList"></masonry>
-			</view> -->
+			<view class="goods-container" v-if="!loading">
+			    <masonry :commodityList="productList"></masonry>
+			</view>
+
 			<tigpopup v-model:show="showDrawerRef" width="88vw" position="right" :showClose="false" :showTitle="false" paddingBottom="0">
 			    <view class="search_condition">
-			    	<view class="tab_box" v-if="json.category">
+			    	<view class="tab_box" v-if="categoryList.length > 0">
 			    		<view class="title-box flex justify-between">
 			    			<view class="txt">
 			    				分类
@@ -72,13 +65,13 @@
 			    			</view>
 			    		</view>
 			    		<view class="tabs flex-wrap">
-			    			<view class="item" v-for="(item, index) in (categoryShow ? json.category : json.category.slice(0, 3))" :key="index" @click="filterParams.cat = item.category_id" :class="{'active': filterParams.cat == item.category_id}">
+			    			<view class="item" v-for="(item, index) in (categoryShow ? categoryList : categoryList.slice(0, 3))" :key="index" @click="filterParams.cat = item.category_id" :class="{'active': filterParams.cat == item.category_id}">
 			    				<uni-icons v-if="filterParams.cat == item.category_id" type="checkmarkempty" size="12"></uni-icons>
 			    				{{item.category_name}}
 			    			</view>
 			    		</view>
 			    	</view>
-			    	<view class="tab_box" v-if="json.brand">
+			    	<view class="tab_box" v-if="brandList.length > 0">
 			    		<view class="title-box flex justify-between">
 			    			<view class="txt">
 			    				品牌
@@ -89,7 +82,7 @@
 			    			</view>
 			    		</view>
 			    		<view class="tabs flex-wrap">
-			    			<view class="item" v-for="(item, index) in (brandShow ? json.brand : json.brand.slice(0, 3))" @click="onChangeBrand(item.brand_id)" :key="index" :class="{'active': filterParams.brand.includes(item.brand_id)}">
+			    			<view class="item" v-for="(item, index) in (brandShow ? brandList : brandList.slice(0, 3))" @click="onChangeBrand(item)" :key="index" :class="{'active': filterParams.brand.includes(item.brand_id)}">
 			    				<uni-icons v-if="filterParams.brand.includes(item.brand_id)" type="checkmarkempty" size="12"></uni-icons>
 			    				{{item.brand_name}}  
 			    			</view>
@@ -107,8 +100,9 @@
 			    			<input class="uni-input" type="number" v-model="filterParams.max" placeholder="最高价" />
 			    		</view>
 			    	</view>
+                    <view style="height: 100rpx;"></view>
 					<view class="btn-box flex">
-						<view class="btn">重置</view>
+						<view class="btn" @click="reset">重置</view>
 						<view class="btn submit" @click="submit">确定</view>
 					</view>
 			    </view>
@@ -146,6 +140,37 @@ const filterParams = reactive<ProductFilterParams>({   //初始化用于查询�
 	brand: [],
 	page_type: 'search'
 });
+const brandList = ref<Brand[]>([])
+const brandNameTree = ref<string[]>([])
+const categoryList = ref<filterSeleted[]>([])
+const categoryTree = ref<filterSeleted[]>([])
+const productList = ref<ProductList[]>([])
+// 获取列表的查询结果
+const loadFilter = async () => {
+    loading.value = true;
+    try {
+        const productFilter = await getCategoryProductFilter({...filterParams});
+        console.log('分类筛选项',productFilter)
+        brandList.value = productFilter.filter.brand;
+        categoryList.value = productFilter.filter.category;
+        const productInfo = await getCategoryProduct({...filterParams});
+        productList.value = productInfo.product_list
+        console.log('商品列表',productInfo)
+        if(filterParams.cat){
+            const tree = await getCategoryTree(filterParams.cat);
+            categoryTree.value = tree.category_tree
+            console.log('分类树',tree)
+        }
+    } catch (error:any) {
+        uni.showToast({
+            title: error.message,
+            icon: "none"
+        })
+    } finally {
+        loading.value = false;
+    }
+
+}
 const tabIndex = ref('default')
 const tabList = ref([
     {
@@ -168,9 +193,35 @@ const onChangeTab = (item:any) => {
     }else{
         item.order = ''
     }
-    tabIndex.value = item.value;
     console.log('筛选条件:',item)
+    tabIndex.value = item.value;
+    filterParams.sort = item.value;
+    filterParams.order = item.order;
+    loadFilter()
 };
+
+const del = (type:string) => {
+    if(type == "brand"){
+        filterParams.brand = [];
+        brandNameTree.value = [];
+    }else if(type == "price"){
+        filterParams.min = '';
+        filterParams.max = '';
+    }else if(type == "keyword"){
+        filterParams.keyword = '';
+    }
+    loadFilter()
+}
+const delCategory = (type:string, index:number) => {
+    if(type == "category"){
+        if(index > 0) {
+            filterParams.cat  = categoryTree.value[index -1].category_id
+        }else{
+            filterParams.cat = 0;
+        }
+        loadFilter()
+    }
+}
 
 const showDrawerRef = ref<boolean>(false)
 // 打开窗口
@@ -187,7 +238,14 @@ const toSearch = () => {
         url: "/pages/search/index"
     });
 };
-onLoad(() => {
+onLoad((option:any) => {
+    if(option && option.keyWords){
+        filterParams.keyword = option.keyWords;
+    }
+    if(option && option.category_id){
+        filterParams.cat = option.category_id;
+    }
+    loadFilter()
 });
 
 onShow(() => {
@@ -196,118 +254,32 @@ onShow(() => {
 const categoryShow = ref<boolean>(false)
 const brandShow = ref<boolean>(false)
 
-const onChangeBrand = (id:number) => {
-	let index = filterParams.brand.indexOf(id); // 查找新书在数组中的下标
+const onChangeBrand = (item:any) => {
+	let index = filterParams.brand.indexOf(item.brand_id); // 查找新书在数组中的下标
 	if (index !== -1) {
 	  filterParams.brand.splice(index,1)
+      brandNameTree.value.splice(index,1)
 	} else {
-	  filterParams.brand.push(id);
+	  filterParams.brand.push(item.brand_id);
+      brandNameTree.value.push(item.brand_name);
 	}
 }
 const submit = () => {
-    // if(Number(filterParams.min) > Number(filterParams.max)){
+    if(Number(filterParams.min) > Number(filterParams.max)){
         uni.showToast({
             title: '最低价不能大于最高价',
             icon: 'none'
         });
-    // }
+        return
+    }
+    loadFilter()
+    closeDrawer()
 }
-const json = {
-    "category": [
-        {
-            "category_id": 85,
-            "category_name": "女单鞋"
-        },
-        {
-            "category_id": 86,
-            "category_name": "女休闲鞋"
-        },
-        {
-            "category_id": 87,
-            "category_name": "女靴"
-        },
-        {
-            "category_id": 88,
-            "category_name": "男休闲鞋"
-        },
-        {
-            "category_id": 89,
-            "category_name": "男商务鞋"
-        },
-        {
-            "category_id": 90,
-            "category_name": "女包"
-        },
-        {
-            "category_id": 91,
-            "category_name": "男包"
-        }
-    ],
-    "brand": [
-        {
-            "brand_id": 1,
-            "brand_name": "PRICH22",
-            "brand_logo": "img/gallery/202306/1687857585PUWPIq3otyfgAdLZ2e!!pic.jpeg",
-            "first_word": "P",
-            "is_show": 1
-        },
-        {
-            "brand_id": 6,
-            "brand_name": "纳纹",
-            "brand_logo": "img/demo/brand/202304/1680589636G6nqvy9rts2roi8TJg!!pic.png",
-            "first_word": "N",
-            "is_show": 1
-        },
-        {
-            "brand_id": 21,
-            "brand_name": "骆驼",
-            "brand_logo": "img/demo/brand/202304/1680762356jFjxymSXUvj809DUnB!!pic.png",
-            "first_word": "L",
-            "is_show": 1
-        },
-        {
-            "brand_id": 25,
-            "brand_name": "马克华菲",
-            "brand_logo": "img/demo/brand/202304/16807624781UftvQVXIJP3rBXPvs!!pic.png",
-            "first_word": "M",
-            "is_show": 1
-        },
-        {
-            "brand_id": 91,
-            "brand_name": "接吻猫",
-            "brand_logo": "img/demo/brand/202304/1680835503yg9nki0rZiAu93UaZJ!!pic.png",
-            "first_word": "J",
-            "is_show": 1
-        },
-        {
-            "brand_id": 92,
-            "brand_name": "欧利萨斯",
-            "brand_logo": "img/demo/brand/202304/1680835646O0BmQQOr3v4NXJeCnk!!pic.png",
-            "first_word": "O",
-            "is_show": 1
-        },
-        {
-            "brand_id": 93,
-            "brand_name": "大洋洲•袋鼠",
-            "brand_logo": "img/demo/brand/202304/1680835674a5uZwTOvWTe7QMnzOu!!pic.png",
-            "first_word": "D",
-            "is_show": 1
-        },
-        {
-            "brand_id": 94,
-            "brand_name": "木林森",
-            "brand_logo": "img/demo/brand/202304/1680835756LUDq4FMmnGD2dmitP1!!pic.png",
-            "first_word": "M",
-            "is_show": 1
-        },
-        {
-            "brand_id": 95,
-            "brand_name": "ECCO",
-            "brand_logo": "img/demo/brand/202304/16808358287OMqggz3sfP8jqOE4A!!pic.png",
-            "first_word": "E",
-            "is_show": 1
-        }
-    ]
+const reset = () => {
+    filterParams.min = '';
+    filterParams.max = '';
+    filterParams.brand = [];
+    filterParams.cat = 0;
 }
 </script>
 <style lang="scss" scoped>
@@ -453,9 +425,9 @@ const json = {
 			}
 		}
 		.btn-box{
-			position: absolute;
+			position: fixed;
 			bottom: 0;
-			left:0;
+			right:0;
 			width: 100%;
 			box-shadow: 0px -1px 3px #d7d7d7;
 			.btn{
@@ -470,5 +442,8 @@ const json = {
 			}
 		}
 	}
+}
+.goods-container{
+    padding: 20rpx;
 }
 </style>

@@ -6,6 +6,7 @@ export const getCategoryTree = (id:number) => {
     return request<SearchFilterResult>({
         url: "/category/parent_tree",
         method: "get",
+        data: {id}
     });
 };
 

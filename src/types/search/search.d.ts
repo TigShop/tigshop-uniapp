@@ -27,8 +27,8 @@ export interface ProductFilterParams {
     size: number,
     sort?: string,  //销量:sale 新品:time 价格: price
     order?: string, //升序:asc 降序:desc
-    max: string;  //最高价
-    min: string;  //最低价
+    max: any;  //最高价
+    min: any;  //最低价
     keyword?: string;
     cat?: number; //分类id
     brand: number[]; //品牌id
@@ -38,13 +38,13 @@ export interface ProductFilterParams {
 export interface ProductFilterResult {
     product_list: ProductList[];
     filter: {
-        brand?: Brand[];
-        category?: filterSeleted[];
+        brand: Brand[];
+        category: filterSeleted[];
     }
     errcode: number;
 }
 export interface Brand {
-    brand_id?: number;
+    brand_id: number;
     brand_name?: string;
     brand_logo?: string;
     is_show?:number;
