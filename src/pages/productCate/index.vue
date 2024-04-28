@@ -8,9 +8,7 @@
                     <view class="header acea-row row-center-wrapper" :style="'top:' + navH + 'rpx'">
                         <view @click.stop="toSearch" class="acea-row row-between-wrapper input">
                             <text class="iconfont-h5 icon-sousuo"></text>
-                            <view class="txt">
-                                点击搜索商品信息
-                            </view>
+                            <view class="txt"> 点击搜索商品信息 </view>
                         </view>
                     </view>
                     <view class="aside" :style="'top:' + navH + 'rpx;margin-top:98rpx'">
@@ -42,8 +40,10 @@
                                                 :url="'/pages/search/index?category=' + hot.category_id + '&title=' + hot.category_name"
                                                 class="item acea-row row-column row-middle"
                                             >
-                                                <view class="picture"><image lazy-load :src="imageFormat(hot.category_pic || '')" mode="aspectFill"></image
-                                                ></view>
+                                                <view class="picture">
+                                                    <!-- <image lazy-load :src="imageFormat(hot.category_pic || '')" mode="aspectFill"></image> -->
+                                                    <tigImage v-model:src="hot.category_pic"  mode="aspectFill"></tigImage>
+                                                </view>
                                                 <view class="name line1">{{ hot.category_name }}</view>
                                             </navigator>
                                         </block>
@@ -137,10 +137,9 @@ const getAllCategory = async () => {
 };
 
 const changeCat = (id: number, item?: any) => {
-    infoScroll()
+    infoScroll();
     cat_id.value = id;
-    if(item)
-    childCat.value = item.children;
+    if (item) childCat.value = item.children;
 };
 const getHotCatList = async () => {
     try {
