@@ -66,17 +66,17 @@
                             </view>
                         </view>
                         <view class="wrap">
-                            <view class="li" @click="goPages('/pages/user_order_list/index?order_type=2')">
+                            <view class="li" @click="goPages('/pages/user/order/index?type=await_pay')">
                                 <text class="iconfont icon-daifukuan"></text>
                                 <view class="txt">待付款</view>
                                 <text class="counts" v-if="count.re_pay > 0">{{ count.re_pay }}</text>
                             </view>
-                            <view class="li" @click="goPages('/pages/user_order_list/index?order_type=5')">
+                            <view class="li" @click="goPages('/pages/user/order/index?type=await_shipping')">
                                 <text class="iconfont icon-daishouhuo1"></text>
                                 <view class="txt">待收货</view>
                                 <text class="counts" v-if="count.re_receive > 0">{{ count.re_receive }}</text>
                             </view>
-                            <view class="li" @click="goPages('/pages/user_order_list/index?order_type=3')">
+                            <view class="li" @click="goPages('/pages/user/order/index?type=await_comment')">
                                 <text class="iconfont icon-pingjia"></text>
                                 <view class="txt">待评价</view>
                                 <text class="counts" v-if="count.stay_comment_order > 0">{{ count.stay_comment_order }}</text>
