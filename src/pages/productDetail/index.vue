@@ -70,7 +70,7 @@
             </view>
 
             <view class="detail-li-main attribute">
-                <view class="detail-li-con" @click="selecAttr">
+                <view class="detail-li-con flex justify-between" @click="selecAttr">
                     <view class="relation_text">
                         <text class="title">已选</text>
                         <text class="goods_relation_attr">
@@ -91,7 +91,27 @@
                         <text class="goods_number">{{ selectNumber }}</text>
                         件
                     </view>
-                    <image lazy-load class="more-ico" src="/static/images/common/more.png"></image>
+                    <uni-icons type="right" size="15"></uni-icons>
+                </view>
+                <view class="detail-li-con flex justify-between">
+                    <view class="relation_text">
+                        <view>
+                            <text class="title">送至</text>
+                            <text>西藏省 昌都市 贡觉县</text>
+                            <uni-icons type="location" size="15"></uni-icons>
+                        </view>
+                        <view>
+                            <text class="tips">由 LYECS 配送并提供售后服务</text>
+                        </view>
+                    </view>
+                    <uni-icons type="right" size="15"></uni-icons>
+                </view>
+                <view class="detail-li-con flex justify-between">
+                    <view class="relation_text">
+                        <text class="title">参数</text>
+                    </view>
+                    <view class="goods_attr line1">功能*防水等级*原装配件*防水深度*几心累哦弄个发发大师傅</view>
+                    <uni-icons type="right" size="15"></uni-icons>
                 </view>
                 <!-- <view class="detail-li-con" style="padding-top: 15rpx">
                     <view class="title">服务</view>
@@ -277,6 +297,11 @@ button::after {
 .relation_text text {
     display: inline-block;
 }
+.relation_text .tips {
+    color: $tig-color-primary;
+    margin-left: 80rpx;
+}
+
 .relation_text text .label {
     padding-right: 10rpx;
 }
