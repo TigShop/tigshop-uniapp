@@ -60,7 +60,7 @@
                     <view class="list-group my-order">
                         <view class="title acea-row row-between-wrapper">
                             <view class="">我的订单</view>
-                            <view class="more" @click="goPages('/pages/user_order_list/index')">
+                            <view class="more" @click="goPages('/pages/user/order/index')">
                                 <view>全部订单</view>
                                 <view class="iconfont icon-xiangyou"></view>
                             </view>

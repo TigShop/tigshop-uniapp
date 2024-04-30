@@ -66,8 +66,12 @@
 		{
 			"path": "pages/address/editRegion",
 			"style": {}
-		},{
+		},
+        {
             "path": "pages/user/historyProduct/index"
+        },
+        {
+            "path":"pages/user/order/index"
         }
 	],
 	"requiredPrivateInfos": [
