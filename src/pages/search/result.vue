@@ -51,6 +51,10 @@
 			<view class="goods-container" v-if="!loading">
 			    <masonry :commodityList="productList"></masonry>
 			</view>
+            <view class="loading-box" v-if="filterParams.page > 1">
+                <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
+                <view v-else>没有更多了~</view>
+            </view>
 
 			<tigpopup v-model:show="showDrawerRef" width="88vw" position="right" :showClose="false" :showTitle="false" paddingBottom="0">
 			    <view class="search_condition">
@@ -114,7 +118,7 @@
 <script lang="ts" setup>
 import navbar from "@/components/navbar/index.vue";
 import { ref, reactive } from "vue";
-import { onLoad, onShow } from "@dcloudio/uni-app";
+import { onLoad, onShow, onReachBottom } from "@dcloudio/uni-app";
 import { useConfigStore } from "@/store/config";
 import masonry from "@/components/masonry/masonry.vue";
 import { imageFormat } from "@/utils/format";
@@ -145,6 +149,8 @@ const brandNameTree = ref<string[]>([])
 const categoryList = ref<filterSeleted[]>([])
 const categoryTree = ref<filterSeleted[]>([])
 const productList = ref<ProductList[]>([])
+const total = ref<number>(0)
+const loaded = ref(false);
 // 获取列表的查询结果
 const loadFilter = async () => {
     loading.value = true;
@@ -153,9 +159,6 @@ const loadFilter = async () => {
         console.log('分类筛选项',productFilter)
         brandList.value = productFilter.filter.brand;
         categoryList.value = productFilter.filter.category;
-        const productInfo = await getCategoryProduct({...filterParams});
-        productList.value = productInfo.product_list
-        console.log('商品列表',productInfo)
         if(filterParams.cat){
             const tree = await getCategoryTree(filterParams.cat);
             categoryTree.value = tree.category_tree
@@ -170,6 +173,24 @@ const loadFilter = async () => {
         loading.value = false;
     }
 
+}
+const __getCategoryProduct = async () => {
+    if (filterParams.page > 1) {
+        loaded.value = true;
+    }
+    try {
+        const productInfo = await getCategoryProduct({...filterParams});
+        total.value = productInfo.total;
+        productList.value = [...productList.value, ...productInfo.product_list];
+        console.log('商品列表',productInfo)
+    } catch (error:any) {
+        uni.showToast({
+            title: error.message,
+            icon: "none"
+        })
+    } finally {
+        loaded.value = false;
+    }
 }
 const tabIndex = ref('default')
 const tabList = ref([
@@ -245,7 +266,8 @@ onLoad((option:any) => {
     if(option && option.category_id){
         filterParams.cat = option.category_id;
     }
-    loadFilter()
+    loadFilter();
+    __getCategoryProduct();
 });
 
 onShow(() => {
@@ -281,6 +303,12 @@ const reset = () => {
     filterParams.brand = [];
     filterParams.cat = 0;
 }
+onReachBottom(() => {
+    if (filterParams.page < Math.ceil(total.value / filterParams.size)) {
+        filterParams.page++;
+        __getCategoryProduct();
+    }
+});
 </script>
 <style lang="scss" scoped>
 .productSort .header {
