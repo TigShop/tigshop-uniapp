@@ -40,7 +40,8 @@ export interface ProductFilterResult {
     filter: {
         brand: Brand[];
         category: filterSeleted[];
-    }
+    },
+    total:number;
     errcode: number;
 }
 export interface Brand {
