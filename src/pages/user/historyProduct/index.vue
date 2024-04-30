@@ -3,7 +3,7 @@
         <navbar :parameter="parameter"></navbar>
         <view class="history-product" v-if="historyList.length > 0">
             <block v-for="item in historyList" :key="item.product_id">
-                <view class="history-product-item">
+                <view class="history-product-item" @click="handleLink(item.product_id)">
                     <view class="history-product-item-left">
                         <view class="img-box">
                             <tigImage v-model:src="item.pic_thumb"></tigImage>
@@ -57,6 +57,11 @@ const getHistoryProductList = async () => {
         uni.hideLoading();
     }
 };
+const handleLink = (id: number) => {
+    uni.redirectTo({
+        url: '/pages/productDetail/index?id=' + id
+    })
+}
 
 onLoad(() => {
     getHistoryProductList();

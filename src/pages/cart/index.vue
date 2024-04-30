@@ -20,9 +20,9 @@
                             <view class="store_label">{{ item.store_title ? item.store_title : "自营" }}</view>
                         </view>
                         <view class="goods-list-cart">
-                            <block v-for="(goods, index) in item.carts" :key="goods.product_id">
-                                <view class="cart_item">
-                                    <uni-swipe-action>
+                            <uni-swipe-action>
+                                <block v-for="(goods, index) in item.carts" :key="goods.product_id">
+                                    <view class="cart_item">
                                         <uni-swipe-action-item :threshold="0" autoClose>
                                             <view class="cart_list_con">
                                                 <tigCheckbox
@@ -40,19 +40,6 @@
                                                     </view>
                                                     <view class="cart-notice-row" v-if="goods.stock === 0">已售罄</view>
                                                     <view class="cart-notice-row" v-if="goods.product_status === 0">已下架</view>
-                                                    <!-- <view
-                                                        class="cart-notice-row"
-                                                        v-else-if="
-                                                            goods.storage == goods.goods_number
-                                                        "
-                                                        >仅剩 {{ goods.storage }}</view
-                                                    >
-
-                                                    <view
-                                                        class="inventory"
-                                                        v-if="goods.storage == goods.goods_number"
-                                                        >仅剩{{ goods.storage }}件</view
-                                                    > -->
                                                 </navigator>
                                                 <view class="cart-row">
                                                     <navigator target="_blank" :url="'/pages/productDetail/index?id=' + goods.product_id">
@@ -86,9 +73,9 @@
                                                 </view>
                                             </template>
                                         </uni-swipe-action-item>
-                                    </uni-swipe-action>
-                                </view>
-                            </block>
+                                    </view>
+                                </block>
+                            </uni-swipe-action>
                         </view>
                     </view>
                 </block>
@@ -234,13 +221,12 @@ const getCartList = async () => {
         console.error(error);
     }
     uni.hideLoading();
-    
 };
 
 const guessLike = ref<GuessLikeProductList[]>([]);
 const page = ref(0);
 const __getGuessLike = async () => {
-    if(page.value > 1){
+    if (page.value > 1) {
         loaded.value = true;
     }
     try {
@@ -249,7 +235,7 @@ const __getGuessLike = async () => {
     } catch (error) {
         console.error(error);
     } finally {
-        loaded.value = false
+        loaded.value = false;
     }
 };
 
