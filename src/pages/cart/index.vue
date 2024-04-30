@@ -254,6 +254,7 @@ const __getGuessLike = async () => {
 };
 
 onReachBottom(() => {
+    // 接口限制了30条
     if (page.value < 5) {
         page.value++;
         __getGuessLike();

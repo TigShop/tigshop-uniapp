@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import { getCurrentInstance } from "vue";
 import { onLaunch, onShow, onExit } from "@dcloudio/uni-app";
 import { useConfigStore } from "@/store/config";
 import { usetabbarStore } from "@/store/tabbar";
 const configStore = useConfigStore();
 const tabbarStore = usetabbarStore();
 onLaunch(() => {
-    // const instance = getCurrentInstance();
-    // const query = uni.createSelectorQuery().in(instance)
     configStore.getNavHeight();
     configStore.setXClientType();
     tabbarStore.getTabbarList();
@@ -20,31 +17,6 @@ onExit(() => {
 });
 </script>
 <style>
-.start {
-    width: 122rpx;
-    height: 30rpx;
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHoAAADMCAYAAAC8yreMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA4BpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpDMDg0NEE2QTVFNUQxMUU4QUI3RkNGOTgwNDYyRUZDOCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozODU5QzVENDMwRjcxMUU5OTQ0QzlEOTQ5RkE1MTlBRiIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozODU5QzVEMzMwRjcxMUU5OTQ0QzlEOTQ5RkE1MTlBRiIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOCAoV2luZG93cykiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpkN2ZhZTM5NC0wNmE4LTkzNGYtODA0OS0zNjBjNTcxOTU2YjAiIHN0UmVmOmRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDpmYWI1M2NhMC04MWE1LTE5NGItYmJlYi1jMzI2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");
-    background-repeat: no-repeat;
-    background-size: 122rpx auto;
-}
-.start.star5 {
-    background-position: 0 3rpx;
-}
-.start.star4 {
-    background-position: 0 -30rpx;
-}
-.start.star3 {
-    background-position: 0 -70rpx;
-}
-.start.star2 {
-    background-position: 0 -105rpx;
-}
-.start.star1 {
-    background-position: 0 -140rpx;
-}
-.start.star0 {
-    background-position: 0 -175rpx;
-}
 page {
     font-size: 28rpx;
     background-color: #f5f5f5;
@@ -117,30 +89,8 @@ view {
     background: none;
     opacity: 1;
 }
-/* 单选 */
-radio .wx-radio-input {
-    border-radius: 50%;
-    width: 38rpx;
-    height: 38rpx;
-}
-radio .wx-radio-input.wx-radio-input-checked {
-    border: 1px solid #e93323 !important;
-    background-color: #e93323 !important;
-}
-/* 多选 */
-checkbox .wx-checkbox-input {
-    border-radius: 50%;
-    width: 38rpx;
-    height: 38rpx;
-}
-checkbox .wx-checkbox-input.wx-checkbox-input-checked {
-    border: 1px solid #e93323 !important;
-    background-color: #e93323 !important;
-    color: #fff !important;
-}
-checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
-    font-size: 35rpx;
-}
+
+
 .line1 {
     overflow: hidden;
     text-overflow: ellipsis;

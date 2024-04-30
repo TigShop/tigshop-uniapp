@@ -1,3 +1,5 @@
+import { useUserStore } from "@/store/user";
+
 type getLengthType = string | object | any[];
 export const getLength = (value: getLengthType) => {
     if (typeof value === "string") {
@@ -45,3 +47,13 @@ export function debounce<T extends (...args: any[]) => any>(func: T, wait: numbe
         if (callNow) func.apply(context, args);
     };
 }
+
+export const hasToken = () => {
+    const userStore = useUserStore();
+    if (!userStore.token) {
+        return () =>
+            uni.navigateTo({
+                url: "/pages/login/index"
+            });
+    }
+};

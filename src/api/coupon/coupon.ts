@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type { CouponResponse, CouponFilterParams } from "@/types/coupon/coupon";
+import type { CouponResponse, CouponFilterParams, CouponDetailResponse, CouponInfoParams } from "@/types/coupon/coupon";
 
 export const getCouponList = (params: CouponFilterParams) => {
     return request<CouponResponse>({
@@ -30,5 +30,15 @@ export const delCoupon = (data: object) => {
         url: "user/coupon/del",
         method: "post",
         data
+    });
+};
+
+
+// 获取我的优惠券详情
+export const getMyCouponInfo = (params:CouponInfoParams) => {
+    return request<CouponDetailResponse>({
+        url: "user/coupon/edit",
+        method: "get",
+        params
     });
 };

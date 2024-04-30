@@ -3,21 +3,21 @@
         <navbar :parameter="parameter"></navbar>
         <view>
             <view class="page-loading" v-if="loading"><view class="ico"></view></view>
-            <view class="user">
+            <view class="user" v-if="member">
                 <view class="user_header user_bg_color">
                     <view class="picTxt">
-                        <view>
-                            <tigImage class="pictrue pic-btn" v-model:src="member.avatar"> </tigImage>
-                        </view>
+                        <tigUpload @change="__getUser()">
+                            <tigImage class="pictrue pic-btn" v-model:src="member!.avatar"> </tigImage>
+                        </tigUpload>
                         <view class="text">
                             <view class="acea-row row-middle">
-                                <view class="name line1">{{ member.nickname != "" ? member.nickname : member.user_name_formated }}</view>
+                                <view class="name line1">{{ member!.nickname }}</view>
                                 <view class="acea-row qiandao" @click="goPages('/pages/sign/index')">
                                     <view class="iconfont icon-qiandao"></view>
                                     <view class>签到有礼</view>
                                 </view>
                             </view>
-                            <view class="member acea-row row-middle" v-if="member.rank.rank_name && member.user_name">{{ member.rank.rank_name }}</view>
+                            <view class="member acea-row row-middle" v-if="member.rank_name">{{ member.rank_name }}</view>
                             <view class="member acea-row row-middle" v-else>普通会员</view>
                         </view>
                         <view class="iconfont icon-shezhi" @click="goPages('/pages/user_profile/index')"></view>
@@ -25,7 +25,7 @@
                     <view class="user_top_group">
                         <view class="item" @click="goPages('/pages/user_collection_list/index')">
                             <view class="tit">
-                                商品关注
+                                商品收藏
                                 <text class="txt">{{ count.collect_count >= 0 ? count.collect_count : "--" }}</text>
                             </view>
                         </view>
@@ -41,11 +41,12 @@
                                 <text class="txt">{{ count.stay_comment_order >= 0 ? count.stay_comment_order : "--" }}</text>
                             </view>
                         </view>
-                        <!-- <view class="item" data-url='/pages/user_history/index' bindtap='goPages' style='display: none;'>
-            <view class='tit'>浏览记录
-              <text class='txt'>{{history_count >= 0 ? history_count : '--'}}</text>
-            </view>
-          </view> -->
+                        <view class="item" @click="goPages('/pages/user/historyProduct/index')">
+                            <view class="tit"
+                                >浏览记录
+                                <!-- <text class='txt'>{{history_count >= 0 ? history_count : '--'}}</text> -->
+                            </view>
+                        </view>
                     </view>
 
                     <view class="member-info__level-wrapper">
@@ -124,7 +125,7 @@
                                 <view class="pic"><image lazy-load src="/static/images/user/zhanghaoguanli.png"></image></view>
                                 <view>账号管理</view>
                             </view>
-                            <view class="item" @click="goPages('/pages/user_address_list/index')">
+                            <view class="item" @click="goPages('/pages/address/list')">
                                 <view class="pic"><image lazy-load src="/static/images/user/shouhuodizhi.png"></image></view>
                                 <view>收货地址</view>
                             </view>
@@ -142,12 +143,12 @@
                                 <view class="pic"><image lazy-load src="/static/images/user/xiaoxi.png"></image></view>
                                 <view>站内消息</view>
                             </view>
-                            <view class="item" @click="goPages('/pages/pin_order/index')">
+                            <!-- <view class="item" @click="goPages('/pages/pin_order/index')">
                                 <view class="pic">
                                     <image lazy-load src="/static/images/user/dingdan.png"></image>
                                 </view>
                                 <view>拼团订单</view>
-                            </view>
+                            </view> -->
                         </view>
                     </view>
                 </view>
@@ -161,12 +162,18 @@
                     </view>
                     <view class="recommend">
                         <view class="container">
-                            <masonry :commodityList="guess_like"></masonry>
+                            <masonry :commodityList="guessLike"></masonry>
                         </view>
                     </view>
                 </view>
             </view>
         </view>
+        <view class="loading-box" v-if="page > 1">
+            <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
+            <view v-else>没有更多了~</view>
+        </view>
+        <view :style="{ height: tabbarStore.tabbarHeight }"></view>
+        <tigBackTop :class="{ show: scrollTop > 100 }"></tigBackTop>
         <tabbar></tabbar>
     </view>
 </template>
@@ -174,14 +181,20 @@
 <script lang="ts" setup>
 import navbar from "@/components/navbar/index.vue";
 import masonry from "@/components/masonry/masonry.vue";
+import tigBackTop from "@/components/tigBackTop/index.vue";
+import tigUpload from "@/components/tigUpload/index.vue";
 import { useUserStore } from "@/store/user";
-import { imageFormat } from "@/utils/format";
+import { usetabbarStore } from "@/store/tabbar";
+import { getGuessLike } from "@/api/common";
+import type { GuessLikeProductList } from "@/types/common";
+import { hasToken } from "@/utils";
 import { ref } from "vue";
-import { onLoad, onShow } from "@dcloudio/uni-app";
+import { onShow, onReachBottom, onPageScroll } from "@dcloudio/uni-app";
 import { getUser } from "@/api/user/user";
 import type { UserItem } from "@/types/user/user";
 
 const userStore = useUserStore();
+const tabbarStore = usetabbarStore();
 
 const loading = ref(false);
 const parameter = ref({
@@ -201,13 +214,12 @@ const count = ref({
     return_count: 0,
     bonus: 0
 });
-const history_count = ref("");
 const wap_user_center_ads = ref({});
-const ads = ref({
-    ad_link: "",
-    pic_url: ""
+
+const scrollTop = ref(0);
+onPageScroll((e) => {
+    scrollTop.value = e.scrollTop;
 });
-const guess_like = ref([]);
 
 const __getUser = async () => {
     try {
@@ -224,22 +236,40 @@ const goPages = (url: string) => {
     });
 };
 const onChooseAvatar = () => {};
-onLoad(() => {
-    if (!userStore.token) {
-        return uni.navigateTo({
-            url: "/pages/login/index"
-        });
+
+const guessLike = ref<GuessLikeProductList[]>([]);
+const page = ref(0);
+const loaded = ref(false);
+const __getGuessLike = async () => {
+    if (page.value > 1) {
+        loaded.value = true;
     }
-    __getUser();
-});
+    try {
+        const result = await getGuessLike({ page: page.value });
+        guessLike.value = [...guessLike.value, ...result.product_list];
+    } catch (error) {
+        console.error(error);
+    } finally {
+        loaded.value = false;
+    }
+};
 
 onShow(() => {
-    if (!userStore.token) {
-        return uni.navigateTo({
-            url: "/pages/login/index"
-        });
-    }
+    const res = hasToken();
+    if (res) return res();
+    __getUser();
+    page.value = 1;
+    guessLike.value = [];
+    __getGuessLike();
     uni.hideTabBar();
+});
+
+onReachBottom(() => {
+    // 接口限制了30条
+    if (page.value < 5) {
+        page.value++;
+        __getGuessLike();
+    }
 });
 </script>
 <style>
