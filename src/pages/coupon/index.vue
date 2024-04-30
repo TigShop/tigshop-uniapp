@@ -1,15 +1,19 @@
 <template>
     <view style="height: 100%; padding-bottom: 20rpx">
         <navbar :parameter="parameter"></navbar>
-        <block v-if="!loading && couponList && couponList.length">
+        <block v-if="couponList && couponList.length">
             <view class="tmcscoupon-list">
                 <view class="tmcscoupon-item-1" v-for="(item, index) in couponList" :key="index">
                     <view class="tmcscoupon-item">
                         <view class="tmcscoupon-item_m" @click="handleDetail(item.coupon_id)">
                             <view class="tmcscoupon-item_m-info">
                                 <view class="price">
-                                    <!-- {{ priceFormat(Number(item.coupon_money)) }} -->
-                                    <FormatPrice :priceData="item.coupon_money"></FormatPrice>
+                                    <block v-if="item.coupon_type == 1">
+                                        <FormatPrice class="item-left-money" :priceData="item.coupon_money"></FormatPrice>
+                                    </block>
+                                    <block v-else>
+                                        <view>{{ item.coupon_discount }}折</view>
+                                    </block>
                                     <text class="tmcscoupon-name">{{ item.coupon_name }}</text>
                                 </view>
                             </view>
@@ -22,13 +26,13 @@
                         </view>
                     </view>
                 </view>
-                <view class="loading-box" v-if="params.page > 1">
+                <view class="loading-box" v-if="filterParams.page > 1">
                     <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
                     <view v-else>没有更多了~</view>
                 </view>
             </view>
         </block>
-        <view class="empty-box" v-if="!loading && couponList && couponList.length === 0">
+        <view class="empty-box" v-if="couponList && couponList.length === 0">
             <view class="pictrue"><image lazy-load src="/static/images/common/data_empty.png"></image></view>
             <view class="txt">暂无优惠券！</view>
         </view>
@@ -37,13 +41,11 @@
 
 <script lang="ts" setup>
 import navbar from "@/components/navbar/index.vue";
-import { priceFormat } from "@/utils/format";
 import { reactive, ref } from "vue";
-import { getCouponList } from "@/api/coupon/coupon";
+import { getCouponList, addCoupon } from "@/api/coupon/coupon";
 import type { CouponFilterResult, CouponFilterParams } from "@/types/coupon/coupon";
-import { onLoad, onReachBottom } from "@dcloudio/uni-app";
-import { useUserStore } from "@/store/user";
-const userStore = useUserStore();
+import { onReachBottom, onShow } from "@dcloudio/uni-app";
+import { hasToken } from "@/utils";
 
 const parameter = reactive({
     navbar: "1",
@@ -52,46 +54,91 @@ const parameter = reactive({
     color: false
 });
 
-const params = reactive<CouponFilterParams>({
+const filterParams = reactive<CouponFilterParams>({
     page: 1,
     size: 10
 });
+const total = ref(0);
 const couponList = ref<CouponFilterResult[]>([]);
-const loading = ref(false);
 const loaded = ref(false);
 const __getCouponList = async () => {
-   
+    if (filterParams.page > 1) loaded.value = true;
+
     uni.showLoading({
         title: "加载中..."
     });
     try {
-        const result = await getCouponList(params);
+        const result = await getCouponList(filterParams);
         if (result.filter_result.length === 0) return (loaded.value = true);
         couponList.value = [...couponList.value, ...result.filter_result];
-
+        total.value = result.total;
     } catch (error) {
         console.error(error);
     } finally {
         uni.hideLoading();
+        loaded.value = false;
     }
 };
-const handleDetail = (id: number) => {};
+const handleDetail = async (id: number) => {
+    uni.navigateTo({
+        url: `/pages/coupon/detail?id=${id}`
+    });
+};
 
-const handleReceiveCoupon = (id: number) => {};
-onLoad((options) => {
+const handleReceiveCoupon = async (id: number) => {
+    uni.showLoading({
+        title: "加载中..."
+    });
+    try {
+        const result = await addCoupon({ coupon_id: id });
+        uni.showToast({
+            title: "领取成功",
+            duration: 1500
+        });
+        filterParams.page = 1;
+        couponList.value = [];
+        __getCouponList();
+    } catch (error: any) {
+        console.error(error);
+        uni.showToast({
+            title: error.message,
+            icon: "none",
+            duration: 1500
+        });
+    } finally {
+        uni.hideLoading();
+    }
+};
+onShow((options) => {
+    const res = hasToken();
+    if (res) return res();
+    filterParams.page = 1;
+    couponList.value = [];
     __getCouponList();
 });
+
 onReachBottom(() => {
-    // if (!loading.value && !loaded.value && !loaded.value) {
-    //     params.page++;
-    //     __getCouponList();
-    // }
+    if (filterParams.page < Math.ceil(total.value / filterParams.size)) {
+        filterParams.page++;
+        __getCouponList();
+    }
 });
 </script>
 
 <style lang="scss" scoped>
 /* 优惠券 */
 .price {
+    font-size: 48rpx;
+    color: #666;
+    display: flex;
+
+    :deep(.util) {
+        font-size: 30rpx;
+        padding-left: 5rpx;
+        height: 100%;
+        position: relative;
+        top: 8rpx;
+    }
     .tmcscoupon-name {
         font-size: 26rpx;
         padding-left: 20rpx;
@@ -101,11 +148,6 @@ onReachBottom(() => {
         display: inline-block;
         width: 280rpx;
     }
-}
-.price {
-    font-size: 48rpx;
-    color: #666;
-    display: flex;
 }
 
 .tmcscoupon-list .tmcscoupon-item-1 {

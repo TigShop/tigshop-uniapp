@@ -48,6 +48,10 @@
 			"style": {}
 		},
 		{
+			"path": "pages/coupon/detail",
+			"style": {}
+		},
+		{
 			"path": "pages/order/check",
 			"style": {}
 		},
@@ -62,7 +66,9 @@
 		{
 			"path": "pages/address/editRegion",
 			"style": {}
-		}
+		},{
+            "path": "pages/user/historyProduct/index"
+        }
 	],
 	"requiredPrivateInfos": [
 		"chooseLocation",

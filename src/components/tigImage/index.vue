@@ -1,5 +1,5 @@
 <template>
-    <image :src="srcData" :mode="mode" @error="handleError"></image>
+    <image class="base-image" :src="srcData" :mode="mode" @error="handleError"></image>
 </template>
 
 <script setup lang="ts">
@@ -39,4 +39,9 @@ const handleError = (e: Event) => {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.base-image {
+    width: 100%;
+    height: 100%;
+}
+</style>

@@ -24,7 +24,7 @@
             <view v-if="loadend && categoryId > 0" class="noMore">没有更多了~</view>
         </view>
         <tabbar></tabbar>
-        <tigBackTop v-if="scrollTop > 100"></tigBackTop>
+        <tigBackTop :class="{show: scrollTop > 100}"></tigBackTop>
     </view>
 </template>
 
@@ -32,7 +32,6 @@
 import { ref } from "vue";
 import { onLoad, onReachBottom, onPageScroll, onHide, onShow, onPullDownRefresh } from "@dcloudio/uni-app";
 import { getIndex } from "@/api/home/home";
-import { getMobileNav } from "@/api/tabbar";
 import modules from "@/components/modules/index.vue";
 import navbar from "@/components/navbar/index.vue";
 import masonry from "@/components/masonry/masonry.vue";

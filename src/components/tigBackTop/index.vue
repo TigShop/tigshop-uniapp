@@ -60,11 +60,16 @@ const handleBackTop = () => {
     background-color: #fff;
     border-radius: 50%;
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.12);
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
     .tig-back-top-content {
         &-img {
             width: 100%;
             height: 100%;
         }
+    }
+    &.show {
+        opacity: 1;
     }
 }
 </style>

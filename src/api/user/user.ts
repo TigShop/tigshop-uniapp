@@ -3,14 +3,14 @@ import type { UserDataResponse } from "@/types/user/user";
 
 export const getUser = () => {
     return request<UserDataResponse>({
-        url: "/user/info/",
+        url: "user/info/",
         method: "get"
     });
 };
 
 export const getMemberCenter = () => {
     return request<any>({
-        url: "/user/user/member_center",
+        url: "user/user/member_center",
         method: "get"
     });
 };
