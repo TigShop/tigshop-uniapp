@@ -100,21 +100,25 @@ export interface Filter {
 }
 
 export interface GetProductFilterResult {
-    product_id: number;
-    pic_thumb: string;
-    product_name: string;
-    check_status: number;
-    store_id: number;
-    suppliers_id: number;
-    product_type: number;
-    product_sn: string;
-    product_price: string;
-    product_status: number;
-    is_best: number;
-    is_new: number;
-    is_hot: number;
-    product_stock: number;
-    sort_order: number;
+    product_id?: number;
+    pic_thumb?: stringnumber;
+    pic_url?: stringnumber;
+    product_name?: stringnumber;
+    check_status?: number;
+    store_id?: number;
+    suppliers_id?: number;
+    product_type?: number;
+    product_sn?: stringnumber;
+    product_price?: number;
+    market_price?: number;
+    product_status?: number;
+    is_best?: number;
+    is_new?: number;
+    is_hot?: number;
+    product_stock?: number;
+    sort_order?: number;
+    seckill_price?: number;
+    org_product_price?: number;
 }
 
 /* 秒杀 */
