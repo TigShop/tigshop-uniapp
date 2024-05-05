@@ -1,7 +1,7 @@
 const CONFIG: any = {
     // 开发环境配置
     development: {
-        // baseUrl: "http://www.tigshop.com/", // 接口请求地址
+        // baseUrl: "http://192.168.5.109:82/", // 接口请求地址
         baseUrl: "api/", // 接口请求地址
         requestUrlPrefix: "index/"
     },

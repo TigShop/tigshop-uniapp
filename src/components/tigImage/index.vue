@@ -21,7 +21,7 @@ const srcData = ref("");
 watch(
     () => props.src,
     (newVal) => {
-        if (!newVal) return emit("update:src", "/src/static/images/common/empty-img-bg3.png");
+        if (!newVal) return emit("update:src", "/static/images/common/empty-img-bg3.png");
         if (newVal.includes("/src")) {
             srcData.value = newVal;
         } else {

@@ -12,7 +12,6 @@ export const useConfigStore = defineStore("config", {
     state: (): State => ({
         storageUrl: "http://lyecs2.oss-cn-zhangjiakou.aliyuncs.com/",
         navHeightNum: 0,
-
         previewId: 0,
         XClientType: "",
         currentActiveValue: uni.getStorageSync("currentActiveValue") || 0
@@ -20,7 +19,7 @@ export const useConfigStore = defineStore("config", {
     getters: {
         navHeight: (state: State): number => {
             return state.navHeightNum;
-        },
+        }
     },
     actions: {
         getNavHeight() {

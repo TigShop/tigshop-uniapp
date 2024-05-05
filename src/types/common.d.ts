@@ -41,3 +41,35 @@ export interface GuessLikeSkuDatum {
     name: string;
     value: string;
 }
+
+// 主题
+export interface ThemeResponse {
+    theme_id: number;
+    theme_style: ThemeStyle;
+    shop_name: string;
+    shop_title: string;
+    shop_title_suffix: string;
+    shop_logo: string;
+    shop_keywords: string;
+    shop_desc: string;
+    storage_url: string;
+    dollar_sign: string;
+    dollar_sign_cn: string;
+    errcode: number;
+    message: string;
+}
+
+export interface ThemeStyle {
+    theme_id: number;
+    "--general": string;
+    "--main-bg": string;
+    "--main-btn-hover-bg": string;
+    "--main-bg-gradient": string;
+    "--main-text": string;
+    "--vice-bg": string;
+    "--vice-text": string;
+    "--icon": string;
+    "--price": string;
+    "--tag-text": string;
+    "--tag-bg": string;
+}

@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type {GuessLikeDataResponse} from "@/types/common" 
+import type {GuessLikeDataResponse, ThemeResponse} from "@/types/common" 
 //  猜你喜欢
 export const getGuessLike = (params: any) => {
     return request<GuessLikeDataResponse>({
@@ -9,6 +9,10 @@ export const getGuessLike = (params: any) => {
     })
 }
 
-
-//图片上传
+export const getBaseConfig = () => {
+    return request<ThemeResponse>({
+        url: "common/config/base",
+        method: "get"
+    });
+};
  
