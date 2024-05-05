@@ -14,12 +14,14 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useConfigStore } from "@/store/config";
-import { usetabbarStore } from '@/store/tabbar'
+import { usetabbarStore } from "@/store/tabbar";
+import { onShow } from "@dcloudio/uni-app";
 const configStore = useConfigStore();
 const tabbarStore = usetabbarStore();
 const tabbarHeight = computed(() => {
     return tabbarStore.tabbarHeight ? tabbarStore.tabbarHeight : "90rpx";
 });
+
 const props = defineProps({
     backgroundColor: {
         type: String,
@@ -35,9 +37,18 @@ const props = defineProps({
     }
 });
 
+onShow(() => {
+    const page = getCurrentPages()[0].route;
+    const index = tabbarStore.tabbarList.findIndex((item) => {
+        return item.pagePath.includes(page);
+    });
+    if (index !== -1 && index !== configStore.currentActiveValue) {
+        configStore.setCurrentActiveValue(index);
+    }
+});
 const handleTabbar = (item: any, index: number) => {
     configStore.setCurrentActiveValue(index);
-    uni.switchTab({ url: item.pagePath });
+    item.pagePath && uni.switchTab({ url: item.pagePath });
 };
 </script>
 

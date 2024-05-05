@@ -11,6 +11,7 @@
                 </view>
             </block>
         </view>
+        <view class="placeholder"></view>
         <view class="order-list">
             <block v-for="item in orderList" :key="item.order_id">
                 <view class="order-list-item">
@@ -55,6 +56,10 @@
                 </view>
             </block>
         </view>
+        <view class="loading-box" v-if="filterParams.page > 1">
+            <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
+            <view v-else>没有更多了~</view>
+        </view>
     </view>
 </template>
 
@@ -63,7 +68,7 @@ import navbar from "@/components/navbar/index.vue";
 import { reactive, ref } from "vue";
 import { getOrderList, getOrderNum } from "@/api/user/order";
 import type { OrderListFilterParams, OrderListFilterResult } from "@/types/user/order";
-import { onLoad } from "@dcloudio/uni-app";
+import { onLoad, onReachBottom } from "@dcloudio/uni-app";
 const parameter = {
     navbar: "1",
     return: "1",
@@ -105,9 +110,13 @@ const filterParams = reactive<OrderListFilterParams>({
     comment_status: -1
 });
 
+const loaded = ref(false);
 const orderList = ref<OrderListFilterResult[]>([]);
+const total = ref(0);
 const handleMenuType = (type: string) => {
     currentType.value = type;
+    filterParams.page = 1;
+    orderList.value = [];
     filterParams.page = 1;
     if (type === "await_comment") {
         filterParams.comment_status = 0;
@@ -119,16 +128,22 @@ const handleMenuType = (type: string) => {
     __getOrderList();
 };
 const __getOrderList = async () => {
-    uni.showLoading({
-        title: "加载中"
-    });
+    if (filterParams.page > 1) {
+        loaded.value = true;
+    } else {
+        uni.showLoading({
+            title: "加载中"
+        });
+    }
     try {
         const result = await getOrderList(filterParams);
-        orderList.value = result.filter_result;
+        orderList.value = [...orderList.value, ...result.filter_result];
+        total.value = result.total;
     } catch (error) {
         console.error(error);
     } finally {
         uni.hideLoading();
+        loaded.value = false;
     }
 };
 
@@ -158,14 +173,27 @@ onLoad((options) => {
     }
     __getOrderNum();
 });
+
+onReachBottom(() => {
+    if (filterParams.page < Math.ceil(total.value / filterParams.size)) {
+        filterParams.page++;
+        __getOrderList();
+    }
+});
 </script>
 
 <style lang="scss" scoped>
+.placeholder {
+    height: 88rpx;
+}
 .order-menu {
     background-color: #fff;
     display: flex;
     box-sizing: border-box;
     margin-bottom: 30rpx;
+    position: fixed;
+    width: 100%;
+    z-index: 999;
 
     .order-menu-item {
         flex: 1;
@@ -187,7 +215,7 @@ onLoad((options) => {
                 position: absolute;
                 bottom: 0;
                 height: 5rpx;
-                width: 80rpx;
+                width: 60rpx;
                 background-color: #e93b3d;
                 border-radius: 10rpx;
             }
@@ -264,7 +292,7 @@ onLoad((options) => {
                         .product-item-pricenum {
                             color: $tig-color-primary;
                             font-size: 30rpx;
-                            :deep(.util){
+                            :deep(.util) {
                                 font-size: 22rpx;
                             }
                         }
@@ -272,9 +300,8 @@ onLoad((options) => {
                         .product-item-quantity {
                             font-size: 28rpx;
                             color: #999;
-                            padding-left: 10rpx;
+                            padding-left: 15rpx;
                         }
-
                     }
                 }
             }

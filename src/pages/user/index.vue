@@ -235,7 +235,6 @@ const goPages = (url: string) => {
         url
     });
 };
-const onChooseAvatar = () => {};
 
 const guessLike = ref<GuessLikeProductList[]>([]);
 const page = ref(0);
