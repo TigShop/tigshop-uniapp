@@ -140,7 +140,6 @@ import { getCart, updateCartItemData, updateCartCheck, clearCart, removeCartItem
 import { getGuessLike } from "@/api/common";
 import type { GuessLikeProductList } from "@/types/common";
 import type { updateCartCheckitem } from "@/types/cart/cart";
-import { imageFormat } from "@/utils/format";
 const tabbarStore = usetabbarStore();
 const parameter = ref({
     navbar: "1",

@@ -15,3 +15,11 @@ export const creatPay = (params: creatPayParams) => {
         params
     });
 };
+
+export const checkPayStatus = (params: {}) => {
+    return request({
+        url: "order/pay/check_status/",
+        method: "get",
+        params
+    });
+};
