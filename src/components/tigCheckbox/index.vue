@@ -1,7 +1,7 @@
 <template>
     <checkbox-group>
         <label @click="onCheckAll">
-            <checkbox :style="{transform:'scale('+checkedSize+')'}" :checked="checked" :disabled="disabled" color="#fff" activeBackgroundColor="#ee0a24"   />{{checkedText}}
+            <checkbox @click="onCheckAll" :style="{transform:'scale('+checkedSize+')'}" :checked="checked" :disabled="disabled" color="#fff" activeBackgroundColor="#ee0a24"   />{{checkedText}}
         </label>
     </checkbox-group>
 </template>
