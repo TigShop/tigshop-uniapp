@@ -15,3 +15,37 @@ export const getOrderNum = () => {
         method: "post"
     });
 };
+
+// 删除
+export const delOrder = (data: object) => {
+    return request({
+        url: "user/order/del_order/",
+        method: "post",
+        data
+    });
+};
+// 取消订单
+export const cancelOrder = (data: object) => {
+    return request({
+        url: "user/order/cancel_order/",
+        method: "post",
+        data
+    });
+};
+//获取订单详情
+export const getOrder = (params: object) => {
+    return request<any>({
+        url: "user/order/info/",
+        method: "get",
+        params
+    });
+};
+
+// 再次购买
+export const orderBuyAgain = (data: object) => {
+    return request({
+        url: "user/order/buy_again",
+        method: "post",
+        data
+    })
+}
