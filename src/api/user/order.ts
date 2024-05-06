@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type { OrderNumResponse, OrderListResponse } from "@/types/user/order";
+import type { OrderNumResponse, OrderListResponse, OrderInfoResponse } from "@/types/user/order";
 // 获取商品订单列表
 export const getOrderList = (params: any) => {
     return request<OrderListResponse>({
@@ -34,7 +34,7 @@ export const cancelOrder = (data: object) => {
 };
 //获取订单详情
 export const getOrder = (params: object) => {
-    return request<any>({
+    return request<OrderInfoResponse>({
         url: "user/order/info/",
         method: "get",
         params

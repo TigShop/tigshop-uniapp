@@ -28,20 +28,22 @@
                         </view>
                         <view class="item-content-product">
                             <block v-for="subItem in item.items" :key="subItem.item_id">
-                                <view class="item-content-product-item">
-                                    <view class="item-content-product-img">
-                                        <tigImage v-model:src="subItem.pic_thumb"></tigImage>
-                                    </view>
-                                    <view class="item-content-product-info">
-                                        <view class="product-item-title">
-                                            {{ subItem.product_name }}
+                                <navigator :url="'/pages/productDetail/index?id=' + subItem.product_id" hover-class="navigator-hover">
+                                    <view class="item-content-product-item">
+                                        <view class="item-content-product-img">
+                                            <tigImage v-model:src="subItem.pic_thumb"></tigImage>
                                         </view>
-                                        <view class="product-item-price">
-                                            <FormatPrice class="product-item-pricenum" :priceData="subItem.price"></FormatPrice>
-                                            <view class="product-item-quantity">x {{ subItem.quantity }}</view>
+                                        <view class="item-content-product-info">
+                                            <view class="product-item-title">
+                                                {{ subItem.product_name }}
+                                            </view>
+                                            <view class="product-item-price">
+                                                <FormatPrice class="product-item-pricenum" :priceData="subItem.price"></FormatPrice>
+                                                <view class="product-item-quantity">x {{ subItem.quantity }}</view>
+                                            </view>
                                         </view>
                                     </view>
-                                </view>
+                                </navigator>
                             </block>
                         </view>
                         <view class="item-content-pay">
@@ -58,7 +60,7 @@
                     </view>
                     <view class="order-list-item-btn">
                         <view class="item-btn-box">
-                            <view class="base-item-btn detail"> 订单详情 </view>
+                            <view class="base-item-btn detail" @click="handleOrederDetail(item.order_id)"> 订单详情 </view>
                             <view class="base-item-btn" v-if="item.available_actions.to_pay" @click="handlePay(item.order_id)"> 去付款 </view>
                             <view class="base-item-btn" v-if="item.available_actions.cancel_order" @click="handleCancelOrder(item.order_id)"> 取消订单 </view>
                             <view class="base-item-btn" v-if="item.available_actions.del_order" @click="handleDelOrder(item.order_id)"> 删除订单 </view>
@@ -209,7 +211,7 @@ const handleBuyAgain = async (id: number) => {
         const result = await orderBuyAgain({ id });
 
         uni.navigateTo({
-            url: "/pages/order/confirm?order_id=" + result.order_id
+            url: "/pages/cart/index"
         });
     } catch (error: any) {
         uni.showToast({
@@ -224,6 +226,12 @@ const handlePay = (id: number) => {
         url: `/pages/order/pay?order_id=${id}`
     });
 };
+
+const handleOrederDetail = (id: number) => {
+    uni.navigateTo({
+        url: `/pages/user/order/info?id=${id}`
+    });
+}
 const formatOrderStatus = (status: string) => {
     switch (status) {
         case "all":
