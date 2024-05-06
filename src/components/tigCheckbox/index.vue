@@ -1,11 +1,15 @@
 <template>
     <checkbox-group>
-        <checkbox :checked="checked" :disabled="disabled" color="#fff" activeBackgroundColor="#ee0a24"  @click="onCheckAll" />
+        <checkbox :style="{transform:'scale('+checkedSize+')'}" :checked="checked" :disabled="disabled" color="#fff" activeBackgroundColor="#ee0a24"  @click="onCheckAll" />
     </checkbox-group>
 </template>
 
 <script setup lang="ts">
 const props = defineProps({
+    checkedSize: {
+        type: Number,
+        default: 0.8
+    },
     checked: {
         type: Boolean,
         default: false
