@@ -156,14 +156,10 @@ const loadFilter = async () => {
     loading.value = true;
     try {
         const productFilter = await getCategoryProductFilter({...filterParams});
-        console.log('分类筛选项',productFilter)
         brandList.value = productFilter.filter.brand;
         categoryList.value = productFilter.filter.category;
-        if(filterParams.cat){
-            const tree = await getCategoryTree(filterParams.cat);
-            categoryTree.value = tree.category_tree
-            console.log('分类树',tree)
-        }
+        const tree = await getCategoryTree(filterParams.cat);
+        categoryTree.value = tree.category_tree
     } catch (error:any) {
         uni.showToast({
             title: error.message,
@@ -182,7 +178,6 @@ const __getCategoryProduct = async () => {
         const productInfo = await getCategoryProduct({...filterParams});
         total.value = productInfo.total;
         productList.value = [...productList.value, ...productInfo.product_list];
-        console.log('商品列表',productInfo)
     } catch (error:any) {
         uni.showToast({
             title: error.message,
@@ -214,11 +209,11 @@ const onChangeTab = (item:any) => {
     }else{
         item.order = ''
     }
-    console.log('筛选条件:',item)
     tabIndex.value = item.value;
     filterParams.sort = item.value;
     filterParams.order = item.order;
     loadFilter()
+    __getCategoryProduct()
 };
 
 const del = (type:string) => {
@@ -232,6 +227,7 @@ const del = (type:string) => {
         filterParams.keyword = '';
     }
     loadFilter()
+    __getCategoryProduct()
 }
 const delCategory = (type:string, index:number) => {
     if(type == "category"){
@@ -241,6 +237,7 @@ const delCategory = (type:string, index:number) => {
             filterParams.cat = 0;
         }
         loadFilter()
+        __getCategoryProduct()
     }
 }
 

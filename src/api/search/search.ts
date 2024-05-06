@@ -2,7 +2,7 @@ import request from "@/utils/request";
 import type { SearchFilterResult, ProductFilterResult, ProductFilterParams } from "@/types/search/search";
 
 // 获取分类树
-export const getCategoryTree = (id:number) => {
+export const getCategoryTree = (id?:number) => {
     return request<SearchFilterResult>({
         url: "/category/parent_tree",
         method: "get",
