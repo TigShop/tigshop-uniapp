@@ -2,14 +2,14 @@
     <view class="product-title-info">
         <view class="title-info-top">
             <view class="title-top-price">
-                <FormatPrice :priceData="productInfo.product_price"></FormatPrice>
+                <FormatPrice :priceData="productPrice"></FormatPrice>
                 <view class="title-top-market_price">
                     <FormatPrice :priceData="productInfo.market_price"></FormatPrice>
                 </view>
             </view>
             <view class="title-top-panle">
-                <view class="title-top-panle-collect">
-                    <view class="iconfont icon-shoucang1" :class="{ 'icon-shoucang2': false }"></view>
+                <view class="title-top-panle-collect" @click="addCollect(is_collect)">
+                    <view class="iconfont icon-shoucang1" :class="{ 'icon-shoucang2': is_collect }"></view>
                     <view class="title-panle-collect-text">收藏</view>
                 </view>
                 <view class="title-top-panle-share">
@@ -27,12 +27,61 @@
 </template>
 
 <script setup lang="ts">
-import type { ProductDetailItem } from "@/types/product/product";
-
+import type { ProductItem } from "@/types/product/product";
+import { reactive, ref } from "vue";
+import { onLoad } from "@dcloudio/uni-app";
+import { getCollectProduct, delCollectProduct, updateCollectProduct } from "@/api/product/product";
 interface Props {
-    productInfo: ProductDetailItem;
+    productInfo: ProductItem;
+    productPrice: string;
 }
+const is_collect = ref(false);
+const product_id = ref<number>(0)
 const props = defineProps<Props>();
+const getCollect = async (id:any) => {
+    try {
+        const result = await getCollectProduct({ id });
+        is_collect.value = result.item;
+    } catch (error: any) {
+        uni.showToast({
+            title: error.message,
+            icon: "none"
+        })
+    }
+};
+const addCollect = async (is_collect: boolean) => {
+    try {
+        let result: any = {};
+        if (!is_collect) {
+            result = await updateCollectProduct({
+                product_id: product_id.value
+            });
+        } else {
+            result = await delCollectProduct({
+                id: product_id.value
+            });
+        }
+        await getCollect(product_id.value);
+        uni.showToast({
+            title: result.message,
+            icon: "none"
+        })
+    } catch (error: any) {
+        uni.showToast({
+            title: error.message,
+            icon: "none"
+        })
+    }
+};
+onLoad((option) => {
+    if (option) {
+        const { id } = option;
+        if (id) {
+            product_id.value = id;
+            getCollect(id);
+        }
+    }
+});
 </script>
 
 <style lang="scss" scoped>

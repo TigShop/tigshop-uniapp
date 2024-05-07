@@ -88,8 +88,8 @@
 <script setup lang="ts">
 import navbar from "@/components/navbar/index.vue";
 import { onLoad } from "@dcloudio/uni-app";
-import { reactive, ref } from "vue";
-import { orderPayInfo, creatPay } from "@/api/order/pay";
+import { onBeforeUnmount, reactive, ref } from "vue";
+import { orderPayInfo, creatPay, checkPayStatus } from "@/api/order/pay";
 import type { Order, OfflinePaymentList } from "@/types/order/pay";
 import { useConfigStore } from "@/store/config";
 const configStore = useConfigStore();
@@ -153,6 +153,9 @@ const loadOrderPayInfo = async () => {
 const paymentChange = (e: any) => {
     paymentType.value = e.detail.value;
 };
+
+let intervalId: any = null; // 存储定时器 ID，便于后续清除
+const count = ref(0);
 const handlePay = async () => {
     paymentDisabled.value = true;
 
@@ -183,6 +186,23 @@ const handlePay = async () => {
                     miniProgramPay(result.pay_info);
                 }
             }
+
+            //每隔三秒检查支付状态，超过20次则认为支付失败
+            intervalId = setInterval(() => {
+                __checkPayStatus();
+                count.value++;
+                if (count.value === 50) {
+                    clearInterval(intervalId!); // 清除定时器，停止执行
+                    uni.showToast({
+                        title: "支付已超时",
+                        duration: 1500,
+                        icon: "none"
+                    });
+                    uni.redirectTo({
+                        url: "/pages/user/order/index?type=await_pay"
+                    });
+                }
+            }, 2000);
         }
     } catch (error: any) {
         console.error(error);
@@ -193,6 +213,17 @@ const handlePay = async () => {
         });
     } finally {
         paymentDisabled.value = false;
+    }
+};
+
+const __checkPayStatus = async () => {
+    try {
+        const result = await checkPayStatus({ id: orderId.value });
+        if (result.pay_status == 1) {
+            clearInterval(intervalId);
+        }
+    } catch (error) {
+        console.error(error);
     }
 };
 
@@ -221,7 +252,9 @@ const miniProgramPay = (pay_info: any) => {
                 duration: 1500
             });
             setTimeout(function () {
-                // uni.redirectTo()
+                uni.redirectTo({
+                    url: "/pages/user/order/index?type=await_pay"
+                });
             }, 1500);
         },
         fail(e) {
@@ -231,12 +264,17 @@ const miniProgramPay = (pay_info: any) => {
                 icon: "none"
             });
             setTimeout(() => {
-                console.log("跳转用户订单页面");
-                // uni.redirectTo()
+                uni.redirectTo({
+                    url: "/pages/user/order/index?type=await_pay"
+                });
             }, 1500);
         }
     });
 };
+
+onBeforeUnmount(() => {
+    clearInterval(intervalId);
+})
 
 /* 微信公众号调用 */
 

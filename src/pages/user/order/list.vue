@@ -4,7 +4,7 @@
         <view class="order-menu">
             <block v-for="item in menuTypeList" :key="item.type">
                 <view class="order-menu-item" :class="{ active: currentType === item.type }" @click="handleMenuType(item.type)">
-                    <uni-badge v-if="item.num > 0" class="uni-badge-left-margin" :text="item.num" absolute="rightTop" size="small">
+                    <uni-badge v-if="item.num > 0" class="badgecolor" :text="item.num" absolute="rightTop" size="small">
                         <text class="order-menu-item-text">{{ item.value }}</text>
                     </uni-badge>
                     <text v-else class="order-menu-item-text">{{ item.value }}</text>
@@ -19,7 +19,7 @@
                         <text class="special-text"
                             >订单编号：<text class="special-color">{{ item.order_sn }}</text>
                         </text>
-                        <text>{{ item.pay_status_name }}</text>
+                        <text>{{ item.order_status_name }}</text>
                     </view>
                     <view class="order-list-item-content">
                         <view class="item-content-text">
@@ -28,31 +28,45 @@
                         </view>
                         <view class="item-content-product">
                             <block v-for="subItem in item.items" :key="subItem.item_id">
-                                <view class="item-content-product-item">
-                                    <view class="item-content-product-img">
-                                        <tigImage v-model:src="subItem.pic_thumb"></tigImage>
-                                    </view>
-                                    <view class="item-content-product-info">
-                                        <view class="product-item-title">
-                                            {{ subItem.product_name }}
+                                <navigator :url="'/pages/productDetail/index?id=' + subItem.product_id" hover-class="navigator-hover">
+                                    <view class="item-content-product-item">
+                                        <view class="item-content-product-img">
+                                            <tigImage v-model:src="subItem.pic_thumb"></tigImage>
                                         </view>
-                                        <view class="product-item-price">
-                                            <FormatPrice class="product-item-pricenum" :priceData="subItem.price"></FormatPrice>
-                                            <view class="product-item-quantity">x {{ subItem.quantity }}</view>
+                                        <view class="item-content-product-info">
+                                            <view class="product-item-title">
+                                                {{ subItem.product_name }}
+                                            </view>
+                                            <view class="product-item-price">
+                                                <FormatPrice class="product-item-pricenum" :priceData="subItem.price"></FormatPrice>
+                                                <view class="product-item-quantity">x {{ subItem.quantity }}</view>
+                                            </view>
                                         </view>
                                     </view>
-                                </view>
+                                </navigator>
                             </block>
                         </view>
                         <view class="item-content-pay">
-                            <view> {{ item.pay_type_id === 1 ? "在线支付" : item.pay_type_id === 2 ? "货到付款" : "线下支付" }}</view>
-                            <view class="">总额：<FormatPrice :priceData="item.total_amount"></FormatPrice></view>
-                            <view class="" v-if="item.order_status === 0 && Number(item.unpaid_amount) > 0"
-                                >应付：<FormatPrice :priceData="item.unpaid_amount"></FormatPrice
-                            ></view>
+                            <view class="item-content-pay-box">
+                                <view class="pay-item pay-type">
+                                    {{ item.pay_type_id === 1 ? "在线支付" : item.pay_type_id === 2 ? "货到付款" : "线下支付" }}</view
+                                >
+                                <view class="pay-item total-money">总额：<FormatPrice :priceData="item.total_amount"></FormatPrice></view>
+                                <view class="pay-item" v-if="item.order_status === 0 && Number(item.unpaid_amount) > 0">
+                                    应付：<FormatPrice :priceData="item.unpaid_amount"></FormatPrice>
+                                </view>
+                            </view>
                         </view>
                     </view>
-                    <view class="order-list-item-btn"></view>
+                    <view class="order-list-item-btn">
+                        <view class="item-btn-box">
+                            <view class="base-item-btn detail" @click="handleOrederDetail(item.order_id)"> 订单详情 </view>
+                            <view class="base-item-btn" v-if="item.available_actions.to_pay" @click="handlePay(item.order_id)"> 去付款 </view>
+                            <view class="base-item-btn" v-if="item.available_actions.cancel_order" @click="handleCancelOrder(item.order_id)"> 取消订单 </view>
+                            <view class="base-item-btn" v-if="item.available_actions.del_order" @click="handleDelOrder(item.order_id)"> 删除订单 </view>
+                            <view class="base-item-btn" v-if="item.available_actions.rebuy" @click="handleBuyAgain(item.order_id)"> 再次购买 </view>
+                        </view>
+                    </view>
                 </view>
             </block>
         </view>
@@ -66,7 +80,7 @@
 <script setup lang="ts">
 import navbar from "@/components/navbar/index.vue";
 import { reactive, ref } from "vue";
-import { getOrderList, getOrderNum } from "@/api/user/order";
+import { getOrderList, getOrderNum, cancelOrder, delOrder, orderBuyAgain } from "@/api/user/order";
 import type { OrderListFilterParams, OrderListFilterResult } from "@/types/user/order";
 import { onLoad, onReachBottom } from "@dcloudio/uni-app";
 const parameter = {
@@ -117,7 +131,6 @@ const handleMenuType = (type: string) => {
     currentType.value = type;
     filterParams.page = 1;
     orderList.value = [];
-    filterParams.page = 1;
     if (type === "await_comment") {
         filterParams.comment_status = 0;
         filterParams.order_status = -1;
@@ -147,6 +160,78 @@ const __getOrderList = async () => {
     }
 };
 
+const handleCancelOrder = async (id: number) => {
+    uni.showModal({
+        title: "提示",
+        content: "确认要取消该订单吗？",
+        success: async (res) => {
+            if (res.confirm) {
+                try {
+                    const result = await cancelOrder({ id });
+                    filterParams.page = 1;
+                    orderList.value = [];
+                    __getOrderNum();
+                } catch (error: any) {
+                    uni.showToast({
+                        title: error.message,
+                        icon: "none"
+                    });
+                } finally {
+                }
+            }
+        }
+    });
+};
+
+const handleDelOrder = async (id: number) => {
+    uni.showModal({
+        title: "提示",
+        content: "确认要删除该订单吗？",
+        success: async (res) => {
+            if (res.confirm) {
+                try {
+                    const result = await delOrder({ id });
+                    filterParams.page = 1;
+                    orderList.value = [];
+                    __getOrderNum();
+                } catch (error: any) {
+                    uni.showToast({
+                        title: error.message,
+                        icon: "none"
+                    });
+                } finally {
+                }
+            }
+        }
+    });
+};
+
+const handleBuyAgain = async (id: number) => {
+    try {
+        const result = await orderBuyAgain({ id });
+
+        uni.navigateTo({
+            url: "/pages/cart/index"
+        });
+    } catch (error: any) {
+        uni.showToast({
+            title: error.message,
+            icon: "none"
+        });
+    }
+};
+
+const handlePay = (id: number) => {
+    uni.navigateTo({
+        url: `/pages/order/pay?order_id=${id}`
+    });
+};
+
+const handleOrederDetail = (id: number) => {
+    uni.navigateTo({
+        url: `/pages/user/order/info?id=${id}`
+    });
+}
 const formatOrderStatus = (status: string) => {
     switch (status) {
         case "all":
@@ -186,6 +271,13 @@ onReachBottom(() => {
 .placeholder {
     height: 88rpx;
 }
+
+.badgecolor {
+    :deep(.uni-badge--error) {
+        background-color: $tig-color-primary;
+    }
+}
+
 .order-menu {
     background-color: #fff;
     display: flex;
@@ -216,7 +308,7 @@ onReachBottom(() => {
                 bottom: 0;
                 height: 5rpx;
                 width: 60rpx;
-                background-color: #e93b3d;
+                background-color: $tig-color-primary;
                 border-radius: 10rpx;
             }
         }
@@ -247,7 +339,8 @@ onReachBottom(() => {
                 font-weight: bold;
             }
             .special-color {
-                color: $tig-color-primary;
+                color: #999;
+                font-weight: normal;
             }
         }
 
@@ -290,7 +383,7 @@ onReachBottom(() => {
                         display: flex;
                         padding-top: 25rpx;
                         .product-item-pricenum {
-                            color: $tig-color-primary;
+                            // color: $tig-color-primary;
                             font-size: 30rpx;
                             :deep(.util) {
                                 font-size: 22rpx;
@@ -302,6 +395,52 @@ onReachBottom(() => {
                             color: #999;
                             padding-left: 15rpx;
                         }
+                    }
+                }
+            }
+
+            .item-content-pay {
+                display: flex;
+                justify-content: flex-end;
+
+                .item-content-pay-box {
+                    display: flex;
+                    .pay-item {
+                        padding: 0 10rpx;
+
+                        &.pay-type {
+                            color: #999;
+                        }
+
+                        &.total-money {
+                            .price-content {
+                                color: $tig-color-primary;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .order-list-item-btn {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 25rpx;
+
+            .item-btn-box {
+                display: flex;
+                .base-item-btn {
+                    padding: 10rpx 25rpx;
+                    border: 1px solid #ddd;
+                    border-radius: 30rpx;
+                    margin-left: 10rpx;
+                    &.detail {
+                        border: 1px solid $tig-color-primary;
+                        color: $tig-color-primary;
+                    }
+
+                    &:active {
+                        opacity: 0.6;
                     }
                 }
             }

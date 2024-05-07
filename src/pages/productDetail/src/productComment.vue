@@ -33,11 +33,11 @@
         </view>
         <view class="comment-btn-box flex align-center justify-around">
             <view class="btn flex align-center">
-                <uni-icons type="chat" size="24" color="#333"></uni-icons>
+                <uni-icons type="chat" size="20" color="#333"></uni-icons>
                 <text>全部评价(2)</text>
             </view>
             <view class="btn flex align-center">
-                <uni-icons type="chatboxes" size="24" color="#333"></uni-icons>
+                <uni-icons type="chatboxes" size="20" color="#333"></uni-icons>
                 <text>购买咨询(2)</text>
             </view>
         </view>
@@ -111,11 +111,11 @@ const props = defineProps<Props>();
         }
     }
     .comment-btn-box{
-        padding: 10rpx 50rpx 10rpx 50rpx;
+        padding: 10rpx;
         .btn{
             color: #333;
             font-size: 24rpx;
-            padding: 10rpx 4cm;
+            padding: 8rpx 30rpx;
             border: 1px solid $tig-color-grey;
             border-radius: 36px;
         }

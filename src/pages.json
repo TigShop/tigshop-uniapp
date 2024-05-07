@@ -1,5 +1,5 @@
 {
-	
+
     "easycom": {
 		"autoscan": true,
 		"custom": {
@@ -39,6 +39,10 @@
 			"path": "pages/login/index",
 			"style": {}
 		},
+        {
+            "path": "pages/register/index",
+            "style": {}
+        },
 		{
 			"path": "pages/productDetail/index",
 			"style": {}
@@ -71,7 +75,10 @@
             "path": "pages/user/historyProduct/index"
         },
         {
-            "path":"pages/user/order/index"
+            "path":"pages/user/order/list"
+        },
+        {
+            "path":"pages/user/order/info"
         },
         {
             "path":"pages/user/profile/index"
