@@ -35,6 +35,10 @@
 			"path": "pages/user/index",
 			"style": {}
 		},
+        {
+            "path": "pages/user/account/index",
+            "style": {}
+        },
 		{
 			"path": "pages/login/index",
 			"style": {}
@@ -45,6 +49,14 @@
         },
 		{
 			"path": "pages/productDetail/index",
+			"style": {}
+		},
+		{
+			"path": "pages/productDetail/consult",
+			"style": {}
+		},
+		{
+			"path": "pages/productDetail/comment",
 			"style": {}
 		},
 		{

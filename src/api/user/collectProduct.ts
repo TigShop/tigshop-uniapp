@@ -1,11 +1,12 @@
 import request from "@/utils/request";
-import type { CollectProductResponse } from '@/types/user/collectProduct'
+import type { CollectProductResponse, CollectProductFilterParams } from '@/types/user/collectProduct'
 
 // 收藏商品列表
-export const collectProductList = () => {
+export const getCollectProductList = (params?: CollectProductFilterParams) => {
     return request<CollectProductResponse>({
         url: 'user/collect_product/list/',
         method: 'get',
+        params
     })
 }
 
@@ -17,4 +18,3 @@ export const delCollectProduct = (params: object) => {
         params
     });
 };
-

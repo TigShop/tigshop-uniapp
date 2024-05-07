@@ -34,3 +34,9 @@ export const removeCartItemData = (data: removeCartItemDataParams) => {
         data
     });
 }
+export const asyncGetCartCount = () => {
+    return request<any>({
+        url: "cart/get_count/",
+        method: "post"
+    });
+};

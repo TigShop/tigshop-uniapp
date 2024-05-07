@@ -67,7 +67,7 @@ const props = defineProps({
         default: "220rpx"
     }
 });
-const emit = defineEmits(["update:show"]);
+const emit = defineEmits(["update:show","change"]);
 const popup = ref();
 watch(
     () => props.show,
@@ -82,6 +82,7 @@ watch(
     }
 );
 const getPopupStatus = (e: any) => {
+    emit('change', e)
     if (!e.show) emit("update:show", false);
 };
 </script>

@@ -25,14 +25,14 @@ export const getCommentList = (id: number, params: object) => {
     });
 };
 
-export const getProductSkuDetail = (id: number, params: object) => {
+export const getProductSkuDetail = (id: string, params: object) => {
     return request<SkuDetail>({
         url: "product/get_sku_detail/",
         method: "get",
         params: { id, ...params }
     });
 };
-export const addToCart = (params: { id: number; number: number; sku_id?: number; is_quick?: number }) => {
+export const addToCart = (params: { id: string; number: number; sku_id?: number; is_quick?: number }) => {
     return request({
         url: "product/add_to_cart/",
         method: "post",
