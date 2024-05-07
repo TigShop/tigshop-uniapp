@@ -48,6 +48,14 @@
 			"style": {}
 		},
 		{
+			"path": "pages/productDetail/consult",
+			"style": {}
+		},
+		{
+			"path": "pages/productDetail/comment",
+			"style": {}
+		},
+		{
 			"path": "pages/coupon/index",
 			"style": {}
 		},

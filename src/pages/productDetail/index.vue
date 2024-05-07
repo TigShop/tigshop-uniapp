@@ -5,14 +5,25 @@
         <view class="productDetail-content">
             <productTitleInfo :productInfo="product" :productPrice="productPrice"></productTitleInfo>
             <view class="product-card-row">
-                <productSku v-if="attrList.spe" v-model="attrList" :skuList="skuList" :checkedValue="checkedValue" @change="onProductSkuChange">
+                <productSku 
+                    v-if="attrList.spe" 
+                    v-model="attrList" 
+                    :pageType="pageType" 
+                    :picList="picList" 
+                    :skuList="skuList" 
+                    :checkedValue="checkedValue" 
+                    :productInfo="product" 
+                    :productPrice="productPrice" 
+                    :productStock="productStock" 
+                    @change="onProductSkuChange"
+                    @addCart="_getCartCount">
                     <view class="cart-item flex align-center justify-between">
                         <view class="flex align-center">
                             <view class="title">
                                 已选
                             </view>
                             <view class="label">
-                            {{ skuStr }} 1 件
+                            {{ skuStr }} {{ productNumber }} 件
                             </view>
                         </view>
                         <view>
@@ -58,12 +69,18 @@
                     <view class="tab" :class="{'active': tabIndex == 0}" @click="tabIndex = 0">商品介绍</view>
                     <view class="tab" :class="{'active': tabIndex == 1}" @click="tabIndex = 1">售后服务</view>
                 </view>
-                <view class="default flex align-center justify-center" v-if="tabIndex == 0">
-                    <uni-icons type="arrow-up" size="18" color="#9b9c9f"></uni-icons>
-                    <text>上拉查看图文详情</text>
+                <view class="default" v-if="tabIndex == 0">
+                    <!-- <uni-icons type="arrow-up" size="18" color="#9b9c9f"></uni-icons>
+                    <text>上拉查看图文详情</text> -->
+                    <template v-for="item in descArr">
+                        <view class="desc-pic-item" v-if="item.type == 'pic'">
+                            <image lazy-load :src="imageFormat(item?.pic || '')" class="slide-image" mode="widthFix" />
+                        </view>
+                        <view class="desc-text-item" v-if="item.type == 'text'" v-html="item.html"></view>
+                    </template>
                 </view>
                 <view class="default" v-if="tabIndex == 1">
-                    <text>售后售后售后</text>
+                    <afterSaleService></afterSaleService>
                 </view>
             </view>
         </view>
@@ -77,9 +94,9 @@
                         <text>客服</text>
                     </view>
                 </view>
-                <view class="label">
+                <view class="label" @click="toPage('/pages/cart/index')">
                     <view>
-                        <uni-badge class="uni-badge-left-margin" :text="100" absolute="rightTop" size="small">
+                        <uni-badge class="uni-badge-left-margin" :text="cartCount" absolute="rightTop" size="small">
                             <uni-icons type="cart" size="22" color="#9b9c9f"></uni-icons>
                         </uni-badge>
                     </view>
@@ -87,10 +104,23 @@
                         <text>购物车</text>
                     </view>
                 </view>
-                <view class="flex align-center justify-between">
-                    <view class="btn cart">加入购物车</view>
-                    <view class="btn buy">立即购买 </view>
-                </view>
+                <productSku 
+                    v-if="attrList.spe" 
+                    v-model="attrList" 
+                    :pageType="pageType" 
+                    :picList="picList" 
+                    :skuList="skuList" 
+                    :checkedValue="checkedValue" 
+                    :productInfo="product" 
+                    :productPrice="productPrice" 
+                    :productStock="productStock" 
+                    @change="onProductSkuChange"
+                    @addCart="_getCartCount">
+                    <view class="flex align-center justify-between">
+                        <view class="btn cart">加入购物车</view>
+                        <view class="btn buy">立即购买 </view>
+                    </view>
+                </productSku>
             </view>
         </view>
     </view>
@@ -102,10 +132,12 @@ import productImg from "./src/productImg.vue";
 import productTitleInfo from './src/productTitleInfo.vue'
 import productComment from './src/productComment.vue'
 import productSku from './src/productSku.vue'
-import productSwiper from './src/productSwiper.vue'
+import afterSaleService from './src/afterSaleService.vue'
+import { imageFormat } from "@/utils/format";
 import { reactive, ref } from "vue";
-import { onLoad } from "@dcloudio/uni-app";
+import { onLoad, onShow } from "@dcloudio/uni-app";
 import { getProductDetail, getProductSkuDetail } from "@/api/product/product";
+import { asyncGetCartCount } from "@/api/cart/cart";
 import type { PicList, ProductItem, AttrList, SkuList, ServiceList, RankDetail, DescArr} from "@/types/product/product";
 const tabIndex = ref(0);
 const parameter = reactive({
@@ -120,16 +152,20 @@ const props = defineProps({
         default: "product"
     }
 });
-const product_id = ref<number>(0);
+const product_id = ref<string>("");
 onLoad((option) => {
     if (option) {
         const { id } = option;
         if (id) {
             product_id.value = id;
             __getProductDetail(id);
+            
         }
     }
 });
+onShow(() => {
+    _getCartCount()
+})
 const product = ref<ProductItem>({
     product_id: 0,
     product_stock: 0
@@ -158,6 +194,7 @@ const __getProductDetail = async (id: string) => {
         skuList.value = result.sku_list;
         checkedValue.value = result.checked_value;
         descArr.value = result.desc_arr;
+        console.log(descArr.value)
         serviceList.value = result.service_list;
         productStock.value = result.item.product_stock;
         loadPrice()
@@ -174,13 +211,14 @@ const productPrice = ref<string>("");
 const productStock = ref<number>(0);
 const is_seckill = ref<number>(0)
 const seckill_end_time = ref<string>("")
+const productNumber = ref<number>(1)
 const onProductSkuChange = (item: any) => {
-    if (item !== null) {
-        console.log(item)
+    if (item.type !== 'null') {
         productStock.value = item.sku_stock;
         skuId.value = item.sku_id;
         skuStr.value = item.sku_str;
     }
+    productNumber.value = item.productNumber;
     loadPrice();
 };
 const loadPrice = async () => {
@@ -198,6 +236,16 @@ const loadPrice = async () => {
             icon: "none"
         })
     }
+};
+const cartCount = ref<number>(0);
+const _getCartCount = async () => {
+    try {
+        const result = await asyncGetCartCount();
+        cartCount.value = result.count;
+    } catch (error) {}
+};
+const toPage = (url:string) => {
+    uni.switchTab({url})
 };
 </script>
 <style lang="scss" scoped>
@@ -255,6 +303,11 @@ const loadPrice = async () => {
             color: #9b9c9f;
             font-size: 24rpx;
             padding: 10rpx;
+            .desc-pic-item{
+                image{
+                    width: 100%;
+                }
+            }
         }
     }
 }

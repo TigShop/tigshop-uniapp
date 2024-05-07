@@ -33,11 +33,11 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { imageFormat } from "@/utils/format";
-import type { ProductDetailPicList, ProductDetailItem } from "@/types/product/product";
+import type { PicList, ProductItem } from "@/types/product/product";
 import { onHide } from "@dcloudio/uni-app";
 interface Iprops {
-    picList: ProductDetailPicList[];
-    productInfo: ProductDetailItem;
+    picList: PicList[];
+    productInfo: ProductItem;
 }
 const props = defineProps<Iprops>();
 const currentPic = ref(1);
