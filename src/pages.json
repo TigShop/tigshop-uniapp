@@ -79,6 +79,9 @@
         },
         {
             "path":"pages/user/order/info"
+        },
+        {
+            "path":"pages/user/profile/index"
         }
 	],
 	"requiredPrivateInfos": [
