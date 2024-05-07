@@ -82,6 +82,9 @@
         },
         {
             "path":"pages/user/profile/index"
+        },
+        {
+            "path":"pages/user/collectProduct/index"
         }
 	],
 	"requiredPrivateInfos": [

@@ -20,7 +20,7 @@
                     </uni-forms-item> -->
                 </view>
                 <view class="profile-edit-content">
-                    <uni-forms-item label="账户与安全">
+                    <uni-forms-item label="账户安全">
                         <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" disabled placeholder="修改密码等" suffixIcon="right" @click="goPages('/pages/user/security/info')" />
                     </uni-forms-item>
                     <uni-forms-item label="手机号码">

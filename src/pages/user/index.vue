@@ -23,7 +23,7 @@
                         <view class="iconfont icon-shezhi" @click="goPages('/pages/user/profile/index')"></view>
                     </view>
                     <view class="user_top_group">
-                        <view class="item" @click="goPages('/pages/user_collection_list/index')">
+                        <view class="item" @click="goPages('/pages/user/collectProduct/index')">
                             <view class="tit">
                                 商品收藏
                                 <text class="txt">{{ count.collect_count >= 0 ? count.collect_count : "--" }}</text>
