@@ -35,6 +35,10 @@
 			"path": "pages/user/index",
 			"style": {}
 		},
+        {
+            "path": "pages/user/account/index",
+            "style": {}
+        },
 		{
 			"path": "pages/login/index",
 			"style": {}
