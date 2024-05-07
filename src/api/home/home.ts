@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type { HomeResponse, GetCateProductFilterParams, GetCateProductResponse, SeckillResponse, CouponResponse } from "@/types/home/home";
+import type { HomeResponse, GetCateProductFilterParams, GetCateProductResponse, SeckillListResponse, CouponResponse } from "@/types/home/home";
 import type { MobileCatNavFilterParams, MobileCatNavFilterResult } from "@/types/decorate/mobileCatNav.d";
 import type { getProductListFilterState } from "@/types/decorate/mobileProduct";
 
@@ -40,7 +40,7 @@ export const getProductList = (params: object) => {
 
 // 首页秒杀
 export const getHomeSeckill = () => {
-    return request<SeckillResponse>({
+    return request<SeckillListResponse>({
         url: "home/get_seckill/",
         method: "get"
     });
