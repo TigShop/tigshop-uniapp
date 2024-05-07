@@ -1,29 +1,29 @@
 <template>
     <view>
         <navbar :parameter="parameter"></navbar>
-        <view class="history-product" v-if="collectList.length > 0">
+        <view class="collect-product" v-if="collectList.length > 0">
             <uni-swipe-action>
                 <block v-for="item in collectList" :key="item.product_id">
                     <view class="move-item">
                         <uni-swipe-action-item :threshold="0" autoClose>
-                            <view class="history-product-item" @click="handleLink(item.product_id)">
-                                <view class="history-product-item-left">
+                            <view class="collect-product-item" @click="handleLink(item.product_id)">
+                                <view class="collect-product-item-left">
                                     <view class="img-box">
                                         <tigImage v-model:src="item.pic_thumb"></tigImage>
                                     </view>
                                 </view>
-                                <view class="history-product-item-right">
+                                <view class="collect-product-item-right">
                                     <view class="title">{{ item.product_name }}</view>
                                     <view class="item-bottom">
                                         <view class="price">
-                                            <FormatPrice :priceData="item.product_price"></FormatPrice>
+                                            <FormatPrice :priceData="item.actual_price"></FormatPrice>
                                         </view>
                                     </view>
                                 </view>
                             </view>
                             <template #right>
-                                <view class="cart-move-box">
-                                    <view class="btn-del" @click="deleteASiteCollection(item.product_id)"><text>取消收藏</text></view>
+                                <view class="collect-move-box">
+                                    <view class="btn-del" @click="__delCollect(item.product_id)"><text>取消收藏</text></view>
                                 </view>
                             </template>
                         </uni-swipe-action-item>
@@ -35,82 +35,122 @@
             <view class="pictrue"><image src="/static/images/common/data_empty.png"></image></view>
             <view class="txt">暂无收藏记录！</view>
         </view>
+        <view class="loading-box" v-if="filterParams.page > 1">
+            <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
+            <view v-else>没有更多了~</view>
+        </view>
     </view>
 </template>
 
 <script setup lang="ts">
 import navbar from "@/components/navbar/index.vue";
-import { ref } from "vue";
-import { onLoad } from "@dcloudio/uni-app";
-import { collectProductList, delCollectProduct } from "@/api/user/collectProduct";
-import type { CollectProductList } from "@/types/user/collectProduct";
+import { ref, reactive } from "vue";
+import { onLoad, onReachBottom } from "@dcloudio/uni-app";
+import { getCollectProductList, delCollectProduct } from "@/api/user/collectProduct";
+import type { CollectProductList, CollectProductFilterParams } from "@/types/user/collectProduct";
 const parameter = {
     navbar: "1",
     return: "1",
     title: "商品收藏",
     color: false
 };
+const filterParams = reactive<CollectProductFilterParams>({   //初使化用于查询的参数
+    page: 1,
+    size: 10,
+    keyword: ""
+});
+const total = ref(0);
+const loaded = ref(false);
 const collectList = ref<CollectProductList[]>([]);
-const getCollectProductList = async () => {
-    uni.showLoading({
-        title: "加载中..."
-    });
+const __getCollectProductList = async () => {
+    if (filterParams.page > 1) {
+        loaded.value = true;
+    }
     try {
-        const result = await collectProductList();
-        collectList.value = result.list;
+        const result = await getCollectProductList({ ...filterParams });
+        total.value = result.total;
+        collectList.value = [...collectList.value, ...result.filter_result];
+        // collectList.value = Object.assign(collectList.value, result.filter_result)
     } catch (error) {
         console.error(error);
     } finally {
-        uni.hideLoading();
+        loaded.value = false;
     }
 };
+
 const handleLink = (id: number) => {
     uni.redirectTo({
         url: '/pages/productDetail/index?id=' + id
     })
 }
 
+const __delCollect = (id: number) => {
+    uni.showModal({
+        title: "提示",
+        content: "确定取消收藏吗？",
+        success: async (res) => {
+            if (res.confirm) {
+                deleteASiteCollection(id);
+            }
+        }
+    });
+};
+
 const deleteASiteCollection = async (value: number) => {
-    console.log(value);
-    
-    // try {
-    //     // loading.value = true;
-    //     const result = await delCollectProduct({ id: value });
-    //     // message.success(result.message);
-    // } catch (error: any) {
-    //     // message.error(error.message);
-    // } finally {
-    //     // loading.value = false;
-    // }
+    try {
+        const result = await delCollectProduct({ id: value });
+        if (result.message) {
+            uni.showToast({
+                title: result.message,
+                icon: "none"
+            });
+        }
+        filterParams.page = 1;
+        collectList.value = [];
+        __getCollectProductList();
+    } catch (error: any) {
+        uni.showToast({
+            title: error.message,
+            icon: "none",
+            duration: 1000
+        });
+    }
 };
 
 onLoad(() => {
-    getCollectProductList();
+    __getCollectProductList();
+});
+
+onReachBottom(() => {
+    if (filterParams.page < Math.ceil(total.value / filterParams.size)) {
+        filterParams.page++;
+        __getCollectProductList();
+    }
 });
 </script>
 
 <style lang="scss" scoped>
-.history-product {
+.collect-product {
     padding: 25rpx 25rpx;
     .move-item {
         margin-bottom: 20rpx;
     }
 
-    .history-product-item {
+    .collect-product-item {
         padding: 10rpx;
         background-color: #fff;
         border-radius: 20rpx;
         display: flex;
         overflow: hidden;
 
-        .history-product-item-left {
+        .collect-product-item-left {
             .img-box {
                 width: 150rpx;
                 height: 150rpx;
             }
         }
 
-        .history-product-item-right {
+        .collect-product-item-right {
             width: 100%;
             padding-top: 15rpx;
             padding-left: 12rpx;
@@ -144,41 +184,41 @@ onLoad(() => {
         }
     }
 }
-.cart-move-box {
+.collect-move-box {
     width: 150rpx;
     height: 100%;
     color: #fff;
     text-align: center;
     vertical-align: middle;
     display: flex;
-}
-.cart-move-box text {
-    display: block;
-    position: absolute;
-    top: 50%;
-    margin-top: -20rpx;
-    font-size: 24rpx;
-    text-align: center;
-    width: 100%;
-}
-.cart-move-box .btn-del {
-    width: 150rpx;
-    background: #ff4f18;
-    background: linear-gradient(-41deg, #ff4f18, #ff2000 24%, #f10000);
-    display: inline-block;
-    height: 100%;
-    vertical-align: middle;
-    display: table-cell;
-    position: relative;
-}
-.cart-move-box .btn-collect {
-    width: 150rpx;
-    background: #ffa600;
-    background: linear-gradient(138deg, #ffa600, #ffb000 77%, #ffbc00);
-    display: inline-block;
-    height: 100%;
-    vertical-align: middle;
-    display: table-cell;
-    position: relative;
+    text {
+        display: block;
+        position: absolute;
+        top: 50%;
+        margin-top: -20rpx;
+        font-size: 24rpx;
+        text-align: center;
+        width: 100%;
+    }
+    .btn-collect {
+        width: 150rpx;
+        background: #ffa600;
+        background: linear-gradient(138deg, #ffa600, #ffb000 77%, #ffbc00);
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+        display: table-cell;
+        position: relative;
+    }
+    .btn-del {
+        width: 150rpx;
+        background: #ff4f18;
+        background: linear-gradient(-41deg, #ff4f18, #ff2000 24%, #f10000);
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+        display: table-cell;
+        position: relative;
+    }
 }
 </style>
