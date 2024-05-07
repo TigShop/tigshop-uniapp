@@ -31,6 +31,7 @@
         </view>
         <view class="button-position">
             <button hover-class="base-button-hover" class="base-button" @click="onSubmit">提交</button>
+            <button hover-class="base-button-hover" class="logout-button" @click="onLogout">退出</button>
         </view>
 
     </view>
@@ -184,5 +185,15 @@ const __getProfile = async () => {
     right: 0;
     padding: 0 30rpx;
     padding-bottom: env(safe-area-inset-bottom) !important;
+}
+.logout-button {
+    background: #fff;
+    color: #333;
+    border-radius: 50rpx;
+    border-color: #fff;
+    margin-top: 20rpx;
+}
+:deep(uni-button:after){
+    border: 0;
 }
 </style>
