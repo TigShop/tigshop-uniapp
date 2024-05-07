@@ -85,6 +85,9 @@
         },
         {
             "path":"pages/user/collectProduct/index"
+        },
+        {
+            "path":"pages/user/afterSale/edit"
         }
 	],
 	"requiredPrivateInfos": [

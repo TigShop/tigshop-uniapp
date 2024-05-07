@@ -1,5 +1,5 @@
 <template>
-    <view>
+    <view style="padding-bottom: env(safe-area-inset-bottom)">
         <navbar :parameter="parameter"></navbar>
         <view class="address-edit-main">
             <view class="address-edit-content">
@@ -241,6 +241,5 @@ const edit = async () => {
     left: 0;
     right: 0;
     padding: 0 30rpx;
-    padding-bottom: env(safe-area-inset-bottom) !important;
 }
 </style>
