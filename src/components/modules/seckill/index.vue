@@ -49,7 +49,7 @@
                                         </navigator>
                                         <view :class="'cap-seckill-goods__tag ' + className">
                                             <text class="cap-seckill-goods__tag-title" v-if="module?.style === 1"> 秒杀 </text>
-                                            <uni-countdown color="#fff"  splitorColor="#fff" :show-day="false" :hour="1" :minute="2" :second="3" />
+                                            <tigCountdown :endTime="item.seckkill_data.seckill_end_time"></tigCountdown>
                                         </view>
                                     </view>
                                     <view class="item-info">
@@ -58,12 +58,6 @@
                                                 <block v-if="module.show_name">
                                                     <navigator url="" class="item-name-a">
                                                         {{ item.product_name ?? "" }}
-                                                    </navigator>
-                                                </block>
-
-                                                <block v-if="module.show_brief">
-                                                    <navigator url="" class="item-brief">
-                                                        {{ item.product_desc ?? "" }}
                                                     </navigator>
                                                 </block>
                                             </view>
@@ -107,6 +101,7 @@ import { ref, computed, onMounted } from "vue";
 import { imageFormat, priceFormat } from "@/utils/format";
 import { formatFrame } from "@/components/modules";
 import commonTitle from "@/components/modules/commonTitle/index.vue";
+import tigCountdown from '@/components/tigCountdown/index.vue'
 import { getHomeSeckill } from "@/api/home/home";
 import type { SeckillList } from "@/types/home/home";
 const props = defineProps({

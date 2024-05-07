@@ -20,10 +20,10 @@
                             <view class="member acea-row row-middle" v-if="member.rank_name">{{ member.rank_name }}</view>
                             <view class="member acea-row row-middle" v-else>普通会员</view>
                         </view>
-                        <view class="iconfont icon-shezhi" @click="goPages('/pages/user_profile/index')"></view>
+                        <view class="iconfont icon-shezhi" @click="goPages('/pages/user/profile/index')"></view>
                     </view>
                     <view class="user_top_group">
-                        <view class="item" @click="goPages('/pages/user_collection_list/index')">
+                        <view class="item" @click="goPages('/pages/user/collectProduct/index')">
                             <view class="tit">
                                 商品收藏
                                 <text class="txt">{{ count.collect_count >= 0 ? count.collect_count : "--" }}</text>
@@ -121,7 +121,7 @@
                     <view class="list-group my-service">
                         <view class="title acea-row row-middle">我的服务</view>
                         <view class="serviceList acea-row row-middle">
-                            <view class="item" @click="goPages('/pages/user_profile/index')">
+                            <view class="item" @click="goPages('/pages/user/profile/index')">
                                 <view class="pic"><image lazy-load src="/static/images/user/zhanghaoguanli.png"></image></view>
                                 <view>账号管理</view>
                             </view>

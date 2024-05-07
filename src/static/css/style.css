@@ -1,4 +1,4 @@
-@import "https://at.alicdn.com/t/c/font_4483982_vhrgi8t8ctq.css";
+/* @import "https://at.alicdn.com/t/c/font_4483982_vhrgi8t8ctq.css"; */
 page {
     font-family: "PingFang SC", miui, system-ui, -apple-system, BlinkMacSystemFont, Helvetica Neue, Helvetica, sans-serif;
 }
@@ -638,7 +638,6 @@ page {
 
 /*通用暂无数据样式*/
 .empty-box {
-    background-color: #fff;
     padding: 60rpx 0 110rpx;
     margin-top: 20rpx;
     border-radius: 18rpx;

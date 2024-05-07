@@ -122,8 +122,9 @@ export interface GetProductFilterResult {
 }
 
 /* 秒杀 */
-export interface SeckillResponse {
+export interface SeckillListResponse {
     seckill_list: SeckillList[];
+    total: number;
     errcode: number;
     message: string;
 }
@@ -149,49 +150,70 @@ export interface SeckillList {
     seckill_price: string;
     org_product_price: string;
     product_sku: ProductSku[];
+    seckill_limit_num: number;
+    seckill_sales: number;
+    seckkill_data: SeckkillData;
 }
 
 export interface ProductSku {
     sku_id: number;
     product_id: number;
     sku_value: string;
-    sku_data: null;
+    sku_data: SkuDatum[];
     sku_sn: string;
     sku_stock: number;
     sku_tsn: string;
     sku_price: string;
 }
 
+export interface SkuDatum {
+    name: string;
+    value: string;
+}
 
+export interface SeckkillData {
+    seckill_id: number;
+    seckill_name: string;
+    seckill_start_time: string;
+    seckill_end_time: string;
+    seckill_limit_num: number;
+    product_id: number;
+    seckill_item: SeckillItem[];
+}
+
+export interface SeckillItem {
+    seckill_id: number;
+    product_id: number;
+}
 
 /* 优惠券 */
 export interface CouponResponse {
     coupon_list: CouponList[];
-    errcode:     number;
-    message:     string;
+    errcode: number;
+    message: string;
 }
 
 export interface CouponList {
-    is_receive:        number;
-    coupon_id:         number;
-    coupon_name:       string;
-    coupon_money:      string;
-    coupon_discount:   number;
-    coupon_desc:       string;
-    coupon_type:       number;
-    send_range:        number;
-    send_range_data:   number[];
-    min_order_amount:  string;
-    send_start_date:   string;
-    send_end_date:     string;
-    send_type:         number;
-    use_day:           number;
-    use_start_date:    string;
-    use_end_date:      string;
-    is_show:           number;
-    is_global:         number;
-    is_new_user:       number;
+    is_receive: number;
+    coupon_id: number;
+    coupon_name: string;
+    coupon_money: string;
+    coupon_discount: number;
+    coupon_desc: string;
+    coupon_type: number;
+    send_range: number;
+    send_range_data: number[];
+    min_order_amount: string;
+    send_start_date: string;
+    send_end_date: string;
+    send_type: number;
+    use_day: number;
+    use_start_date: string;
+    use_end_date: string;
+    is_show: number;
+    is_global: number;
+    is_new_user: number;
     enabled_click_get: number;
-    limit_user_rank:   null;
-    store_id:          number;
+    limit_user_rank: null;
+    store_id: number;
 }
