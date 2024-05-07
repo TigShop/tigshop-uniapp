@@ -194,7 +194,6 @@ const __getProductDetail = async (id: string) => {
         skuList.value = result.sku_list;
         checkedValue.value = result.checked_value;
         descArr.value = result.desc_arr;
-        console.log(descArr.value)
         serviceList.value = result.service_list;
         productStock.value = result.item.product_stock;
         loadPrice()
