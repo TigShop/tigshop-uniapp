@@ -47,5 +47,13 @@ export const orderBuyAgain = (data: object) => {
         url: "user/order/buy_again",
         method: "post",
         data
-    })
-}
+    });
+};
+
+export const confirmReceipt = (data: object) => {
+    return request({
+        url: "user/order/confirm_receipt/",
+        method: "post",
+        data
+    });
+};
