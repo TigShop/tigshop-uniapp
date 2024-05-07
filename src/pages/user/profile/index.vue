@@ -4,27 +4,27 @@
         <view class="profile-edit-main">
             <uni-forms ref="formRef" :modelValue="form" label-width="170rpx">
                 <view class="profile-edit-content">
-                    <uni-forms-item label="用户ID" name="user_name">
-                        <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" disabled v-model="form.user_name" />
+                    <uni-forms-item label="用户ID" name="username">
+                        <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" disabled v-model="form.dim_username" />
                     </uni-forms-item>
                     <uni-forms-item label="昵称" name="nickname">
                         <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" v-model="form.nickname" placeholder="请输入昵称" />
                     </uni-forms-item>
-                    <uni-forms-item label="出生日期" name="birth">
-                        <uni-datetime-picker type="date" v-model="selectDate" :border="false" @change="handleDateChange" :clear-icon="false" />
+                    <uni-forms-item label="出生日期" name="birthday">
+                        <uni-datetime-picker type="date" v-model="form.birthday" :border="false" @change="handleDateChange" :clear-icon="false" />
                     </uni-forms-item>
-                    <uni-forms-item label="性别" name="sex">
+                    <!-- <uni-forms-item label="性别" name="sex">
                         <picker mode="selector" :range="genderList" :value="selectedGender" @change="onPickerChange">
                             <view style="line-height: 78rpx;text-align: right;">{{genderList[selectedGender]}}</view>
                         </picker>
-                    </uni-forms-item>
+                    </uni-forms-item> -->
                 </view>
                 <view class="profile-edit-content">
                     <uni-forms-item label="账户与安全">
-                        <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" disabled placeholder="修改密码等" suffixIcon="right" @click="goPages('/pages/user/profile/index')" />
+                        <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" disabled placeholder="修改密码等" suffixIcon="right" @click="goPages('/pages/user/security/info')" />
                     </uni-forms-item>
                     <uni-forms-item label="手机号码">
-                        <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" disabled :placeholder="form.mobile_phone_formated" suffixIcon="right" @click="goPages('/pages/user/profile/index')" />
+                        <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" disabled :placeholder="form.mobile" suffixIcon="right" @click="goPages('/pages/user/security/info')" />
                     </uni-forms-item>
                 </view>
             </uni-forms>
@@ -48,13 +48,11 @@ const parameter = {
     color: false
 };
 const form = reactive<any>({
-    user_name: "123123",
     nickname: "",
-    mobile_phone_formated: ""
+    birthday: ""
 });
-const selectDate = ref('2023-03-15')
 const handleDateChange = (date:string) => {
-    selectDate.value = date
+    form.birthday = date
 }
 const selectedGender = ref(0);
 const genderList = ref(['保密', '男', '女']);
@@ -68,9 +66,6 @@ const goPages = (url: string) => {
 };
 
 const rules = {
-    user_name: {
-        rules: [{ required: true, errorMessage: "您用户ID已缺失，请联系客服" }]
-    },
     nickname: {
         rules: [{ required: true, errorMessage: "请您填写用户昵称" }]
     },
@@ -81,11 +76,38 @@ const onSubmit = (values: any) => {
     formRef.value
         .validate()
         .then(() => {
-
+            edit();
         })
         .catch((err: any) => {
             console.log("表单错误信息：", err);
         });
+};
+
+const edit = async () => {
+    try {
+        const result = await updateProfile({ ...form });
+        if (result.message) {
+            uni.showToast({
+                title: result.message,
+                icon: "none",
+                duration: 1000
+            });
+        }
+        setTimeout(() => {
+            uni.navigateBack({
+                success: function (res) {
+                    uni.$emit("refreshData"); // 发送刷新信号
+                }
+            });
+        }, 1000);
+    } catch (error: any) {
+        console.error(error);
+        uni.showToast({
+            title: error.message,
+            icon: "none",
+            duration: 1000
+        });
+    }
 };
 
 onShow(() => {
@@ -99,11 +121,17 @@ onLoad(() => {
 });
 
 const __getProfile = async () => {
+    uni.showLoading({
+        title: "加载中..."
+    });
     try {
         const result = await getProfile();
+        result.item.mobile = result.item.mobile?.replace(/(\d{2})\d*(\d{4})$/, "$1*****$2");
         Object.assign(form, result.item);
     } catch (error) {
         console.error(error);
+    } finally {
+        uni.hideLoading();
     }
 };
 </script>

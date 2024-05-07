@@ -7,7 +7,7 @@ export interface ProfileFormResult {
 // 获取详情返回参数类型
 export interface ProfileFormState {
     user_id?: number;
-    birthday?: string;
+    birthday: string;
     nickname?: string;
     email?: string;
     mobile?: string;
