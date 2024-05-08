@@ -60,7 +60,7 @@
                             </view>
                             <view class="item-btn" v-if="orderInfo.available_actions.to_aftersales">
                                 <view v-if="!item.aftersales_item" @click="handleAfterSale(item.item_id)"> 申请售后 </view>
-                                <view v-else> 售后详情 </view>
+                                <view v-else @click="handleAfterSaleDetail(item.aftersales_item.aftersale_id)"> 售后详情 </view>
                             </view>
                         </view>
                     </block>
@@ -215,7 +215,6 @@ const handleConfirmReceipt = (id: number) => {
 };
 
 const handleAfterSale = (item_id: null | number) => {
-    console.log('handleAfterSale')
     if (item_id) {
         uni.navigateTo({
             url:`/pages/user/afterSale/edit?item_id=${item_id}&order_id=${orderInfo.value.order_id}`
@@ -226,6 +225,12 @@ const handleAfterSale = (item_id: null | number) => {
         })
     }
 };
+
+const handleAfterSaleDetail = (id: number) => {
+    uni.navigateTo({
+        url:`/pages/user/afterSale/info?id=${id}`
+    })
+}
 </script>
 
 <style lang="scss" scoped>

@@ -260,8 +260,9 @@ const handleSave = async () => {
             title: "提交成功"
         });
         setTimeout(() => {
-            // uni.redirectTo();
-            // 关闭当前页面跳转商售后详情页
+            uni.redirectTo({
+                url: '/pages/user/afterSale/list',
+            });
         }, 1500);
     } catch (error: any) {
         console.error(error);

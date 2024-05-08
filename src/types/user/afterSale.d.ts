@@ -169,3 +169,35 @@ export interface Step {
     title: string;
     description: string;
 }
+
+export interface afterSaleInfoResponse {
+    item: afterSaleInfoItem;
+    errcode: number;
+    message: string;
+}
+
+export interface afterSaleInfoItem {
+    aftersales_type_name: string;
+    status_name: string;
+    user_name: string;
+    shipping_time: string;
+    aftersale_id: number;
+    aftersale_type: number;
+    status: number;
+    pics: any[];
+    description: string;
+    reply: string;
+    add_time: string;
+    tracking_no: string;
+    logistics_name: string;
+    return_address: null;
+    aftersale_reason: string;
+    aftersales_sn: string;
+    order_id: number;
+    user_id: number;
+    refund_amount: string;
+    can_Cancel: boolean;
+    step_status: any;
+    aftersales_items: any;
+    aftersales_log: any;
+}

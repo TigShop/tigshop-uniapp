@@ -100,7 +100,14 @@
         },
         {
             "path":"pages/user/afterSale/edit"
+        },
+        {
+            "path":"pages/user/afterSale/info"
+        },
+        {
+            "path":"pages/user/afterSale/list"
         }
+
 	],
 	"requiredPrivateInfos": [
 		"chooseLocation",
