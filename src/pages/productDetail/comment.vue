@@ -25,7 +25,7 @@
             </view>
         </view>
     </view>
-    <view class="loading-box">
+    <view class="loading-box" v-if="page > 1">
         <view class="bottomLoading" v-if="loading"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
         <view v-else>没有更多了~</view>
     </view>
