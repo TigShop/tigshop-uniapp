@@ -86,7 +86,6 @@ const _getCommentList = async (id:any) => {
             page: page.value
         });
         commentList.value = result.filter_result;
-        // commentTotal.value = result.total;
     } catch (error:any) {
         uni.showToast({
             title: error.message,

@@ -1,7 +1,7 @@
 <template>
     <navbar :parameter="parameter"></navbar>
     <view class="product-info flex">
-        <view class="product-info-img"><image lazy-load class="product-img" :src="imageFormat(product.pic_thumb)"></image></view>
+        <view class="product-info-img"><image lazy-load class="product-img" :src="imageFormat(product.pic_thumb || '')"></image></view>
         <view>
             <view class="product-info-title line2">{{ product.product_name }}</view>
             <view class="product-info-price">
