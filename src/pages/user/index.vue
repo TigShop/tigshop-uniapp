@@ -139,7 +139,7 @@
                                 </view>
                                 <view>发票管理</view>
                             </view>
-                            <view class="item" @click="goPages('/pages/user_message/index')">
+                            <view class="item" @click="goPages('/pages/user/message/index')">
                                 <view class="pic"><image lazy-load src="/static/images/user/xiaoxi.png"></image></view>
                                 <view>站内消息</view>
                             </view>
