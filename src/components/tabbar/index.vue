@@ -47,6 +47,8 @@ onShow(() => {
     }
 });
 const handleTabbar = (item: any, index: number) => {
+    console.log(index)
+    console.log(uni.getStorageSync("currentActiveValue"))
     configStore.setCurrentActiveValue(index);
     item.pagePath && uni.switchTab({ url: item.pagePath });
 };

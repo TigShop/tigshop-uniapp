@@ -58,8 +58,9 @@
                                     <view class="right-price-quantity">x {{ item.quantity }}</view>
                                 </view>
                             </view>
-                            <view class="item-btn">
-                                <view> 申请售后</view>
+                            <view class="item-btn" v-if="orderInfo.available_actions.to_aftersales">
+                                <view v-if="!item.aftersales_item" @click="handleAfterSale(item.item_id)"> 申请售后 </view>
+                                <view v-else> 售后详情 </view>
                             </view>
                         </view>
                     </block>
@@ -104,7 +105,7 @@
                         <view class="btn" v-if="orderInfo.available_actions.confirm_receipt" @click="handleConfirmReceipt(orderInfo.order_id)">
                             确认已收货
                         </view>
-                        <view class="btn" v-if="orderInfo.available_actions.to_aftersales"> 整单售后 </view>
+                        <view class="btn" v-if="orderInfo.available_actions.to_aftersales" @click="handleAfterSale(null)"> 整单售后 </view>
                     </view>
                 </view>
             </saveBottomBox>
@@ -211,6 +212,19 @@ const handleConfirmReceipt = (id: number) => {
             }
         }
     });
+};
+
+const handleAfterSale = (item_id: null | number) => {
+    console.log('handleAfterSale')
+    if (item_id) {
+        uni.navigateTo({
+            url:`/pages/user/afterSale/edit?item_id=${item_id}&order_id=${orderInfo.value.order_id}`
+        })
+    } else {
+        uni.navigateTo({
+            url:`/pages/user/afterSale/edit?order_id=${orderInfo.value.order_id}`
+        })
+    }
 };
 </script>
 

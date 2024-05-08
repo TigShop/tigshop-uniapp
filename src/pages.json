@@ -35,6 +35,10 @@
 			"path": "pages/user/index",
 			"style": {}
 		},
+        {
+            "path": "pages/user/account/index",
+            "style": {}
+        },
 		{
 			"path": "pages/login/index",
 			"style": {}
@@ -93,6 +97,9 @@
         },
         {
             "path":"pages/user/collectProduct/index"
+        },
+        {
+            "path":"pages/user/afterSale/edit"
         }
 	],
 	"requiredPrivateInfos": [

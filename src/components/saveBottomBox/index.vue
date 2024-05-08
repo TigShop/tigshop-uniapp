@@ -28,5 +28,6 @@ const props = defineProps({
     bottom: 0;
     left: 0;
     background-color: v-bind("props.backgroundColor");
+    border-top: 1px solid #eee;
 }
 </style>
