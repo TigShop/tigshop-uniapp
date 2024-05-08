@@ -2,8 +2,9 @@
     <view>
         <navbar :parameter="parameter"></navbar>
         <productImg v-if="product" :picList="picList" :productInfo="product"></productImg>
+        <productSeckillTitle v-if="is_seckill" :productInfo="product" :productPrice="productPrice" :seckill_end_time="seckill_end_time"></productSeckillTitle>
         <view class="productDetail-content">
-            <productTitleInfo :productInfo="product" :productPrice="productPrice"></productTitleInfo>
+            <productTitleInfo v-if="!is_seckill" :productInfo="product" :productPrice="productPrice"></productTitleInfo>
             <view class="product-card-row">
                 <productSku 
                     v-if="attrList.spe" 
@@ -15,6 +16,7 @@
                     :productInfo="product" 
                     :productPrice="productPrice" 
                     :productStock="productStock" 
+                    :productNumber="productNumber" 
                     @change="onProductSkuChange"
                     @addCart="_getCartCount">
                     <view class="cart-item flex align-center justify-between">
@@ -45,24 +47,38 @@
                         <image src="/static/images/common/more.png"/>
                     </view>
                 </view>
-                <view class="cart-item flex align-center justify-between">
+                <view class="cart-item flex align-center justify-between" @click="showDrawer">
                     <view class="flex align-center">
                         <view class="title">
                             参数
                         </view>
                         <view class="label attr_text line1">
-                            功能.防水,防水登记,原装配件,防水深度,防水深度,机身类型,地方撒发大水发萨芬
+                            <view class="shuxin flex">
+                                <view v-for="(item, index) in attrList.normal">
+                                    {{ item.attr_name }}/
+                                </view>
+                            </view>
                         </view>
                     </view>
                     <view>
                         <image src="/static/images/common/more.png"/>
                     </view>
                 </view>
-                <view class="cart-item traceability-item flex align-center">
+                <!-- <view class="cart-item traceability-item flex align-center">
                     <image src="/static/images/product/traceability.png"/>
                     <text>从田野地头到您手中的全链路溯源</text>
-                </view>
+                </view> -->
             </view>
+            <tigpopup v-model:show="showAttrRef" position="bottom" paddingBottom="0" height="60vh" title="规格参数">
+                <view>
+                    <view class="attr_table">
+                        <view v-for="(item, index) in attrList.normal" class="item flex">
+                            <view class="lable">{{ item.attr_name }}</view>
+                            <view class="value" v-for="attr in item.attr_list"> {{ attr.attr_value }} </view>
+                        </view>
+                    </view>
+                </view>
+            </tigpopup>
             <productComment :productId="product.product_id"></productComment>
             <view class="product-card-row">
                 <view class="tab-box flex align-center justify-around">
@@ -70,8 +86,6 @@
                     <view class="tab" :class="{'active': tabIndex == 1}" @click="tabIndex = 1">售后服务</view>
                 </view>
                 <view class="default" v-if="tabIndex == 0">
-                    <!-- <uni-icons type="arrow-up" size="18" color="#9b9c9f"></uni-icons>
-                    <text>上拉查看图文详情</text> -->
                     <template v-for="item in descArr">
                         <view class="desc-pic-item" v-if="item.type == 'pic'">
                             <image lazy-load :src="imageFormat(item?.pic || '')" class="slide-image" mode="widthFix" />
@@ -114,6 +128,7 @@
                     :productInfo="product" 
                     :productPrice="productPrice" 
                     :productStock="productStock" 
+                    :productNumber="productNumber" 
                     @change="onProductSkuChange"
                     @addCart="_getCartCount">
                     <view class="flex align-center justify-between">
@@ -123,6 +138,7 @@
                 </productSku>
             </view>
         </view>
+        <tigBackTop :class="{ show: scrollTop > 100 }"></tigBackTop>
     </view>
 </template>
 
@@ -130,13 +146,15 @@
 import navbar from "@/components/navbar/index.vue";
 import productImg from "./src/productImg.vue";
 import productTitleInfo from './src/productTitleInfo.vue'
+import productSeckillTitle from './src/productSeckillTitle.vue'
 import productComment from './src/productComment.vue'
 import productSku from './src/productSku.vue'
 import afterSaleService from './src/afterSaleService.vue'
 import { imageFormat } from "@/utils/format";
 import { reactive, ref } from "vue";
-import { onLoad, onShow } from "@dcloudio/uni-app";
+import { onLoad, onShow, onPageScroll } from "@dcloudio/uni-app";
 import { getProductDetail, getProductSkuDetail } from "@/api/product/product";
+import tigBackTop from "@/components/tigBackTop/index.vue";
 import { asyncGetCartCount } from "@/api/cart/cart";
 import type { PicList, ProductItem, AttrList, SkuList, ServiceList, RankDetail, DescArr} from "@/types/product/product";
 const tabIndex = ref(0);
@@ -152,7 +170,16 @@ const props = defineProps({
         default: "product"
     }
 });
+const scrollTop = ref(0);
+onPageScroll((e) => {
+    scrollTop.value = e.scrollTop;
+});
 const product_id = ref<string>("");
+    const showAttrRef = ref(false)
+// 打开窗口
+const showDrawer = () => {
+	showAttrRef.value = true;
+}
 onLoad((option) => {
     if (option) {
         const { id } = option;
@@ -249,7 +276,7 @@ const toPage = (url:string) => {
 </script>
 <style lang="scss" scoped>
 .productDetail-content {
-    padding: 20rpx;
+    padding:0 20rpx;
     padding-bottom: 100rpx;
     .product-card-row{
         background-color: #fff;
@@ -258,7 +285,7 @@ const toPage = (url:string) => {
         margin: 20rpx 0;
         .cart-item{
             font-size: 26rpx;
-            margin: 15rpx 0;
+            margin: 25rpx 0;
             .title{
                 width: 90rpx;
                 color: #81838e;
@@ -345,5 +372,25 @@ const toPage = (url:string) => {
             background: $tig-color-error;
         }
     }
+}
+.attr_table{
+    padding:0 20rpx;
+    .item{
+        margin-bottom: 5rpx;
+        font-size: 22rpx;
+        .lable{
+            display: inline-block;
+            width: 200rpx;
+            border: 1px solid #f5f4ef;
+            background: #f5f4ef;
+            padding: 10rpx 20rpx;
+        }
+        .value{
+            flex: 1;
+            border: 1px solid #f5f4ef;
+            padding: 10rpx 20rpx;
+        }
+    }
+    
 }
 </style>

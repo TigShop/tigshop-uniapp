@@ -77,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { onLoad } from "@dcloudio/uni-app";
 import { getProductSkuDetail } from "@/api/product/product";
 import { imageFormat } from "@/utils/format";
@@ -92,11 +92,12 @@ interface Props {
     productInfo: ProductItem;
     productPrice: string;
     productStock: number;
+    productNumber: number;
     pageType: string;
 }
-const productNumber = ref<number>(1)
 const props = defineProps<Props>();
 const product_id = ref<string>("");
+const productNumber = ref<number>(1)
 onLoad((option) => {
     if (option) {
         const { id } = option;
@@ -109,6 +110,7 @@ const showDrawerRef = ref(false)
 // 打开窗口
 const showDrawer = () => {
 	showDrawerRef.value = true;
+    productNumber.value = props.productNumber;
 }
 // 关闭窗口
 const closeDrawer = () => {
