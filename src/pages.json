@@ -102,6 +102,12 @@
             "path":"pages/user/afterSale/edit"
         },
         {
+            "path":"pages/seckill/list"
+        },
+        {
+            "path":"pages/user/messageLog/index"
+        },
+        {
             "path":"pages/user/afterSale/info"
         },
         {

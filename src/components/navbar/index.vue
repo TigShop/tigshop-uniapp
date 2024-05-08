@@ -171,6 +171,13 @@ onMounted(() => {
 .navbar.qiandao {
     background: linear-gradient(90deg, #e65560, #e25063);
 }
+.navbar.seckill {
+    /* background: linear-gradient(to right,#ef3390,#ef3647); */
+    background: linear-gradient(to right, #FF8853 0%, #F52828 100%);
+}
+.navbar.seckill .navbarH .navbarCon .name{
+    color: #fff !important;
+}
 
 .navbar.red {
     background-color: #eb5447;
