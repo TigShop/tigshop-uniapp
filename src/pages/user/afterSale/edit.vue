@@ -1,5 +1,5 @@
 <template>
-    <view class="after-sale">
+    <view class="after-sale" v-if="Object.keys(infoData).length">
         <view class="after-sale-product">
             <block v-for="item in infoData.list" :key="item.item_id">
                 <view class="product-card-item">
@@ -29,29 +29,74 @@
 
         <view class="after-sale-form">
             <uni-forms ref="formRef" :modelValue="form" label-width="170rpx">
-                <uni-forms-item label="退款方式：" name="regionNames">
-                    <!-- <uni-easyinput
-                        style="background-color: #fff"
-                        suffixIcon="right"
-                        primaryColor="rgb(192, 196, 204)"
-                        :inputBorder="false"
-                        v-model="aftersale_type_text"
-                        placeholder="请选择"
-                    /> -->
-                    <picker @change="getAftersaleType" :value="aftersaleTypeIndex" range-key="label" :range="aftersale_type_list">
-                        <view class="uni-input">{{ aftersaleTypeIndex ? aftersale_type_list[aftersaleTypeIndex!].label : "请选择" }}</view>
+                <uni-forms-item label="退款方式" name="aftersale_type">
+                    <picker style="height: 100%" @change="getAftersaleType" :value="aftersaleTypeIndex" range-key="label" :range="aftersale_type_list">
+                        <view class="form-item-content">
+                            <view>
+                                <text class="form-item-value" v-if="aftersaleTypeIndex !== null">{{ aftersale_type_list[aftersaleTypeIndex!].label }}</text>
+                                <text class="form-item-text" v-else>请选择</text>
+                            </view>
+                            <view class="form-item-icon">
+                                <uni-icons type="arrowright" size="16" color="#999"></uni-icons>
+                            </view>
+                        </view>
                     </picker>
+                </uni-forms-item>
+                <uni-forms-item label="退款原因" name="aftersale_reason">
+                    <picker @change="getAftersaleReason" :value="aftersaleTypeIndex" :range="infoData.aftersale_reason">
+                        <view class="form-item-content">
+                            <view>
+                                <text class="form-item-value" v-if="form.aftersale_reason">{{ form.aftersale_reason }}</text>
+                                <text class="form-item-text" v-else>请选择</text>
+                            </view>
+                            <view class="form-item-icon">
+                                <uni-icons type="arrowright" size="16" color="#999"></uni-icons>
+                            </view>
+                        </view>
+                    </picker>
+                </uni-forms-item>
+                <uni-forms-item label="问题描述" name="description">
+                    <uni-easyinput
+                        type="textarea"
+                        primaryColor="rgb(192, 196, 204)"
+                        maxlength="100"
+                        :inputBorder="false"
+                        v-model="form.description"
+                        autoHeight
+                        placeholder="最多100字"
+                        placeholderStyle="font-size: 26rpx;text-align: end;"
+                    />
+                </uni-forms-item>
+                <uni-forms-item label="上传凭证" name="description">
+                    <uni-file-picker
+                        :auto-upload="false"
+                        v-model="fileLists"
+                        @select="handlePicSelect"
+                        @delete="handlePicDelete"
+                        limit="5"
+                        title="最多选择5张图片"
+                    >
+                        <uni-icons type="camera" size="30" color="#cccccc"></uni-icons>
+                    </uni-file-picker>
                 </uni-forms-item>
             </uni-forms>
         </view>
+        <saveBottomBox :height="90" backgroundColor="#fff">
+            <view class="after-sale-btn-box">
+                <button hover-class="base-button-hover" class="after-sale" @click="handleSave">提交</button>
+            </view>
+        </saveBottomBox>
     </view>
 </template>
 
 <script setup lang="ts">
 import { onLoad } from "@dcloudio/uni-app";
 import { ref, reactive } from "vue";
-import { getAftersalesEdit } from "@/api/user/afterSale";
+import { getAftersalesEdit, updateAfterSales } from "@/api/user/afterSale";
 import type { afterSaleEditResponse } from "@/types/user/afterSale";
+import { imageFormat } from "@/utils/format";
+import indexConfig from "@/config/index.config";
+import saveBottomBox from "@/components/saveBottomBox/index.vue";
 const orderId = ref<number | null>();
 const itemId = ref<number | null>();
 onLoad((options) => {
@@ -73,7 +118,11 @@ const aftersale_type_list = ref([
         label: "退货退款"
     }
 ]);
+const refundAmountMax = ref<number>(0);
 const __getAftersalesEdit = async () => {
+    uni.showLoading({
+        title: "加载中"
+    });
     try {
         if (orderId.value) {
             const result = await getAftersalesEdit({
@@ -84,18 +133,18 @@ const __getAftersalesEdit = async () => {
             infoData.value.list.forEach((item) => {
                 item.number = item.quantity;
             });
+            refundAmountMax.value = Number(infoData.value.order.paid_amount);
         }
     } catch (error) {
         console.error(error);
+    } finally {
+        uni.hideLoading();
     }
 };
 
 interface Iform {
-    pics_list: any[];
     items: Item[];
     pics: any[];
-    refund_amount: string;
-    refund_amount_max: string;
     order_id: number;
     aftersale_type: number;
     aftersale_reason: string;
@@ -107,22 +156,120 @@ interface Item {
     number: number;
 }
 const form = reactive<Iform>({
-    pics_list: [],
     items: [],
     pics: [],
-    refund_amount: "",
-    refund_amount_max: "",
     order_id: 0,
     aftersale_type: 0,
     aftersale_reason: "",
     description: ""
 });
 
-const aftersaleTypeIndex = ref<null | number>();
+interface FileLists {
+    name: string;
+    extname: string;
+    url: string;
+}
+const fileLists = ref<FileLists[]>([]);
+const aftersaleTypeIndex = ref<null | number>(null);
 
 const getAftersaleType = (e: any) => {
     aftersaleTypeIndex.value = e.detail.value;
     form.aftersale_type = aftersale_type_list.value[aftersaleTypeIndex.value!].value;
+};
+const getAftersaleReason = (e: any) => {
+    form.aftersale_reason = infoData.value.aftersale_reason[e.detail.value];
+};
+
+const handlePicSelect = (e: any) => {
+    // 兼容多端
+    if (e.tempFilePaths.length === 1) {
+        uploadFile(e.tempFilePaths[0]);
+    } else {
+        e.tempFilePaths.forEach((item: string) => {
+            uploadFile(item);
+        });
+    }
+};
+
+const uploadFile = (filePath: any) => {
+    let name, extname, url;
+    uni.uploadFile({
+        url: indexConfig.baseUrl + indexConfig.requestUrlPrefix + "user/upload_img", //仅为示例，非真实的接口地址
+        filePath,
+        header: {
+            Authorization: uni.getStorageSync("token")
+        },
+        success: (uploadFileRes: any) => {
+            uni.hideLoading();
+            const { data } = JSON.parse(uploadFileRes.data);
+            name = data.pic_name;
+            extname = data.pic_url.split(".")[1];
+            url = imageFormat(data.pic_thumb);
+            fileLists.value.push({
+                name,
+                extname,
+                url
+            });
+            console.log("fileLists", fileLists.value);
+            uni.showToast({
+                title: "图片上传成功"
+            });
+        },
+        fail: (error) => {
+            uni.hideLoading();
+
+            uni.showToast({
+                title: "图片上传失败",
+                icon: "none"
+            });
+        }
+    });
+};
+
+const handlePicDelete = (e: any) => {
+    fileLists.value.splice(e.index, 1);
+};
+
+const handleSave = async () => {
+    if (form.aftersale_type === 0)
+        return uni.showToast({
+            title: "请选择退款方式",
+            icon: "none"
+        });
+    if (form.aftersale_reason === "")
+        return uni.showToast({
+            title: "请选择退款原因",
+            icon: "none"
+        });
+    if (form.description === "")
+        return uni.showToast({
+            title: "请填写问题描述",
+            icon: "none"
+        });
+
+    try {
+        form.pics = fileLists.value.map((item) => item.url);
+        form.order_id = infoData.value.order.order_id;
+        infoData.value.list.forEach((item: any) => {
+            form.items.push({ order_item_id: item.item_id, number: item.number });
+        });
+        console.log("form", form);
+
+        const result = await updateAfterSales(form);
+        uni.showToast({
+            title: "提交成功"
+        });
+        setTimeout(() => {
+            // uni.redirectTo();
+            // 关闭当前页面跳转商售后详情页
+        }, 1500);
+    } catch (error: any) {
+        console.error(error);
+        uni.showToast({
+            title: error.message,
+            icon: "none"
+        });
+    }
 };
 </script>
 
@@ -130,7 +277,7 @@ const getAftersaleType = (e: any) => {
 .after-sale {
     .after-sale-product {
         background-color: #fff;
-        border-radius: 20rpx;
+        border-radius: 0 0 20rpx 20rpx;
         padding: 20rpx;
         margin-bottom: 20rpx;
 
@@ -202,10 +349,81 @@ const getAftersaleType = (e: any) => {
 
     .after-sale-form {
         background-color: #fff;
+        .form-item-content {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            height: 72rpx;
+
+            .form-item-icon {
+                padding-left: 15rpx;
+            }
+
+            .form-item-text {
+                color: #969799;
+            }
+        }
+
+        :deep(.uni-easyinput__content-textarea) {
+            min-height: 50rpx;
+            height: 50rpx;
+        }
+
+        :deep(.uni-input-input) {
+            text-align: end;
+        }
+
+        .hint {
+            background-color: #f5f5f5;
+            padding: 10rpx 25rpx;
+            color: #9c9c9c;
+            font-size: 25rpx;
+        }
+
+        :deep(.uni-file-picker__header) {
+            padding-top: 17rpx;
+
+            .file-title {
+                color: #9c9c9c;
+            }
+        }
+    }
+    :deep(.special-item) {
+        &.uni-forms-item {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+    }
+    .uni-forms-item {
+        margin: 10rpx 25rpx 10rpx 25rpx;
+        border-bottom: 1px solid #eee;
+        &:last-child {
+            border-bottom: none;
+            padding-bottom: 20rpx;
+        }
     }
 
-    .uni-forms-item {
-        padding: 0 10rpx 0 25rpx;
+    :deep(.file-picker__box) {
+        padding-top: 30%;
+    }
+    :deep(.file-picker__progress) {
+        display: none;
+    }
+
+    :deep(.icon-del-box) {
+        width: 40rpx;
+        height: 40rpx;
+    }
+
+    .after-sale-btn-box {
+        padding: 10rpx 20rpx;
+
+        .after-sale {
+            font-size: 28rpx;
+            border-radius: 50rpx;
+            background-color: $tig-color-primary;
+            color: #fff;
+        }
     }
 }
 </style>

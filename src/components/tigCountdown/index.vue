@@ -2,6 +2,7 @@
     <view class="tig-countdown">
         <uni-countdown
             :color="color"
+            :background-color="backgroundColor"
             :font-size="fontSize"
             :splitorColor="splitorColor"
             :show-day="days > 0"
@@ -19,6 +20,10 @@ const props = defineProps({
     color: {
         type: String,
         default: "#fff"
+    },
+    backgroundColor: {
+        type: String,
+        default: ""
     },
     splitorColor: {
         type: String,
