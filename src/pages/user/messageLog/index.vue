@@ -108,10 +108,14 @@ const deleteMsg = async (id: number, index:number) => {
 };
 
 const __addMessageRead = async (data: UserMsgFilterState) => {
-    if (data.is_read === 1) return;
     try {
-        await addMessageRead(data.message_id);
-        data.is_read = 1;
+        if (data.is_read !== 1){
+            await addMessageRead(data.message_id);
+            data.is_read = 1;
+        }
+        uni.navigateTo({
+            url: data.link
+        })
     } catch (error: any) {
         console.error(error);
     }
