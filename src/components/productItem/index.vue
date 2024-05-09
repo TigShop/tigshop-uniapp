@@ -1,30 +1,31 @@
 <template>
-    <view :class="'item-li list-' + masonryListClass">
+    <view :class="'item-li list-' + masonryListClass" @click="toPage(item)">
         <view class="photo">
-            <navigator :url="'/pages/productDetail/index?id=' + item.product_id + '&is_exchange=' + item.is_exchange">
-                <!-- <image lazy-load :src="imageFormat(item.pic_thumb)" mode="widthFix"></image> -->
-                <tigImage v-model:src="item.pic_thumb" mode="widthFix"></tigImage>
+                <tigImage v-if="!isExchange" v-model:src="item.pic_thumb" mode="widthFix"></tigImage>
+                <tigImage v-if="isExchange" v-model:src="item.pic_url" mode="widthFix"></tigImage>
 
                 <view v-if="item.product_stock == 0" class="outsale">售罄</view>
-            </navigator>
         </view>
         <view class="info">
             <view class="detail">
-                <navigator :url="'/pages/productDetail/index?id=' + item.product_id + '&is_exchange=' + item.is_exchange" class="name">{{
-                    item.product_name
-                }}</navigator>
-                <navigator :url="'/pages/productDetail/index?id=' + item.product_id + '&is_exchange=' + item.is_exchange" class="brief" v-if="item.brief">{{
-                    item.brief
-                }}</navigator>
+                {{item.product_name}}
+                {{item.brief}}
             </view>
-            <view class="action">
+            <view class="action" v-if="!isExchange">
                 <view class="pricenum">
                     <FormatPrice :priceData="item.product_price"></FormatPrice>
                 </view>
                 <productBuy :id="item.product_id" :disabled="item.product_stock == 0" @callback="getCallback">
                     <view class="buy_btn"><image lazy-load src="/static/images/common/cart.png"></image></view>
                 </productBuy>
-        
+            </view>
+            <view class="exchange" v-if="isExchange">
+                <view class="market_price">
+                    原价: <FormatPrice :priceData="item.market_price"></FormatPrice>
+                </view>
+                <view class="exchangenum">
+                    积分价: <FormatPrice :priceData="item.discounts_price"></FormatPrice>+&nbsp;<text>{{ item.exchange_integral }}</text> 积分
+                </view>
             </view>
         </view>
     </view>
@@ -40,11 +41,24 @@ const props = defineProps({
     masonryListClass: {
         type: String,
         default: ""
+    },
+    isExchange: {
+        type: Boolean,
+        default: false
     }
 });
 const emit = defineEmits(["callback"]);
 const getCallback = () => {
     emit("callback");
+}
+const toPage = (item:any) => {
+    let id = ''
+    if(props.isExchange){
+        id = item.id
+    }else{
+        id = item.product_id
+    }
+    uni.navigateTo({ url:'/pages/productDetail/index?id=' + id + '&is_exchange=' + props.isExchange })
 }
 </script>
 <style lang="scss" scoped>
@@ -119,7 +133,6 @@ const getCallback = () => {
 
 .item-li .buy_btn {
     display: inline-block;
-    float: right;
     font-size: 24rpx;
     margin-right: 20rpx;
     margin-top: 6rpx;
@@ -166,6 +179,30 @@ const getCallback = () => {
         font-size: 22rpx;
         position: relative;
         top: 4rpx;
+    }
+}
+.exchange{
+    padding: 0 20rpx;
+    .market_price{
+        margin-bottom: 10rpx;
+        font-size: 22rpx;
+        color: #999;
+        :deep(.price-content) {
+            text-decoration: line-through;
+        }
+    }
+    .exchangenum{
+        margin-bottom: 20rpx;
+        font-size: 22rpx;
+        :deep(.price-content) {
+            color: #caad7d;
+            font-size: 30rpx;
+            font-weight: bold;
+        }
+        text{
+            color: #caad7d;
+            font-weight: bold;
+        }
     }
 }
 </style>

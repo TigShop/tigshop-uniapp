@@ -22,7 +22,7 @@
                                 </view>
                                 <template #right>
                                     <view class="message-move-box">
-                                        <view class="btn-del" @click="__delMessage(item.message_id)"><text>删除</text></view>
+                                        <view class="btn-del" @click="__delMessage(item.message_id, index)"><text>删除</text></view>
                                     </view>
                                 </template>
                             </uni-swipe-action-item>
@@ -77,29 +77,27 @@ const __geMessageList = async () => {
     }
 };
 
-const __delMessage = (id: number) => {
+const __delMessage = (id: number, index:number) => {
     uni.showModal({
         title: "提示",
         content: "确定删除此条站内信吗？",
         success: async (res) => {
             if (res.confirm) {
-                deleteMsg(id);
+                deleteMsg(id, index);
             }
         }
     });
 };
-const deleteMsg = async (value: number) => {
+const deleteMsg = async (id: number, index:number) => {
     try {
-        const result = await delMessage({ id: value });
+        const result = await delMessage({ id: id });
+        messageList.value.splice(index, 1)
         if (result.message) {
             uni.showToast({
                 title: result.message,
                 icon: "none"
             });
         }
-        filterParams.page = 1;
-        messageList.value = [];
-        __geMessageList();
     } catch (error: any) {
         uni.showToast({
             title: error.message,
@@ -110,12 +108,14 @@ const deleteMsg = async (value: number) => {
 };
 
 const __addMessageRead = async (data: UserMsgFilterState) => {
-    if (data.is_read === 1) return;
     try {
-        await addMessageRead(data.message_id);
-        filterParams.page = 1;
-        messageList.value = [];
-        __geMessageList();
+        if (data.is_read !== 1){
+            await addMessageRead(data.message_id);
+            data.is_read = 1;
+        }
+        uni.navigateTo({
+            url: data.link
+        })
     } catch (error: any) {
         console.error(error);
     }

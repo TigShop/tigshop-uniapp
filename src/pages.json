@@ -105,6 +105,9 @@
             "path":"pages/seckill/list"
         },
         {
+            "path":"pages/exchange/list"
+        },
+        {
             "path":"pages/user/messageLog/index"
         },
         {

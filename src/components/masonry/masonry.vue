@@ -1,7 +1,7 @@
 <template>
     <view class="menu-card">
         <block v-for="(item, index) in commodityList" :key="index">
-            <goods-item :item="item" @callback="$emit('callback')"></goods-item>
+            <goods-item :item="item" :isExchange="isExchange" @callback="$emit('callback')"></goods-item>
         </block>
     </view>
     <block v-if="commodityList.length === 0">
@@ -14,6 +14,7 @@ import goodsItem from "@/components/productItem/index.vue";
 import type { GetProductFilterResult } from "@/types/home/home";
 interface Iprops {
     commodityList: GetProductFilterResult[];
+    isExchange: boolean;
 }
 const props = defineProps<Iprops>();
 const emits = defineEmits(["callback"]);

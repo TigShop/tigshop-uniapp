@@ -129,17 +129,17 @@
                                 <view class="pic"><image lazy-load src="/static/images/user/shouhuodizhi.png"></image></view>
                                 <view>收货地址</view>
                             </view>
-                            <view class="item" @click="goPages('/pages/user_security/index')">
+                            <!-- <view class="item" @click="goPages('/pages/user/profile/index')">
                                 <view class="pic"><image lazy-load src="/static/images/user/anquanzhongxin.png"></image></view>
                                 <view>安全中心</view>
-                            </view>
+                            </view> -->
                             <view class="item" @click="goPages('/pages/user_invoice/index')">
                                 <view class="pic">
                                     <image lazy-load src="/static/images/user/fapiao.png"></image>
                                 </view>
                                 <view>发票管理</view>
                             </view>
-                            <view class="item" @click="goPages('/pages/user/message/index')">
+                            <view class="item" @click="goPages('/pages/user/messageLog/index')">
                                 <view class="pic"><image lazy-load src="/static/images/user/xiaoxi.png"></image></view>
                                 <view>站内消息</view>
                             </view>
