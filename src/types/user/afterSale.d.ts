@@ -201,3 +201,22 @@ export interface afterSaleInfoItem {
     aftersales_items: any;
     aftersales_log: any;
 }
+
+export interface NegotiateResponse {
+    item: NegotiateItem[];
+    errcode: number;
+    message: string;
+}
+
+export interface NegotiateItem {
+    log_id: number;
+    aftersale_id: number;
+    log_info: string;
+    add_time: string;
+    admin_name: string;
+    refund_money: string;
+    refund_type: number;
+    refund_desc: string;
+    user_name: string;
+    return_pic: null | string[];
+}

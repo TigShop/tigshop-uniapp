@@ -112,6 +112,15 @@
         },
         {
             "path":"pages/user/afterSale/list"
+        },
+        {
+            "path":"pages/user/afterSale/negotiate"
+        },
+        {
+            "path":"pages/user/afterSale/leaveMessage"
+        },
+        {
+            "path":"pages/user/afterSale/shipments"
         }
 
 	],
