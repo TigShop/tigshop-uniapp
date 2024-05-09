@@ -4,12 +4,11 @@
         <productImg v-if="product" :picList="picList" :productInfo="product"></productImg>
         <productSeckillTitle v-if="is_seckill" :productInfo="product" :productPrice="productPrice" :seckill_end_time="seckill_end_time"></productSeckillTitle>
         <view class="productDetail-content">
-            <productTitleInfo v-if="!is_seckill" :productInfo="product" :productPrice="productPrice"></productTitleInfo>
+            <productTitleInfo v-if="!is_seckill" :productInfo="product" :productPrice="productPrice" :isExchange="isExchange"></productTitleInfo>
             <view class="product-card-row">
                 <productSku 
                     v-if="attrList.spe" 
                     v-model="attrList" 
-                    :pageType="pageType" 
                     :picList="picList" 
                     :skuList="skuList" 
                     :checkedValue="checkedValue" 
@@ -17,6 +16,7 @@
                     :productPrice="productPrice" 
                     :productStock="productStock" 
                     :productNumber="productNumber" 
+                    :isExchange="isExchange" 
                     @change="onProductSkuChange"
                     @addCart="_getCartCount">
                     <view class="cart-item flex align-center justify-between">
@@ -121,7 +121,6 @@
                 <productSku 
                     v-if="attrList.spe" 
                     v-model="attrList" 
-                    :pageType="pageType" 
                     :picList="picList" 
                     :skuList="skuList" 
                     :checkedValue="checkedValue" 
@@ -129,11 +128,15 @@
                     :productPrice="productPrice" 
                     :productStock="productStock" 
                     :productNumber="productNumber" 
+                    :isExchange="isExchange"
                     @change="onProductSkuChange"
                     @addCart="_getCartCount">
-                    <view class="flex align-center justify-between">
+                    <view class="flex align-center justify-between" v-if="!isExchange">
                         <view class="btn cart">加入购物车</view>
                         <view class="btn buy">立即购买 </view>
+                    </view>
+                    <view class="flex align-center justify-between" v-if="isExchange">
+                        <view class="btn cart" style="width: 60vw;">立即兑换 </view>
                     </view>
                 </productSku>
             </view>
@@ -154,6 +157,7 @@ import { imageFormat } from "@/utils/format";
 import { reactive, ref } from "vue";
 import { onLoad, onShow, onPageScroll } from "@dcloudio/uni-app";
 import { getProductDetail, getProductSkuDetail } from "@/api/product/product";
+import { getExchangeDetail } from "@/api/exchange/exchange";
 import tigBackTop from "@/components/tigBackTop/index.vue";
 import { asyncGetCartCount } from "@/api/cart/cart";
 import type { PicList, ProductItem, AttrList, SkuList, ServiceList, RankDetail, DescArr} from "@/types/product/product";
@@ -164,12 +168,7 @@ const parameter = reactive({
     title: "商品详情",
     class: "pageGoods"
 });
-const props = defineProps({
-    pageType: {
-        type: String,
-        default: "product"
-    }
-});
+const isExchange = ref(false)
 const scrollTop = ref(0);
 onPageScroll((e) => {
     scrollTop.value = e.scrollTop;
@@ -182,12 +181,15 @@ const showDrawer = () => {
 }
 onLoad((option) => {
     if (option) {
+        if(option.is_exchange) {
+            isExchange.value = option.is_exchange;
+        }
         const { id } = option;
         if (id) {
             product_id.value = id;
             __getProductDetail(id);
-            
         }
+        
     }
 });
 onShow(() => {
@@ -209,8 +211,8 @@ const checkedValue = ref<string[]>([]);
 const __getProductDetail = async (id: string) => {
     try {
         let result: any = {};
-        if (props.pageType == "exchange") {
-            // result = await getExchangeDetail(id);
+        if (isExchange.value) {
+            result = await getExchangeDetail(id);
         } else {
             result = await getProductDetail(id);
         }
@@ -223,7 +225,9 @@ const __getProductDetail = async (id: string) => {
         descArr.value = result.desc_arr;
         serviceList.value = result.service_list;
         productStock.value = result.item.product_stock;
-        loadPrice()
+        if(!isExchange){
+            loadPrice()
+        }
     } catch (error: any) {
         uni.showToast({
             title: error.message,
@@ -245,7 +249,9 @@ const onProductSkuChange = (item: any) => {
         skuStr.value = item.sku_str;
     }
     productNumber.value = item.productNumber;
-    loadPrice();
+    if(!isExchange){
+        loadPrice()
+    }
 };
 const loadPrice = async () => {
     try {

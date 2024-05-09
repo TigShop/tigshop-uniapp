@@ -1,4 +1,5 @@
 export interface ProductItem {
+    id: string;
     product_id: number;
     product_name?: string;
     product_sn?: string;

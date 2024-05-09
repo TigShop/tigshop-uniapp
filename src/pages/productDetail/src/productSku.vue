@@ -10,8 +10,14 @@
                         <image lazy-load :src="imageFormat(skuProductImage)" class="slide-image" />
                     </view>
                     <view class="info">
-                        <view class="price">
+                        <view class="price" v-if="!isExchange">
                             <view class="now"><FormatPrice :priceData="productPrice"></FormatPrice></view>
+                        </view>
+                        <view class="exchange-price" v-if="isExchange">
+                            <FormatPrice :priceData="productInfo.discounts_price"></FormatPrice>
+                            <text> + </text>
+                            <text class="exchange-num">{{ productInfo.exchange_integral }}</text>
+                            <text>积分</text>
                         </view>
                         <view class="name">
                             {{ productInfo.product_name }}
@@ -44,14 +50,14 @@
                     </view>
                     <view class="sku-num flex align-center">
                         <uni-number-box :min="1" :max="productStock" v-model="productNumber" :width="60" />
-                        <view class="stock">库存：<text class="green-txt" v-if="productStock > 50">充足</text> <text class="red-txt" v-else>仅剩{{productStock}}件</text> </view>
+                        <view class="stock" v-if="!isExchange">库存：<text class="green-txt" v-if="productStock > 50">充足</text> <text class="red-txt" v-else>仅剩{{productStock}}件</text> </view>
                     </view>
                 </view>
             </view>
             <view class="footer">
-                <view class="add_cart" v-if="pageType == 'exchange'">
-                    <productBuy :id="product_id" :skuId="skuId" :disabled="productStock == 0" :number="productNumber" :isQuick="true">
-                        <view class="btn redbtn exBtn">立刻兑换</view>
+                <view class="add_cart" v-if="isExchange">
+                    <productBuy :id="productInfo.id" :skuId="skuId" :disabled="productStock == 0" :number="productNumber" :isQuick="true">
+                        <view class="btn exBtn">立刻兑换</view>
                     </productBuy>
                 </view>
                 <view class="add_cart" v-else>
@@ -93,7 +99,7 @@ interface Props {
     productPrice: string;
     productStock: number;
     productNumber: number;
-    pageType: string;
+    isExchange: boolean;
 }
 const props = defineProps<Props>();
 const product_id = ref<string>("");
@@ -197,8 +203,6 @@ const loadPrice = async (skuId:any) => {
             sku_id: skuId
         });
         productPrice.value = result.price;
-        // is_seckill.value = result.is_seckill;
-        // seckill_end_time.value = result.seckill_end_time;
         productStock.value = result.stock;
     } catch (error:any) {
         uni.showToast({
@@ -221,6 +225,19 @@ const loadPrice = async (skuId:any) => {
         .info{
             margin-left: 20rpx;
             .price{
+                color: $tig-color-primary;
+                font-weight: bold;
+                font-size: 36rpx;
+                display: flex;
+                align-items: center;
+                line-height: 36rpx;
+                margin-bottom: 10rpx;
+                :deep(.util) {
+                    font-size: 24rpx;
+                    line-height: 36rpx;
+                }
+            }
+            .exchange-price{
                 color: $tig-color-primary;
                 font-weight: bold;
                 font-size: 36rpx;
