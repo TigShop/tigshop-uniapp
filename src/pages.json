@@ -109,7 +109,14 @@
         },
         {
             "path":"pages/user/messageLog/index"
+        },
+        {
+            "path":"pages/user/afterSale/info"
+        },
+        {
+            "path":"pages/user/afterSale/list"
         }
+
 	],
 	"requiredPrivateInfos": [
 		"chooseLocation",

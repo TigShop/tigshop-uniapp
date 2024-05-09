@@ -289,7 +289,7 @@ export interface OrderInfoItemElement {
     sku_value: null;
     stock: number;
     subtotal: number;
-    aftersales_item: null;
+    aftersales_item: any;
 }
 
 export interface OrderInfoExtension {
