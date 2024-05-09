@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type { afterSaleEditResponse, afterSaleEditParams, afterSaleInfoResponse, NegotiateResponse } from "@/types/user/afterSale";
+import type { afterSaleEditResponse, afterSaleEditParams, afterSaleInfoResponse, NegotiateResponse, AfterSaleListResponse } from "@/types/user/afterSale";
 
 export const getAftersalesEdit = (params: afterSaleEditParams) => {
     return request<afterSaleEditResponse>({
@@ -49,5 +49,14 @@ export const aftersalesFeedback = (data: object) => {
         url: "user/aftersales/feedback",
         method: "post",
         data
+    })
+}
+
+// 售后申请记录
+export const aftersalesRecord = (params: object) => {
+    return request<AfterSaleListResponse>({
+        url: "user/aftersales/get_record",
+        method: "get",
+        params
     })
 }

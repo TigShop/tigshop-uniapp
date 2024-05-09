@@ -11,9 +11,8 @@
 
 <script lang="ts" setup>
 import goodsItem from "@/components/productItem/index.vue";
-import type { GetProductFilterResult } from "@/types/home/home";
 interface Iprops {
-    commodityList: GetProductFilterResult[];
+    commodityList: any[];
     isExchange: boolean;
 }
 const props = defineProps<Iprops>();

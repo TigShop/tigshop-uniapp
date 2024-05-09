@@ -22,7 +22,7 @@
                         <view class="goods-list-cart">
                             <uni-swipe-action>
                                 <block v-for="(goods, index) in item.carts" :key="goods.product_id">
-                                    <view class="cart_item">
+                                    <view class="cart_item" :class="{ cart_item_disabled: goods.stock === 0 || goods.product_status === 0 }">
                                         <uni-swipe-action-item :threshold="0" autoClose>
                                             <view class="cart_list_con">
                                                 <tigCheckbox
@@ -33,10 +33,8 @@
                                                     :disabled="goods.is_disabled"
                                                 ></tigCheckbox>
                                                 <navigator :url="'/pages/productDetail/index?id=' + goods.cart_id" class="photo">
-                                                    <!-- <image lazy-load :src="imageFormat(goods.pic_thumb)" /> -->
-                                                    <tigImage v-model:src="goods.pic_thumb"></tigImage>
-                                                    <view class="image_mask_sold_out" v-if="goods.product_status === 0">
-                                                        <image src="/static/images/common/bg_soldout.png"></image>
+                                                    <view class="photo-img">
+                                                        <tigImage v-model:src="goods.pic_thumb"></tigImage>
                                                     </view>
                                                     <view class="cart-notice-row" v-if="goods.stock === 0">已售罄</view>
                                                     <view class="cart-notice-row" v-if="goods.product_status === 0">已下架</view>
@@ -640,6 +638,10 @@ onShow(() => {
 
 .goods-list-cart .cart_item {
     overflow: hidden;
+
+    &.cart_item_disabled {
+        opacity: 0.5;
+    }
 }
 .goods-list-cart .cart_item .cart_list_con {
     display: flex;
@@ -667,12 +669,19 @@ onShow(() => {
     width: 150rpx;
     margin-bottom: 20rpx;
     margin-left: 10rpx;
-}
-.goods-list-cart .cart_item .photo image {
-    width: 150rpx;
-    height: 150rpx;
     box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.04);
+    position: relative;
+    .photo-img {
+        width: 150rpx;
+        height: 150rpx;
+        box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.04);
+    }
+    .cart-notice-row {
+        position: absolute;
+        width: 150rpx;
+    }
 }
+
 .goods-list-cart .cart_item .cart-row {
     margin-bottom: 20rpx;
     padding-left: 18rpx;

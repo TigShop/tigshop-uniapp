@@ -12,6 +12,7 @@
                     <view class="negotiate-pics" v-if="item.return_pic && item.return_pic.length > 0">
                         <view class="pics-item" v-for="(sunItem, index) in item.return_pic" :key="index">
                             <tigImage v-model:src="item.return_pic[index]"></tigImage>
+                            <!-- <tigImage v-model:src="sunItem.pic_thumb"></tigImage> -->
                         </view>
                     </view>
                 </view>

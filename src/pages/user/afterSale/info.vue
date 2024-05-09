@@ -162,6 +162,9 @@ const handleRevocation = () => {
                         title: "撤销成功"
                     });
                     console.log("跳转售后申请列表");
+                    uni.redirectTo({
+                        url: "/pages/user/afterSale/list"
+                    });
                 } catch (error) {
                     console.error(error);
                 }
