@@ -13,11 +13,11 @@
                     <uni-forms-item label="出生日期" name="birthday">
                         <uni-datetime-picker type="date" v-model="form.birthday" :border="false" @change="handleDateChange" :clear-icon="false" />
                     </uni-forms-item>
-                    <!-- <uni-forms-item label="性别" name="sex">
+                    <uni-forms-item label="性别" name="sex">
                         <picker mode="selector" :range="genderList" :value="selectedGender" @change="onPickerChange">
                             <view style="line-height: 78rpx;text-align: right;">{{genderList[selectedGender]}}</view>
                         </picker>
-                    </uni-forms-item> -->
+                    </uni-forms-item>
                 </view>
                 <view class="profile-edit-content">
                     <uni-forms-item label="账户安全">
@@ -30,8 +30,8 @@
             </uni-forms>
         </view>
         <view class="button-position">
-            <button hover-class="base-button-hover" class="base-button" @click="onSubmit">保存</button>
-            <button hover-class="base-button-hover" class="logout-button" @click="onLogout">退出</button>
+            <button hover-class="base-button-hover" class="base-button" @click="onSubmit">保存修改</button>
+            <button hover-class="base-button-hover" class="base-button logout-button" @click="onLogout">退出登录</button>
         </view>
 
     </view>
@@ -42,6 +42,8 @@ import navbar from "@/components/navbar/index.vue";
 import { ref, reactive, nextTick } from "vue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import { getProfile, updateProfile } from "@/api/user/profile";
+import { useUserStore } from "@/store/user";
+const userStore = useUserStore();
 const parameter = {
     navbar: "1",
     return: "1",
@@ -82,6 +84,11 @@ const onSubmit = (values: any) => {
         .catch((err: any) => {
             console.log("表单错误信息：", err);
         });
+};
+const onLogout = () => {
+    uni.clearStorageSync();
+    userStore.logout()
+    uni.navigateBack()
 };
 
 const edit = async () => {
