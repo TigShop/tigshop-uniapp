@@ -36,7 +36,7 @@
 			"style": {}
 		},
         {
-            "path": "pages/user/account/index",
+            "path": "pages/user/account/detail",
             "style": {}
         },
 		{

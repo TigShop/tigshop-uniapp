@@ -31,7 +31,7 @@
                 </uni-swipe-action>
             </view>
         </view>
-        <view class="empty-box" v-else>
+        <view class="empty-box" v-if="messageList.length === 0 && loadend === true">
             <view class="pictrue"><image src="/static/images/common/data_empty.png"></image></view>
             <view class="txt">暂无站内消息！</view>
         </view>
@@ -61,10 +61,15 @@ const filterParams = reactive<UserMsgFilterParams>({   //初使化用于查询�
 });
 const total = ref(0);
 const loaded = ref(false);
+const loadend = ref(false);
 const messageList = ref<UserMsgFilterState[]>([]);
 const __geMessageList = async () => {
     if (filterParams.page > 1) {
         loaded.value = true;
+    } else {
+        uni.showLoading({
+            title: "加载中"
+        });
     }
     try {
         const result = await getMessageList({ ...filterParams });
@@ -73,7 +78,9 @@ const __geMessageList = async () => {
     } catch (error: any) {
         console.error(error);
     } finally {
+        uni.hideLoading();
         loaded.value = false;
+        loadend.value = true;
     }
 };
 
@@ -179,9 +186,6 @@ onReachBottom(() => {
 }
 .messages-list {
     position: relative;
-    .move-item:last-child {
-        margin-bottom: 40rpx;
-    }
     .mitem {
         position: relative;
         border-bottom: 1rpx solid #dfdfdf;

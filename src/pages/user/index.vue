@@ -91,13 +91,13 @@
                     <view class="list-group my-wallet">
                         <view class="title acea-row row-between-wrapper">
                             <view class="">我的钱包</view>
-                            <view class="more" @click="goPages('/pages/user/account/index')">
+                            <view class="more" @click="goPages('/pages/user/account/detail')">
                                 <view>进入钱包</view>
                                 <view class="iconfont icon-xiangyou"></view>
                             </view>
                         </view>
                         <view class="wrap">
-                            <view class="li" @click="goPages('/pages/user_account_detail/index')">
+                            <view class="li" @click="goPages('/pages/user/account/detail')">
                                 <text class="num">{{ member.user_money >= 0 ? member.user_money : 0 }}</text>
                                 <view class="txt">余额</view>
                             </view>
