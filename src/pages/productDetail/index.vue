@@ -39,11 +39,11 @@
                             送至
                         </view>
                         <view class="label">
-                            <view class="text">广东省广州市天河区 <uni-icons type="location" size="16" color="#bfbfbf"></uni-icons></view>
+                            <view class="text">{{ regionText }} <uni-icons type="location" size="16" color="#bfbfbf"></uni-icons></view>
                             <view class="tips">由 LYECS 配送并提供售后服务</view>
                         </view>
                     </view>
-                    <view>
+                    <view @click="handleAddress">
                         <image src="/static/images/common/more.png"/>
                     </view>
                 </view>
@@ -141,6 +141,7 @@
                 </productSku>
             </view>
         </view>
+        <selectRegion v-model:show="showRegion" @sendRegionNames="getRegionText"></selectRegion>
         <tigBackTop :class="{ show: scrollTop > 100 }"></tigBackTop>
     </view>
 </template>
@@ -153,6 +154,7 @@ import productSeckillTitle from './src/productSeckillTitle.vue'
 import productComment from './src/productComment.vue'
 import productSku from './src/productSku.vue'
 import afterSaleService from './src/afterSaleService.vue'
+import selectRegion from "@/components/region/selectRegion.vue";
 import { imageFormat } from "@/utils/format";
 import { reactive, ref } from "vue";
 import { onLoad, onShow, onPageScroll } from "@dcloudio/uni-app";
@@ -280,6 +282,15 @@ const _getCartCount = async () => {
 const toPage = (url:string) => {
     uni.switchTab({url})
 };
+
+const showRegion = ref(false)
+const regionText = ref("北京 朝阳区")
+const handleAddress = () => {
+    showRegion.value = true
+}
+const getRegionText = (data: string[]) =>{
+    regionText.value = data.join(" ")
+}
 </script>
 <style lang="scss" scoped>
 .productDetail-content {

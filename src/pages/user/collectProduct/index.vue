@@ -31,7 +31,7 @@
                 </block>
             </uni-swipe-action>
         </view>
-        <view class="empty-box" v-else>
+        <view class="empty-box" v-if="collectList.length === 0 && loadend === true">
             <view class="pictrue"><image src="/static/images/common/data_empty.png"></image></view>
             <view class="txt">暂无收藏记录！</view>
         </view>
@@ -61,10 +61,15 @@ const filterParams = reactive<CollectProductFilterParams>({   //初使化用于�
 });
 const total = ref(0);
 const loaded = ref(false);
+const loadend = ref(false);
 const collectList = ref<CollectProductList[]>([]);
 const __getCollectProductList = async () => {
     if (filterParams.page > 1) {
         loaded.value = true;
+    } else {
+        uni.showLoading({
+            title: "加载中"
+        });
     }
     try {
         const result = await getCollectProductList({ ...filterParams });
@@ -74,7 +79,9 @@ const __getCollectProductList = async () => {
     } catch (error) {
         console.error(error);
     } finally {
+        uni.hideLoading();
         loaded.value = false;
+        loadend.value = true;
     }
 };
 

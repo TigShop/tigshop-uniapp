@@ -39,7 +39,7 @@
                     </block>
                 </uni-swipe-action>
             </view>
-            <view class="empty-box" v-else>
+            <view class="empty-box" v-if="messageList.length === 0 && loadend === true">
                 <view class="pictrue"><image src="/static/images/common/data_empty.png"></image></view>
                 <view class="txt">暂无站内消息！</view>
             </view>
@@ -73,6 +73,7 @@ const filterParams = reactive<UserMsgFilterParams>({   //初使化用于查询�
 });
 const total = ref(0);
 const loaded = ref(false);
+const loadend = ref(false);
 const messageList = ref<UserMsgFilterState[]>([]);
 const __geMessageList = async () => {
     if (filterParams.page > 1) {
@@ -93,7 +94,8 @@ const __geMessageList = async () => {
         });
     } finally {
         loaded.value = false;
-        uni.hideLoading()
+        loadend.value = true;
+        uni.hideLoading();
     }
 };
 
@@ -151,7 +153,7 @@ const addMessageAllReadFn = async () => {
         filterParams.unread = 0;
         filterParams.page = 1;
         messageList.value = [];
-        await __geMessageList()
+        await __geMessageList();
     } catch (error: any) {
         uni.showToast({
             title: error.message,
@@ -217,14 +219,13 @@ onReachBottom(() => {
     position: relative;
     padding: 0 20rpx;
     margin-top: 120rpx;
-    .move-item:last-child {
-        margin-bottom: 40rpx;
+    .move-item {
+        margin-bottom: 10rpx;
     }
     .mitem {
         position: relative;
         border-bottom: 1rpx solid #dfdfdf;
         border-radius: 10rpx;
-        margin-bottom: 10rpx;
         .message {
             position: relative;
             padding: 30rpx 20rpx;

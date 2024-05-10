@@ -8,7 +8,6 @@ export const getOrderCheckData = () => {
         method: "post"
     });
 };
-
 export const updateOrderCheckData = (type: string, data: any) => {
     return request({
         url: "order/check/update/",
