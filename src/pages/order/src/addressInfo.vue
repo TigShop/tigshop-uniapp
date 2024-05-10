@@ -21,6 +21,8 @@ const props = defineProps({
     }
 });
 
+console.log(props.data)
+
 const handleAddressMore = () => {
     uni.navigateTo({
         url: "/pages/address/list"

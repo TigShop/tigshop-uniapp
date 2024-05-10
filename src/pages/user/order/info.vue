@@ -58,7 +58,7 @@
                                     <view class="right-price-quantity">x {{ item.quantity }}</view>
                                 </view>
                             </view>
-                            <view class="item-btn" v-if="orderInfo.available_actions.to_aftersales">
+                            <view class="item-btn">
                                 <view v-if="!item.aftersales_item" @click="handleAfterSale(item.item_id)"> 申请售后 </view>
                                 <view v-else @click="handleAfterSaleDetail(item.aftersales_item.aftersale_id)"> 售后详情 </view>
                             </view>
@@ -97,7 +97,7 @@
                     </view>
                 </view>
             </view>
-            <saveBottomBox height="90" backgroundColor="#fff" v-if="!orderInfo.available_actions.del_order">
+            <saveBottomBox height="90" backgroundColor="#fff" v-if="orderInfo.available_actions.cancel_order || orderInfo.available_actions.to_pay || orderInfo.available_actions.confirm_receipt || orderInfo.available_actions.to_aftersales">
                 <view class="order-info-btn">
                     <view class="order-info-btn-box">
                         <view class="btn" v-if="orderInfo.available_actions.cancel_order" @click="handleCancelOrder(orderInfo.order_id)"> 取消订单 </view>

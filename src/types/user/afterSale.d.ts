@@ -201,3 +201,75 @@ export interface afterSaleInfoItem {
     aftersales_items: any;
     aftersales_log: any;
 }
+
+export interface NegotiateResponse {
+    item: NegotiateItem[];
+    errcode: number;
+    message: string;
+}
+
+export interface NegotiateItem {
+    log_id: number;
+    aftersale_id: number;
+    log_info: string;
+    add_time: string;
+    admin_name: string;
+    refund_money: string;
+    refund_type: number;
+    refund_desc: string;
+    user_name: string;
+    return_pic: null | string[];
+}
+
+// 售后申请列表
+export interface AfterSaleListResponse {
+    filter_result: AfterSaleListFilterResult[];
+    filter: Filter;
+    total: number;
+    errcode: number;
+    message: string;
+}
+
+export interface AfterSaleListFilter {
+    page: string;
+    size: string;
+    sort_field: string;
+    sort_order: string;
+}
+
+export interface AfterSaleListFilterResult {
+    aftersales_type_name: string;
+    status_name: string;
+    aftersale_id: number;
+    aftersale_type: number;
+    status: number;
+    pics: string[];
+    description: string;
+    reply: string;
+    add_time: string;
+    tracking_no: string;
+    logistics_name: string;
+    return_address: null;
+    aftersale_reason: string;
+    aftersales_sn: string;
+    order_id: number;
+    user_id: number;
+    refund_amount: string;
+    order_sn: string;
+    aftersales_items: AftersalesItem[];
+}
+
+export interface AftersalesItem {
+    aftersales_item_id: number;
+    order_item_id: number;
+    number: number;
+    aftersale_id: number;
+    order_sn: string;
+    product_name: string;
+    order_id: number;
+    pic_thumb: string;
+    product_sn: string;
+    product_id: number;
+    quantity: number;
+    price: string;
+}

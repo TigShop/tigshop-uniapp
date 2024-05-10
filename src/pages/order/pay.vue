@@ -99,7 +99,10 @@ const parameter = reactive({
     title: "订单支付",
     returnUrl: "/pages/order/list"
 });
-const paymentText = {
+interface PaymentText {
+    [key: string]: string;
+}
+const paymentText: PaymentText = {
     wechat: "微信支付",
     alipay: "支付宝支付",
     offline: "线下支付"
@@ -274,7 +277,7 @@ const miniProgramPay = (pay_info: any) => {
 
 onBeforeUnmount(() => {
     clearInterval(intervalId);
-})
+});
 
 /* 微信公众号调用 */
 

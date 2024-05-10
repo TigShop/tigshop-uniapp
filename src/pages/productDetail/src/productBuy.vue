@@ -4,7 +4,7 @@
     </view>
 </template>
 <script lang="ts" setup>
-import { ref, toRefs, defineEmits } from "vue";
+import { ref, toRefs } from "vue";
 import { addToCart } from "@/api/product/product";
 const props = defineProps({
     id: { type: String, default: "" },

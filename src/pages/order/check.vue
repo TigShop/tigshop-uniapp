@@ -1,9 +1,6 @@
 <template>
     <view style="height: 100%; padding-bottom: 110rpx; overflow: hidden; overflow-y: auto">
         <navbar :parameter="parameter"></navbar>
-        <view class="page-loading" v-if="myLoading && Object.keys(addressList).length === 0">
-            <view class="ico"></view>
-        </view>
         <view v-if="Object.keys(addressList).length > 0">
             <addressInfo :data="getAddressInfo"></addressInfo>
             <paymentMode v-model:payTypeId="formState.pay_type_id" :availablePaymentType="availablePaymentType" @change="updateOrderCheck"></paymentMode>
@@ -76,16 +73,6 @@ const formState = reactive({
     },
     use_default_coupon_ids: 0
 });
-watch(
-    formState,
-    (newVal) => {
-        console.log(newVal);
-        // updateOrderCheck();
-    },
-    {
-        deep: true
-    }
-);
 
 const addressList = ref<AddressList[]>([]);
 const availablePaymentType = ref<AvailablePaymentType[]>([]);
@@ -96,16 +83,23 @@ const couponList = ref<any>([]);
 const balanceNum = ref(0);
 const pointsData = ref(0);
 const availablePoints = ref(0);
+const getAddressInfo = ref<AddressList>({} as AddressList);
 
 const getOrderInfo = async () => {
     uni.showLoading({
         title: "加载中"
     });
-    // myLoading.value = true;
     try {
         const result = await getOrderCheckData();
         Object.assign(formState, result.item);
         const { address_list, available_payment_type, cart_list, total, store_shipping_type, coupon_list, balance, points, available_points } = result;
+
+        if (address_list.length === 0) {
+            return uni.navigateTo({
+                url: "/pages/address/list"
+            });
+        }
+        getAddressInfo.value = address_list[0];
         addressList.value = address_list;
         availablePaymentType.value = available_payment_type;
         cartList.value = cart_list;
@@ -119,12 +113,8 @@ const getOrderInfo = async () => {
         console.error(error);
     } finally {
         uni.hideLoading();
-        // myLoading.value = false;
     }
 };
-const getAddressInfo = computed(() => {
-    return addressList.value.find((item) => item.is_selected === 1) || {};
-});
 
 const updateOrderCheck = async (type = "") => {
     uni.showLoading({

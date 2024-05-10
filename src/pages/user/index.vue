@@ -81,7 +81,7 @@
                                 <view class="txt">待评价</view>
                                 <text class="counts" v-if="count.stay_comment_order > 0">{{ count.stay_comment_order }}</text>
                             </view>
-                            <view class="li" @click="goPages('/pages/user_return_list/list')">
+                            <view class="li" @click="goPages('/pages/user/afterSale/list')">
                                 <text class="iconfont icon-shouhou1"></text>
                                 <view class="txt">退换/售后</view>
                                 <text class="counts" v-if="count.return_count > 0">{{ count.return_count }}</text>
