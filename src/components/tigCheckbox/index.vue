@@ -1,16 +1,25 @@
 <template>
     <checkbox-group>
         <label @click="onCheckAll">
-            <checkbox @click="onCheckAll" :style="{transform:'scale('+checkedSize+')'}" :checked="checked" :disabled="disabled" color="#fff" activeBackgroundColor="#ee0a24"   />{{checkedText}}
+            <checkbox
+                @click="onCheckAll"
+                :style="{ transform: 'scale(' + checkedSize + ')' }"
+                :checked="checked"
+                :disabled="disabled"
+                color="#fff"
+                activeBackgroundColor="#ee0a24"
+            />{{ checkedText }}
         </label>
     </checkbox-group>
 </template>
 
 <script setup lang="ts">
+import { watch } from "vue";
+
 const props = defineProps({
     checkedText: {
         type: String,
-        default: ''
+        default: ""
     },
     checkedSize: {
         type: Number,
@@ -26,8 +35,8 @@ const props = defineProps({
     }
 });
 const emit = defineEmits(["update:checked", "change"]);
-
 const onCheckAll = () => {
+    console.log(props.checked);
     if (props.disabled) return;
     emit("update:checked", !props.checked);
     emit("change");

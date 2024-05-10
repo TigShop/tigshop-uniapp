@@ -178,9 +178,15 @@ const submit = async () => {
     submitLoading.value = true;
     try {
         const result = await orderSubmit(formState);
-        uni.redirectTo({
-            url: `/pages/order/pay?order_id=${result.order_id}`
-        });
+        if (result.return_type === 2) {
+            uni.redirectTo({
+                url: `/pages/user/order/list`
+            });
+        }else {
+            uni.redirectTo({
+                url: `/pages/order/pay?order_id=${result.order_id}`
+            });
+        }
     } catch (error) {
         console.error(error);
     } finally {

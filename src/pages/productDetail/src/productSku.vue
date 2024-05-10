@@ -62,7 +62,7 @@
                 </view>
                 <view class="add_cart" v-else>
                     <productBuy :id="product_id" :skuId="skuId" :disabled="productStock == 0" :number="productNumber" @callback="addCart">
-                        <view class="btn" v-if="productStock == 0">已抢完</view>
+                        <view class="btn exBtn" v-if="productStock == 0">已抢完</view>
                         <view class="btn" v-else>加入购物车</view>
                     </productBuy>
 
@@ -99,14 +99,18 @@ interface Props {
     productPrice: string;
     productStock: number;
     productNumber: number;
-    isExchange: boolean;
 }
 const props = defineProps<Props>();
 const product_id = ref<string>("");
 const productNumber = ref<number>(1)
+const isExchange = ref(false)
 onLoad((option) => {
     if (option) {
-        const { id } = option;
+        const { id, is_exchange } = option;
+        if(is_exchange) {
+            let is_exchange_bool = JSON.parse(is_exchange);
+            isExchange.value = is_exchange_bool;
+        }
         if (id) {
             product_id.value = id;
         }
