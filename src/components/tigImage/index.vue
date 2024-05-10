@@ -33,7 +33,7 @@ watch(
         if (newVal.includes("/src")) {
             srcData.value = newVal;
         } else {
-            srcData.value = imageFormat(newVal);
+            srcData.value = imageFormat(newVal || '');
         }
     },
     {

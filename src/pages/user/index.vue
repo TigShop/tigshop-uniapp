@@ -88,7 +88,7 @@
                     <view class="list-group my-wallet">
                         <view class="title acea-row row-between-wrapper">
                             <view class="">我的钱包</view>
-                            <view class="more" @click="goPages('/pages/user/account/index')">
+                            <view class="more" @click="goPages('/pages/user/account/detail')">
                                 <view>进入钱包</view>
                                 <view class="iconfont icon-xiangyou"></view>
                             </view>
