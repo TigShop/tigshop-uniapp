@@ -688,6 +688,7 @@ uni-checkbox:not([disabled]) .uni-checkbox-input:hover {
     border-radius: 50rpx;
     background-color: #ee0a24;
     color: #fff;
+    font-size: 26rpx;
 }
 .base-button-hover {
     opacity: 0.7;

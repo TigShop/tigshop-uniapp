@@ -10,13 +10,19 @@
 </template>
 
 <script lang="ts" setup>
+import type { PropType } from 'vue'
 import goodsItem from "@/components/productItem/index.vue";
 import type { GetProductFilterResult } from "@/types/home/home";
-interface Iprops {
-    commodityList: GetProductFilterResult[];
-    isExchange: boolean;
-}
-const props = defineProps<Iprops>();
+const props = defineProps({
+    commodityList: {
+        type: Array as PropType<GetProductFilterResult[]>,
+        default: ""
+    },
+    isExchange: {
+        type: Boolean,
+        default: false
+    }
+});
 const emits = defineEmits(["callback"]);
 </script>
 <style lang="scss" scoped>
