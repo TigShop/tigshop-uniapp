@@ -639,7 +639,7 @@ page {
 /*通用暂无数据样式*/
 .empty-box {
     padding: 60rpx 0 110rpx;
-    margin-top: 20rpx;
+    margin-top: 50rpx;
     border-radius: 18rpx;
 }
 .empty-box .pictrue {
