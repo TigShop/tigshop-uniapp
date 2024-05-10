@@ -30,7 +30,7 @@
             </uni-forms>
         </view>
         <view class="button-position">
-            <button hover-class="base-button-hover" class="base-button" @click="onSubmit">提交</button>
+            <button hover-class="base-button-hover" class="base-button" @click="onSubmit">保存</button>
             <button hover-class="base-button-hover" class="logout-button" @click="onLogout">退出</button>
         </view>
 
