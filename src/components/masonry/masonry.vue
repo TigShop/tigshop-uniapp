@@ -12,10 +12,9 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
 import goodsItem from "@/components/productItem/index.vue";
-import type { GetProductFilterResult } from "@/types/home/home";
 const props = defineProps({
     commodityList: {
-        type: Array as PropType<GetProductFilterResult[]>,
+        type: Array as PropType<any[]>,
         default: ""
     },
     isExchange: {

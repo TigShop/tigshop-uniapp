@@ -65,6 +65,10 @@
                             <view class="base-item-btn" v-if="item.available_actions.cancel_order" @click="handleCancelOrder(item.order_id)"> 取消订单 </view>
                             <view class="base-item-btn" v-if="item.available_actions.del_order" @click="handleDelOrder(item.order_id)"> 删除订单 </view>
                             <view class="base-item-btn" v-if="item.available_actions.rebuy" @click="handleBuyAgain(item.order_id)"> 再次购买 </view>
+                            <view class="base-item-btn" v-if="item.available_actions.to_comment" @click="handleEvaluate(item.order_id)"> 去评价 </view>
+                            <view class="base-item-btn" v-if="item.available_actions.confirm_receipt" @click="handleConfirmReceipt(item.order_id)">
+                                确认收货
+                            </view>
                         </view>
                     </view>
                 </view>
@@ -80,7 +84,7 @@
 <script setup lang="ts">
 import navbar from "@/components/navbar/index.vue";
 import { reactive, ref } from "vue";
-import { getOrderList, getOrderNum, cancelOrder, delOrder, orderBuyAgain } from "@/api/user/order";
+import { getOrderList, getOrderNum, cancelOrder, delOrder, orderBuyAgain, confirmReceipt } from "@/api/user/order";
 import type { OrderListFilterParams, OrderListFilterResult } from "@/types/user/order";
 import { onLoad, onReachBottom } from "@dcloudio/uni-app";
 const parameter = {
@@ -231,7 +235,30 @@ const handleOrederDetail = (id: number) => {
     uni.navigateTo({
         url: `/pages/user/order/info?id=${id}`
     });
-}
+};
+const handleEvaluate = (id: number) => {};
+const handleConfirmReceipt = (id: number) => {
+    uni.showModal({
+        title: "提示",
+        content: "确认收货吗？",
+        success: async (res) => {
+            if (res.confirm) {
+                try {
+                    const result = await confirmReceipt({ id });
+                    uni.redirectTo({
+                        url: "/pages/user/order/list?type=await_comment"
+                    })
+                } catch (error: any) {
+                    uni.showToast({
+                        title: error.message,
+                        icon: "none"
+                    });
+                } finally {
+                }
+            }
+        }
+    });
+};
 const formatOrderStatus = (status: string) => {
     switch (status) {
         case "all":

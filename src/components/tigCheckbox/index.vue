@@ -36,7 +36,6 @@ const props = defineProps({
 });
 const emit = defineEmits(["update:checked", "change"]);
 const onCheckAll = () => {
-    console.log(props.checked);
     if (props.disabled) return;
     emit("update:checked", !props.checked);
     emit("change");

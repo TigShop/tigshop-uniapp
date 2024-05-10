@@ -29,15 +29,17 @@
                 >
             </view>
             <view>
-                <switch :checked="isBalance" color="#ee0a24" @change="handleBalance" style="transform:scale(0.8)" />
+                <switch :checked="isBalance" color="#ee0a24" @change="handleBalance" style="transform: scale(0.8)" />
             </view>
         </view>
         <tigpopup v-model:show="show" title="优惠券" height="60vh" backgroundColor="#f5f5f5">
             <view class="coupon-container">
                 <view class="coupon-menu">
-                    <view class="coupon-menu-item" :class="{ active: tabsActive === '可用优惠券' }" @click="handleTabsActive('可用优惠券')">可用优惠券</view>
+                    <view class="coupon-menu-item" :class="{ active: tabsActive === '可用优惠券' }" @click="handleTabsActive('可用优惠券')"
+                        >可用优惠券({{ couponListData!.enable_coupons.length }})</view
+                    >
                     <view class="coupon-menu-item" :class="{ active: tabsActive === '不可用优惠券' }" @click="handleTabsActive('不可用优惠券')"
-                        >不可用优惠券</view
+                        >不可用优惠券({{ couponListData!.disable_coupons.length }})</view
                     >
                 </view>
 
@@ -63,6 +65,9 @@
                                 </view>
                             </view>
                         </view>
+                        <block v-if="couponListData!.enable_coupons.length === 0">
+                            <view class="coupon-empty">暂无优惠券</view>
+                        </block>
                     </block>
                     <block v-if="tabsActive === '不可用优惠券'">
                         <view class="coupon-list">
@@ -85,6 +90,9 @@
                                 </view>
                             </view>
                         </view>
+                        <block v-if="couponListData!.disable_coupons.length === 0">
+                            <view class="coupon-empty">暂无优惠券</view>
+                        </block>
                     </block>
                 </view>
             </view>
@@ -156,7 +164,6 @@ const show = ref(false);
 const isBalance = ref(false); // 是否使余额
 const tabsActive = ref("可用优惠券");
 const handleTabsActive = (str: string) => {
-    console.log("tabsActive", str);
     tabsActive.value = str;
 };
 const handleCoupon = () => {
@@ -166,6 +173,12 @@ const handleCoupon = () => {
 const handleCheck = (item: any) => {
     if (item.selected) {
         if (item.is_global) {
+            couponListData.value!.enable_coupons.forEach((data) => {
+                if (data.is_global && data.id !== item.id) {
+                    data.selected = false;
+                }
+            });
+            selectedDatas.value = selectedDatas.value.filter(({ is_global }) => is_global === 0);
             selectedDatas.value.push(item);
         } else {
             couponListData.value!.enable_coupons.forEach((data) => {
@@ -248,7 +261,7 @@ const onSubmit = () => {
 };
 
 const handleBalance = () => {
-    isBalance.value = !isBalance.value
+    isBalance.value = !isBalance.value;
     emit("sendBalanceStatus", isBalance.value);
 };
 </script>
@@ -549,5 +562,13 @@ const handleBalance = () => {
     right: 0;
     padding: 0 30rpx;
     padding-bottom: env(safe-area-inset-bottom) !important;
+}
+
+.coupon-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 300rpx;
 }
 </style>

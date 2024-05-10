@@ -45,8 +45,8 @@
             <block v-if="paymentType === 'offline'">
                 <view class="offline-warp">
                     <view class="offline-menu">
-                        <view class="offline-menu-item" :class="{ active: activeName === '银行汇款' }" @click="handleTabsActive('银行汇款')">可用优惠券</view>
-                        <view class="offline-menu-item" :class="{ active: activeName === '企业汇款' }" @click="handleTabsActive('企业汇款')">不可用优惠券</view>
+                        <view class="offline-menu-item" :class="{ active: activeName === '银行汇款' }" @click="handleTabsActive('银行汇款')">银行汇款</view>
+                        <view class="offline-menu-item" :class="{ active: activeName === '企业汇款' }" @click="handleTabsActive('企业汇款')">企业汇款</view>
                     </view>
                     <block v-if="activeName === '银行汇款'">
                         <view class="offline-content">
@@ -75,7 +75,7 @@
                     <text>{{ order.add_time }}</text>
                 </view>
             </view>
-            <view class="button-position">
+            <view class="button-position" v-if="!(paymentType === 'offline')">
                 <button :disabled="paymentDisabled" hover-class="base-button-hover" class="base-button" @click="handlePay">立即支付</button>
             </view>
         </view>
@@ -97,7 +97,7 @@ const parameter = reactive({
     navbar: "1",
     return: "1",
     title: "订单支付",
-    returnUrl: "/pages/order/list"
+    returnUrl: "/pages/user/order/list"
 });
 interface PaymentText {
     [key: string]: string;
