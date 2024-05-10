@@ -1,20 +1,20 @@
 <template>
     <view class="product-title-info">
         <view class="title-info-top">
-            <view class="title-top-price" v-if="!isExchange">
+            <view class="title-top-price" v-if="isExchange == false">
                 <FormatPrice :priceData="productPrice"></FormatPrice>
                 <view class="title-top-market_price">
                     <FormatPrice :priceData="productInfo.market_price"></FormatPrice>
                 </view>
             </view>
-            <view class="title-top-price" v-if="isExchange">
+            <view class="title-top-price" v-if="isExchange == true">
                 <FormatPrice :priceData="productInfo.discounts_price"></FormatPrice>
                 <text> + </text>
                 <text class="exchange-num">{{ productInfo.exchange_integral }}</text>
                 <text>积分</text>
             </view>
             <view class="title-top-panle">
-                <view class="title-top-panle-collect" v-if="!isExchange" @click="addCollect(is_collect)">
+                <view class="title-top-panle-collect" v-if="isExchange == false" @click="addCollect(is_collect)">
                     <view class="iconfont icon-shoucang1" :class="{ 'icon-shoucang2': is_collect }"></view>
                     <view class="title-panle-collect-text">收藏</view>
                 </view>
@@ -35,16 +35,22 @@
 <script setup lang="ts">
 import type { ProductItem } from "@/types/product/product";
 import { reactive, ref } from "vue";
+import type { PropType } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 import { getCollectProduct, delCollectProduct, updateCollectProduct } from "@/api/product/product";
-interface Props {
-    productInfo: ProductItem;
-    productPrice: string;
-    isExchange: boolean;
-}
 const is_collect = ref(false);
 const product_id = ref<number>(0)
-const props = defineProps<Props>();
+const isExchange = ref(false)
+const props = defineProps({
+    productInfo: {
+        type: Object as PropType<ProductItem>,
+        default: () => ({})
+    },
+    productPrice: {
+        type: String,
+        default: ""
+    }
+});
 const getCollect = async (id:any) => {
     try {
         const result = await getCollectProduct({ id });
@@ -83,7 +89,11 @@ const addCollect = async (is_collect: boolean) => {
 onLoad((option) => {
     if (option) {
         const { id, is_exchange } = option;
-        if (id && !is_exchange) {
+        if(is_exchange) {
+            let is_exchange_bool = JSON.parse(is_exchange);
+            isExchange.value = is_exchange_bool;
+        }
+        if (id && !isExchange.value) {
             product_id.value = id;
             getCollect(id);
         }

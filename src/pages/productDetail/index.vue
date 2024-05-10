@@ -4,7 +4,7 @@
         <productImg v-if="product" :picList="picList" :productInfo="product"></productImg>
         <productSeckillTitle v-if="is_seckill" :productInfo="product" :productPrice="productPrice" :seckill_end_time="seckill_end_time"></productSeckillTitle>
         <view class="productDetail-content">
-            <productTitleInfo v-if="!is_seckill" :productInfo="product" :productPrice="productPrice" :isExchange="isExchange"></productTitleInfo>
+            <productTitleInfo v-if="!is_seckill" :productInfo="product" :productPrice="productPrice"></productTitleInfo>
             <view class="product-card-row">
                 <productSku 
                     v-if="attrList.spe" 
@@ -47,7 +47,7 @@
                         <image src="/static/images/common/more.png"/>
                     </view>
                 </view>
-                <view class="cart-item flex align-center justify-between" @click="showDrawer">
+                <view class="cart-item flex align-center justify-between" @click="showDrawer" v-if="attrList.normal?.length > 0">
                     <view class="flex align-center">
                         <view class="title">
                             参数
@@ -182,7 +182,8 @@ const showDrawer = () => {
 onLoad((option) => {
     if (option) {
         if(option.is_exchange) {
-            isExchange.value = option.is_exchange;
+            let is_exchange_bool = JSON.parse(option.is_exchange);
+            isExchange.value = is_exchange_bool;
         }
         const { id } = option;
         if (id) {
@@ -211,7 +212,7 @@ const checkedValue = ref<string[]>([]);
 const __getProductDetail = async (id: string) => {
     try {
         let result: any = {};
-        if (isExchange.value) {
+        if (isExchange.value == true) {
             result = await getExchangeDetail(id);
         } else {
             result = await getProductDetail(id);
@@ -225,7 +226,7 @@ const __getProductDetail = async (id: string) => {
         descArr.value = result.desc_arr;
         serviceList.value = result.service_list;
         productStock.value = result.item.product_stock;
-        if(!isExchange){
+        if(isExchange.value == false){
             loadPrice()
         }
     } catch (error: any) {
@@ -249,7 +250,7 @@ const onProductSkuChange = (item: any) => {
         skuStr.value = item.sku_str;
     }
     productNumber.value = item.productNumber;
-    if(!isExchange){
+    if(isExchange.value == false){
         loadPrice()
     }
 };
@@ -353,14 +354,14 @@ const toPage = (url:string) => {
     border-top: 1rpx solid #f5f5f5;
     .bottom-bar{
         height: 100rpx;
-        padding: 0 30rpx;
+        padding: 0 20rpx;
         .label{
             color: #666;
             font-size: 20rpx;
             text-align: center;
         }
         .btn{
-            width: 200rpx;
+            width: 250rpx;
             text-align: center;
             border-radius: 100rpx;
             line-height: 55rpx;

@@ -29,6 +29,9 @@
         <view class="bottomLoading" v-if="loading"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
         <view v-else>没有更多了~</view>
     </view>
+    <view class="loading-box">
+        <view v-if="consultationList.length < 1">暂无咨询</view>
+    </view>
 </template>
 
 <script setup lang="ts">

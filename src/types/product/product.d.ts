@@ -1,5 +1,5 @@
 export interface ProductItem {
-    id: string;
+    id?: string;
     product_id: number;
     product_name?: string;
     product_sn?: string;
@@ -80,7 +80,7 @@ export interface RankDetail {
     good_percent?: number;
 }
 export interface AttrList {
-    normal?: Normal[];
+    normal: Normal[];
     spe?: Spe[];
     extra?: Extra[];
 }
