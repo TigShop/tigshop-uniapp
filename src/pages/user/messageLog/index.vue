@@ -2,14 +2,16 @@
     <view>
         <navbar :parameter="parameter"></navbar>
         <view class="message-main">
-            <view class="tabs flex align-center justify-between">
-                <view class="flex align-end">
-                    <view class="tab" :class="{'active': filterParams.unread === 0}" @click="readReadFn(0)">全部消息</view>
-                    <view class="tab" :class="{'active': filterParams.unread === 1}" @click="readReadFn(1)">只看未读</view>
-                </view>
-                <view class="clear-unread flex align-end" @click="addMessageAllReadFn">
-                    <text>一键已读</text>
-                    <uni-icons type="auth" size="20" color="#999"></uni-icons>
+            <view class="head-tabs-box" :style="'top:' + navH + 'rpx'">
+                <view class="tabs flex align-center justify-between">
+                    <view class="flex align-end">
+                        <view class="tab" :class="{'active': filterParams.unread === 0}" @click="readReadFn(0)">全部消息</view>
+                        <view class="tab" :class="{'active': filterParams.unread === 1}" @click="readReadFn(1)">只看未读</view>
+                    </view>
+                    <view class="clear-unread flex align-end" @click="addMessageAllReadFn">
+                        <text>一键已读</text>
+                        <uni-icons type="auth" size="20" color="#999"></uni-icons>
+                    </view>
                 </view>
             </view>
             <view class="messages-list" v-if="messageList.length > 0">
@@ -55,6 +57,9 @@ import { ref, reactive } from "vue";
 import { onLoad, onReachBottom } from "@dcloudio/uni-app";
 import { getMessageList, addMessageRead, addMessageAllRead, delMessage } from "@/api/user/messageLog";
 import type { UserMsgFilterParams, UserMsgFilterState } from "@/types/user/messageLog";
+import { useConfigStore } from "@/store/config";
+const configStore = useConfigStore();
+const navH = configStore.navHeight;
 const parameter = {
     navbar: "1",
     return: "1",
@@ -73,6 +78,9 @@ const __geMessageList = async () => {
     if (filterParams.page > 1) {
         loaded.value = true;
     }
+    uni.showLoading({
+        title: "请求加载中..."
+    });
     try {
         const result = await getMessageList({ ...filterParams });
         total.value = result.total;
@@ -85,6 +93,7 @@ const __geMessageList = async () => {
         });
     } finally {
         loaded.value = false;
+        uni.hideLoading()
     }
 };
 
@@ -180,29 +189,34 @@ onReachBottom(() => {
 </script>
 
 <style lang="scss" scoped>
-.tabs{
-    background-color: #fff;
-    margin-bottom: 20rpx;
-    padding: 30rpx;
-    .tab{
-        font-size: 26rpx;
-        margin-right: 40rpx;
-        color: #666;
-    }
-    .active{
-        color: $tig-color-primary;
-        font-weight: bold;
-        font-size: 32rpx;
-    }
-    .clear-unread{
-        font-size: 26rpx;
-        color: #999;
+.head-tabs-box{
+    position: fixed;
+    width: 100%;
+    z-index: 99;
+    .tabs{
+        background-color: #fff;
+        padding: 30rpx;
+        .tab{
+            font-size: 26rpx;
+            margin-right: 40rpx;
+            color: #666;
+        }
+        .active{
+            color: $tig-color-primary;
+            font-weight: bold;
+            font-size: 32rpx;
+        }
+        .clear-unread{
+            font-size: 26rpx;
+            color: #999;
+        }
     }
 }
 
 .messages-list {
     position: relative;
     padding: 0 20rpx;
+    margin-top: 120rpx;
     .move-item:last-child {
         margin-bottom: 40rpx;
     }
