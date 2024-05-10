@@ -12,10 +12,10 @@
                         <view class="text">
                             <view class="acea-row row-middle">
                                 <view class="name line1">{{ member!.nickname }}</view>
-                                <view class="acea-row qiandao" @click="goPages('/pages/sign/index')">
+                                <!-- <view class="acea-row qiandao" @click="goPages('/pages/sign/index')">
                                     <view class="iconfont icon-qiandao"></view>
                                     <view class>签到有礼</view>
-                                </view>
+                                </view> -->
                             </view>
                             <view class="member acea-row row-middle" v-if="member.rank_name">{{ member.rank_name }}</view>
                             <view class="member acea-row row-middle" v-else>普通会员</view>
@@ -26,19 +26,19 @@
                         <view class="item" @click="goPages('/pages/user/collectProduct/index')">
                             <view class="tit">
                                 商品收藏
-                                <text class="txt">{{ count.collect_count >= 0 ? count.collect_count : "--" }}</text>
+                                <text class="txt">{{ orderNum.product_collect >= 0 ? orderNum.product_collect : "--" }}</text>
                             </view>
                         </view>
-                        <view class="item" @click="goPages('/pages/user_collection_store_list/index')">
+                        <!-- <view class="item" @click="goPages('/pages/user_collection_store_list/index')">
                             <view class="tit">
                                 店铺关注
                                 <text class="txt">{{ count.collect_store_count >= 0 ? count.collect_store_count : "--" }}</text>
                             </view>
-                        </view>
+                        </view> -->
                         <view class="item" @click="goPages('/pages/user_order_comment/index?com_status=1')">
                             <view class="tit">
                                 待评价
-                                <text class="txt">{{ count.stay_comment_order >= 0 ? count.stay_comment_order : "--" }}</text>
+                                <text class="txt">{{ orderNum.await_comment >= 0 ? orderNum.await_comment : "--" }}</text>
                             </view>
                         </view>
                         <view class="item" @click="goPages('/pages/user/historyProduct/index')">
@@ -69,17 +69,17 @@
                             <view class="li" @click="goPages('/pages/user/order/list?type=await_pay')">
                                 <text class="iconfont icon-daifukuan"></text>
                                 <view class="txt">待付款</view>
-                                <text class="counts" v-if="count.re_pay > 0">{{ count.re_pay }}</text>
+                                <text class="counts" v-if="orderNum.await_pay > 0">{{ orderNum.await_pay }}</text>
                             </view>
                             <view class="li" @click="goPages('/pages/user/order/list?type=await_shipping')">
                                 <text class="iconfont icon-daishouhuo1"></text>
                                 <view class="txt">待收货</view>
-                                <text class="counts" v-if="count.re_receive > 0">{{ count.re_receive }}</text>
+                                <text class="counts" v-if="orderNum.await_received > 0">{{ orderNum.await_received }}</text>
                             </view>
                             <view class="li" @click="goPages('/pages/user/order/list?type=await_comment')">
                                 <text class="iconfont icon-pingjia"></text>
                                 <view class="txt">待评价</view>
-                                <text class="counts" v-if="count.stay_comment_order > 0">{{ count.stay_comment_order }}</text>
+                                <text class="counts" v-if="orderNum.await_comment > 0">{{ orderNum.await_comment }}</text>
                             </view>
                             <view class="li" @click="goPages('/pages/user/afterSale/list')">
                                 <text class="iconfont icon-shouhou1"></text>
@@ -98,15 +98,15 @@
                         </view>
                         <view class="wrap">
                             <view class="li" @click="goPages('/pages/user_account_detail/index')">
-                                <text class="num">{{ member.user_money >= 0 ? member.user_money : 0 }}</text>
+                                <text class="num">{{ member.total_balance >= 0 ? member.total_balance : 0 }}</text>
                                 <view class="txt">余额</view>
                             </view>
-                            <view class="li" @click="goPages('/pages/user_bonus/index')">
-                                <text class="num">{{ count.bonus >= 0 ? count.bonus : 0 }}</text>
+                            <view class="li" @click="goPages('/pages/coupon/index')">
+                                <text class="num">{{ member.coupon >= 0 ? member.coupon : 0 }}</text>
                                 <view class="txt">优惠券</view>
                             </view>
                             <view class="li" @click="goPages('/pages/user_point_detail/index')">
-                                <text class="num">{{ member.pay_points >= 0 ? member.pay_points : 0 }}</text>
+                                <text class="num">{{ member.points >= 0 ? member.points : 0 }}</text>
                                 <view class="txt">积分</view>
                             </view>
                         </view>
@@ -192,7 +192,8 @@ import { ref } from "vue";
 import { onShow, onReachBottom, onPageScroll } from "@dcloudio/uni-app";
 import { getUser } from "@/api/user/user";
 import type { UserItem } from "@/types/user/user";
-
+import type { OrderNumItem } from "@/types/user/order";
+import { getOrderNum } from "@/api/user/order";
 const userStore = useUserStore();
 const tabbarStore = usetabbarStore();
 
@@ -230,6 +231,16 @@ const __getUser = async () => {
         console.error(error);
     }
 };
+const orderNum = ref<OrderNumItem>({} as OrderNumItem);
+const __getOrderNum = async () => {
+    try {
+        const result = await getOrderNum();
+        orderNum.value = result.item;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 const goPages = (url: string) => {
     uni.navigateTo({
         url
@@ -261,6 +272,7 @@ onShow(() => {
     guessLike.value = [];
     __getGuessLike();
     uni.hideTabBar();
+    __getOrderNum();
 });
 
 onReachBottom(() => {
