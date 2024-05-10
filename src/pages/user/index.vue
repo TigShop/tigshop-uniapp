@@ -231,7 +231,7 @@ const __getUser = async () => {
         console.error(error);
     }
 };
-const orderNum = ref<OrderNumItem>();
+const orderNum = ref<OrderNumItem>({} as OrderNumItem);
 const __getOrderNum = async () => {
     try {
         const result = await getOrderNum();
@@ -272,7 +272,7 @@ onShow(() => {
     guessLike.value = [];
     __getGuessLike();
     uni.hideTabBar();
-	__getOrderNum();
+    __getOrderNum();
 });
 
 onReachBottom(() => {
