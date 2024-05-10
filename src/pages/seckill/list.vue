@@ -70,6 +70,9 @@ const __getSeckillProduct = async () => {
     if (filterParams.page > 1) {
         loaded.value = true;
     }
+    uni.showLoading({
+        title: "请求加载中..."
+    });
     try {
         const result = await getSeckill({...filterParams});
         total.value = result.total;
@@ -81,6 +84,7 @@ const __getSeckillProduct = async () => {
         })
     } finally {
         loaded.value = false;
+        uni.hideLoading();
     }
 }
 const toDetail = (id: number) => {

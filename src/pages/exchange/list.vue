@@ -33,6 +33,9 @@ const loadFilter = async () => {
     if (filterParams.page > 1) {
         loaded.value = true;
     }
+    uni.showLoading({
+        title: "请求加载中..."
+    });
     try {
         const result = await getExchangeList({...filterParams});
         total.value = result.total;
@@ -45,6 +48,7 @@ const loadFilter = async () => {
         })
     } finally {
         loaded.value = false;
+        uni.hideLoading()
     }
 }
 onLoad(() => {

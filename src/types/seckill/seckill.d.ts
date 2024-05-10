@@ -8,7 +8,9 @@ export interface SeckillFilterState {
     product_name: string;
     pic_thumb: string;
     product_sn: string;
+    market_price: string;
     seckill_price: string;
+    seckill_stock: number;
 }
 
 export interface SeckillFilterResult {
