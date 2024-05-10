@@ -78,10 +78,6 @@ const messageList = ref<UserMsgFilterState[]>([]);
 const __geMessageList = async () => {
     if (filterParams.page > 1) {
         loaded.value = true;
-    } else {
-        uni.showLoading({
-            title: "加载中"
-        });
     }
     uni.showLoading({
         title: "请求加载中..."
@@ -97,10 +93,9 @@ const __geMessageList = async () => {
             duration: 1000
         });
     } finally {
-        uni.hideLoading();
         loaded.value = false;
         loadend.value = true;
-        uni.hideLoading()
+        uni.hideLoading();
     }
 };
 
@@ -158,7 +153,7 @@ const addMessageAllReadFn = async () => {
         filterParams.unread = 0;
         filterParams.page = 1;
         messageList.value = [];
-        await __geMessageList()
+        await __geMessageList();
     } catch (error: any) {
         uni.showToast({
             title: error.message,
@@ -224,11 +219,13 @@ onReachBottom(() => {
     position: relative;
     padding: 0 20rpx;
     margin-top: 120rpx;
+    .move-item {
+        margin-bottom: 10rpx;
+    }
     .mitem {
         position: relative;
         border-bottom: 1rpx solid #dfdfdf;
         border-radius: 10rpx;
-        margin-bottom: 10rpx;
         .message {
             position: relative;
             padding: 30rpx 20rpx;
