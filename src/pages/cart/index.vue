@@ -22,9 +22,9 @@
                         <view class="goods-list-cart">
                             <uni-swipe-action>
                                 <block v-for="(goods, index) in item.carts" :key="goods.product_id">
-                                    <view class="cart_item" :class="{ cart_item_disabled: goods.stock === 0 || goods.product_status === 0 }">
+                                    <view class="cart_item">
                                         <uni-swipe-action-item :threshold="0" autoClose>
-                                            <view class="cart_list_con">
+                                            <view class="cart_list_con" :class="{ cart_item_disabled: goods.is_disabled }">
                                                 <tigCheckbox
                                                     class="check-item"
                                                     v-model:checked="goods.is_checked"
@@ -54,7 +54,7 @@
                                                         </view>
                                                         <view class="cart-num-box">
                                                             <uni-number-box
-                                                                :disabled="goods.product_status === 0"
+                                                                :disabled="goods.is_disabled"
                                                                 v-model="goods.quantity"
                                                                 @change="updateCartItem(goods.cart_id, goods.quantity)"
                                                             />
@@ -128,7 +128,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, getCurrentInstance } from "vue";
 import navbar from "@/components/navbar/index.vue";
 import masonry from "@/components/masonry/masonry.vue";
 import tigCheckbox from "@/components/tigCheckbox/index.vue";
@@ -154,7 +154,9 @@ const allChecked = ref(false);
 const onCheckAll = () => {
     cartList.value.forEach((item: any) => {
         item.carts.forEach((product: any) => {
-            product.is_checked = allChecked.value;
+            if (!product.is_disabled) {
+                product.is_checked = allChecked.value;
+            }
         });
     });
     updateCheckbox();
@@ -163,21 +165,23 @@ const onCheckAll = () => {
 const onCheckAllItem = (index: number) => {
     const item = cartList.value[index];
     item.carts.forEach((product: any) => {
-        product.is_checked = item.is_checked;
+        if (!product.is_disabled) {
+            product.is_checked = item.is_checked;
+        }
     });
-
     updateCheckbox();
     updateCheckData();
 };
 
 const onChangeCheck = () => {
-    // debugger
     updateCheckbox();
     updateCheckData();
 };
+
 const updateCheckbox = () => {
     cartList.value.forEach((item: any) => {
-        item.is_checked = item.carts.every((product: any) => product.is_checked === true && !product.is_disabled);
+        const validItem = item.carts.filter((product: any) => !product.is_disabled)
+        item.is_checked = validItem.every((product: any) => product.is_checked === true);
     });
     allChecked.value = cartList.value.every((item: any) => item.is_checked === true);
 };
@@ -199,10 +203,12 @@ const updateCheckData = async () => {
         console.error(error);
     }
 };
+
 onLoad(() => {
     getCartList();
     __getGuessLike();
 });
+const Instance = getCurrentInstance();
 const getCartList = async () => {
     uni.showLoading({
         title: "请求加载中..."
@@ -639,9 +645,9 @@ onShow(() => {
 .goods-list-cart .cart_item {
     overflow: hidden;
 
-    &.cart_item_disabled {
-        opacity: 0.5;
-    }
+    // &.cart_item_disabled {
+    //     opacity: 0.5;
+    // }
 }
 .goods-list-cart .cart_item .cart_list_con {
     display: flex;
@@ -649,6 +655,9 @@ onShow(() => {
     padding: 24rpx 20rpx 10rpx 80rpx;
     position: relative;
     z-index: 1;
+    &.cart_item_disabled {
+        opacity: 0.5;
+    }
 }
 .goods-list-cart .cart_item .check-item {
     display: block;
