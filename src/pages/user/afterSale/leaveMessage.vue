@@ -29,7 +29,7 @@
             </uni-forms>
         </view>
         <view class="leave-message-btn">
-            <view class="btn-box" @click="handleSubmit">提交</view>
+            <tigButton :size="36"  @click="handleSubmit">提交</tigButton>
         </view>
     </view>
 </template>
@@ -143,6 +143,9 @@ const __aftersalesFeedback = async () => {
 </script>
 
 <style lang="scss" scoped>
+page {
+    background-color: #fff;
+}
 .leave-message {
     background-color: #fff;
     height: 100%;

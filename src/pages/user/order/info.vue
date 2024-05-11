@@ -59,8 +59,9 @@
                                 </view>
                             </view>
                             <view class="item-btn">
-                                <view v-if="!item.aftersales_item" @click="handleAfterSale(item.item_id)"> 申请售后 </view>
-                                <view v-else @click="handleAfterSaleDetail(item.aftersales_item.aftersale_id)"> 售后详情 </view>
+                                <tigButton :plain="true" v-if="!item.aftersales_item" @click="handleAfterSale(item.item_id)"> 申请售后 </tigButton>
+                                <tigButton :plain="true" v-else @click="handleAfterSaleDetail(item.aftersales_item.aftersale_id)"> 售后详情 </tigButton>
+                                <!-- <tigButton :plain="true" v-if="orderInfo.available_actions.cancel_order" @click="handleCancelOrder(orderInfo.order_id)"> 取消订单 </tigButton> -->
                             </view>
                         </view>
                     </block>
@@ -100,12 +101,13 @@
             <saveBottomBox height="90" backgroundColor="#fff" v-if="orderInfo.available_actions.cancel_order || orderInfo.available_actions.to_pay || orderInfo.available_actions.confirm_receipt || orderInfo.available_actions.to_aftersales">
                 <view class="order-info-btn">
                     <view class="order-info-btn-box">
-                        <view class="btn" v-if="orderInfo.available_actions.cancel_order" @click="handleCancelOrder(orderInfo.order_id)"> 取消订单 </view>
-                        <view class="btn" v-if="orderInfo.available_actions.to_pay" @click="handlePay(orderInfo.order_id)"> 去付款 </view>
-                        <view class="btn" v-if="orderInfo.available_actions.confirm_receipt" @click="handleConfirmReceipt(orderInfo.order_id)">
+                        <tigButton class="btn" :plain="true" v-if="orderInfo.available_actions.cancel_order" @click="handleCancelOrder(orderInfo.order_id)"> 取消订单 </tigButton>
+                        <tigButton class="btn" :plain="true" v-if="orderInfo.available_actions.to_pay" @click="handlePay(orderInfo.order_id)"> 去付款 </tigButton>
+                        <tigButton class="btn" :plain="true" v-if="orderInfo.available_actions.confirm_receipt" @click="handleConfirmReceipt(orderInfo.order_id)">
                             确认已收货
-                        </view>
-                        <view class="btn" v-if="orderInfo.available_actions.to_aftersales" @click="handleAfterSale(null)"> 整单售后 </view>
+                        </tigButton>
+                        <tigButton class="btn" :plain="true" v-if="orderInfo.available_actions.to_aftersales" @click="handleAfterSale(null)"> 整单售后 </tigButton>
+
                     </view>
                 </view>
             </saveBottomBox>
@@ -330,14 +332,6 @@ const handleAfterSaleDetail = (id: number) => {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                border-radius: 35rpx;
-                padding: 15rpx 20rpx;
-                border: 1px solid #f2f2f2;
-                font-size: 24rpx;
-
-                &:active {
-                    background-color: #d9d9d9;
-                }
             }
         }
     }
@@ -376,17 +370,8 @@ const handleAfterSaleDetail = (id: number) => {
     .order-info-btn-box {
         display: flex;
         align-items: center;
+        padding-right: 15rpx;
 
-        .btn {
-            border-radius: 35rpx;
-            padding: 15rpx 28rpx;
-            border: 1px solid #f2f2f2;
-            font-size: 24rpx;
-            margin-right: 15rpx;
-            &:active {
-                background-color: #d9d9d9;
-            }
-        }
     }
 }
 </style>

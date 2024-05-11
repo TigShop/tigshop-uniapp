@@ -83,7 +83,7 @@
         </view>
         <saveBottomBox :height="90" backgroundColor="#fff">
             <view class="after-sale-btn-box">
-                <button hover-class="base-button-hover" class="after-sale" @click="handleSave">提交</button>
+                <tigButton style="width: 100%;height: 100%;" @click="handleSave"> 提交 </tigButton>
             </view>
         </saveBottomBox>
     </view>
@@ -261,7 +261,7 @@ const handleSave = async () => {
         });
         setTimeout(() => {
             uni.redirectTo({
-                url: '/pages/user/afterSale/list',
+                url: "/pages/user/afterSale/list"
             });
         }, 1500);
     } catch (error: any) {
@@ -417,14 +417,10 @@ const handleSave = async () => {
     }
 
     .after-sale-btn-box {
-        padding: 10rpx 20rpx;
+        box-sizing: border-box;
+        height: 100%;
+        padding: 15rpx 20rpx;
 
-        .after-sale {
-            font-size: 28rpx;
-            border-radius: 50rpx;
-            background-color: $tig-color-primary;
-            color: #fff;
-        }
     }
 }
 </style>
