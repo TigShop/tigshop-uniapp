@@ -1,9 +1,6 @@
 <template>
     <navbar :parameter="parameter"></navbar>
     <view class="comment-info">
-        <!-- <tigUpload :count="9" v-model="pic_url">
-            <uni-icons type="camera" size="30" color="#cccccc"></uni-icons>
-        </tigUpload> -->
         <view class="comment-item" v-for="(item, index) in formState">
             <view class="white-card" v-if="!item.is_showed">
                 <view class="product flex">
@@ -49,7 +46,7 @@
                                 <view>
                                     <input type="text" v-model="tabInput" auto-focus placeholder="请输入自定义标签" />
                                 </view>
-                                <view class="btn" @click="tabAdd(index)">确定</view>
+                                <tigButton class="btn" @click="tabAdd(index)">确定</tigButton>
                             </view>
                         </view>
                         <view class="label-list" v-else>
@@ -95,7 +92,7 @@
                         
                     </view>
                     <view class="comment-cell">
-                        <view class="tig-button" @click="onSubmit(item, index)">提交评论</view>
+                        <tigButton class="tig-button" @click="onSubmit(item, index)">提交评论</tigButton>
                     </view>
                 </view>
             </view>
@@ -149,7 +146,6 @@ const fetchCommentData = async (id: string) => {
             );
         });
         Object.assign(formState.value, result.item.items);
-        console.log(formState.value)
         const allAreTrue = formState.value.every((obj:any) => obj.is_showed === 1);
         if(allAreTrue){
             //如果商品列表全都评价完了就跳转到评价列表
@@ -196,7 +192,6 @@ const checkTag = (index: number, label: string) => {
     } else {
         arr.push(label);
     }
-    console.log(formState.value[index]);
 };
 const imagePreview = (url: string) => {
     uni.previewImage({
@@ -309,14 +304,12 @@ onLoad((option) => {
                             width: 100vw;
                             padding: 10rpx 0;
                             input{
-                                width: 70vw;
+                                width: 68vw;
                                 font-size: 24rpx;
                                 padding: 15rpx;
                                 background-color: #f5f5f5;
                             }
                             .btn{
-                                background-color: $tig-color-primary;
-                                color: #fff;
                                 padding: 16rpx 30rpx;
                                 border-radius: 5rpx;
                             }
@@ -380,10 +373,6 @@ onLoad((option) => {
                     .tig-button{
                         width: 100%;
                         padding: 20rpx 0;
-                        text-align: center;
-                        background-color: $tig-color-primary;
-                        color: #fff;
-                        border-radius: 10rpx;
                     }
                 }
             }
