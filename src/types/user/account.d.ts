@@ -38,3 +38,18 @@ export interface AccountFilterState {
     postscript?: string;
     status_type?: string;
 }
+
+export interface DepositFilterResult {
+    filter_result: DepositFilterState[];
+    filter: DepositFilterParams;
+    total: number;
+    errcode: number;
+    message: string;
+}
+
+export interface DepositFilterState {
+    discount_money?: string;
+    money?: string;
+    recharge_id?: number;
+    selected?: boolean;
+}

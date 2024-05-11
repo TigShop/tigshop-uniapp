@@ -7,9 +7,7 @@
             <FormatPrice :priceData="formState.balance"></FormatPrice>
         </view>
         <view class="button-row">
-            <view class="round-button">
-                <navigator class="" target="" url="/pages/user/account/deposit" hover-class="navigator-hover" open-type="navigate">充值</navigator>
-            </view>
+            <view class="round-button">充值</view>
             <view class="round-button">提现</view>
         </view>
     </view>
