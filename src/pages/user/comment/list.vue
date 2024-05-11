@@ -59,7 +59,7 @@
                     <view class="comment-label flex align-center">
                         <view class="name">评&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价:</view>
                         <view class="content flex align-center justify-between">
-                            <uni-rate :value="item.comment_rank" color="#bbb" active-color="red" size="18" />
+                            <uni-rate :value="item.comment_rank" color="#bfbfbf" active-color="#ffa800" size="18" />
                             <view class="time">{{ item.add_time }}</view>
                         </view>
                     </view>
