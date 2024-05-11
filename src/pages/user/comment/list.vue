@@ -44,7 +44,7 @@
                     </view>
                     <view class="order-list-item-btn">
                         <view class="item-btn-box">
-                            <view class="base-item-btn detail" @click="handleEvaluate(item.order_id)"> {{currentType == 0 ? '去评价' : '待晒单'}} </view>
+                            <tigButton :plain="true" :plainMainColor="true" @click="handleEvaluate(item.order_id)"> {{currentType == 0 ? '去评价' : '待晒单'}} </tigButton>
                         </view>
                     </view>
                 </view>
