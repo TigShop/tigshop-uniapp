@@ -6,7 +6,7 @@
             <view class="user" v-if="member">
                 <view class="user_header user_bg_color">
                     <view class="picTxt">
-                        <tigUpload @change="__getUser()">
+                        <tigUpload @change="__getUser()" requestUrl="user/user/modify_avatar">
                             <tigImage class="pictrue pic-btn" v-model:src="member!.avatar"> </tigImage>
                         </tigUpload>
                         <view class="text">
