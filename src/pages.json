@@ -139,6 +139,9 @@
         },
         {
             "path":"pages/user/security/password"
+        },
+        {
+            "path":"pages/user/point/detail"
         }
 
 	],
