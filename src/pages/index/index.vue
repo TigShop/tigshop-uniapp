@@ -1,5 +1,5 @@
 <template>
-    <view style="height: 100%">
+    <view style="padding-bottom: 90rpx;" >
         <view class="preview-box" v-if="configStore.previewId > 0">
             <view class="container">预览：&emsp;<text>移动端</text></view>
         </view>
@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, provide } from "vue";
 import { onLoad, onReachBottom, onPageScroll, onHide, onShow, onPullDownRefresh } from "@dcloudio/uni-app";
 import { getIndex } from "@/api/home/home";
 import modules from "@/components/modules/index.vue";
@@ -87,20 +87,22 @@ const getProductList = async () => {
     }
 };
 
+const decorate_id = ref(0);
 const getIndexData = async () => {
     loading.value = true;
     try {
         const res = await getIndex();
         modulesData.value = res.module_list;
+        decorate_id.value = res.decorate_id;
         showCatNav.value = 1;
         uni.stopPullDownRefresh();
-        console.log("modulesData.value=>", modulesData.value);
     } catch (error) {
         console.log(error);
     } finally {
         loading.value = false;
     }
 };
+provide('decorate_id', decorate_id)
 
 onLoad((options: any) => {
     const getWindowInfo = uni.getWindowInfo();

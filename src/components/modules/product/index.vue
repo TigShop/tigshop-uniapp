@@ -99,11 +99,6 @@
                                                     <navigator :url="urlFormat({ path: 'product', id: item.product_id })" class="item-name-a">
                                                         {{ item.product_name ?? "商品名称" }}
                                                     </navigator>
-                                                    <block v-if="module.show_brief">
-                                                        <navigator :url="urlFormat({ path: 'product', id: item.product_id })" class="item-brief">
-                                                            {{ item.product_desc ?? "商品描述" }}
-                                                        </navigator>
-                                                    </block>
                                                 </view>
                                             </block>
                                             <block v-if="module.show_price">
@@ -142,10 +137,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, watchEffect } from "vue";
+import { ref, computed, onMounted, watchEffect, inject } from "vue";
 import { imageFormat, priceFormat, urlFormat } from "@/utils/format";
 import { formatFrame } from "@/components/modules";
-import type { ProductListData } from "@/types/decorate/mobileProduct";
+import type { ProductList } from "@/types/decorate/mobileProduct";
 import { getProductList } from "@/api/home/home";
 import commonTitle from "@/components/modules/commonTitle/index.vue";
 import Swiper from "@/components/Swiper/index.vue";
@@ -156,8 +151,13 @@ const props = defineProps({
     module: {
         type: Object,
         default: () => ({})
+    },
+    module_index: {
+        type: Number,
+        default: 0
     }
 });
+console.log('product', props.module);
 const { frame } = props.module;
 const frameFormat = computed(() => {
     return formatFrame(frame ?? {});
@@ -174,10 +174,11 @@ const allFormat = computed(() => {
     };
 });
 
+const decorate_id:any = inject("decorate_id");
 onMounted(() => {
     _getproductList();
 });
-const productList = ref<ProductListData[]>();
+const productList = ref<ProductList[]>();
 const mockData = [
     {
         product_id: 339,
@@ -220,9 +221,8 @@ const mockData = [
 ];
 const _getproductList = async () => {
     try {
-        // const result = await getProductList({ ...props.module.products });
-        // productList.value = result.product_list;
-        productList.value = mockData;
+        const result = await getProductList({ decorate_id: decorate_id.value, module_index: props.module_index });
+        productList.value = result.item.products.product_list;
     } catch (error) {
     } finally {
     }

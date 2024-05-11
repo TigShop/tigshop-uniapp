@@ -35,9 +35,9 @@
                                                 <navigator :url="'/pages/productDetail/index?id=' + goods.cart_id" class="photo">
                                                     <view class="photo-img">
                                                         <tigImage v-model:src="goods.pic_thumb"></tigImage>
+                                                        <view class="cart-notice-row" v-if="goods.stock === 0">已售罄</view>
+                                                        <view class="cart-notice-row" v-if="goods.product_status === 0">已下架</view>
                                                     </view>
-                                                    <view class="cart-notice-row" v-if="goods.stock === 0">已售罄</view>
-                                                    <view class="cart-notice-row" v-if="goods.product_status === 0">已下架</view>
                                                 </navigator>
                                                 <view class="cart-row">
                                                     <navigator target="_blank" :url="'/pages/productDetail/index?id=' + goods.product_id">
@@ -180,7 +180,7 @@ const onChangeCheck = () => {
 
 const updateCheckbox = () => {
     cartList.value.forEach((item: any) => {
-        const validItem = item.carts.filter((product: any) => !product.is_disabled)
+        const validItem = item.carts.filter((product: any) => !product.is_disabled);
         item.is_checked = validItem.every((product: any) => product.is_checked === true);
     });
     allChecked.value = cartList.value.every((item: any) => item.is_checked === true);
@@ -679,15 +679,17 @@ onShow(() => {
     margin-bottom: 20rpx;
     margin-left: 10rpx;
     box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.04);
-    position: relative;
+
     .photo-img {
         width: 150rpx;
         height: 150rpx;
         box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.04);
+        position: relative;
     }
     .cart-notice-row {
         position: absolute;
         width: 150rpx;
+        bottom: 0;
     }
 }
 

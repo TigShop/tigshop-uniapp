@@ -25,9 +25,14 @@
                     <view class="payment-desc-text"> 支持微信即时到账（绝大数银行借记卡及部分银行信用卡） </view>
                 </view>
 
-                <view class="button-position">
+                <!-- <view class="button-position">
                     <button hover-class="base-button-hover" class="base-button" @click="handlecConfirm">确定</button>
-                </view>
+                </view> -->
+                <saveBottomBox height="110" backgroundColor="#fff">
+                    <view class="btn-box">
+                        <tigButton style="width: 100%;height: 70rpx;"  @click="handlecConfirm"> 提交</tigButton>
+                    </view>
+                </saveBottomBox>
             </view>
         </tigpopup>
     </view>
@@ -36,6 +41,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import type { AvailablePaymentType } from "@/types/order/check";
+import saveBottomBox from '@/components/saveBottomBox/index.vue'
 interface Props {
     availablePaymentType: AvailablePaymentType[];
     payTypeId: number;
@@ -102,6 +108,14 @@ const handlecConfirm = () => {
 </script>
 
 <style lang="scss" scoped>
+.btn-box {
+    padding: 15rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+}
 .payment {
     border-radius: 18rpx;
     background: #fff;

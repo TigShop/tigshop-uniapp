@@ -77,7 +77,6 @@ const getCountdownTime = (diffMilliseconds: number) => {
     minutes.value = Math.floor(diffMilliseconds / (1000 * 60));
     diffMilliseconds -= minutes.value * (1000 * 60);
     seconds.value = Math.floor(diffMilliseconds / 1000);
-    console.log(`剩余：${days.value} 天 ${hours.value} 小时 ${minutes.value} 分 ${seconds.value} 秒`);
 };
 </script>
 

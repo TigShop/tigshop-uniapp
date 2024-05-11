@@ -46,9 +46,11 @@
                     <view class="payment-desc-text"> {{ currentShippingType.shipping_time_desc }} {{ currentShippingType.shipping_type_desc }} </view>
                 </view>
 
-                <view class="button-position">
-                    <button hover-class="base-button-hover" class="base-button" @click="handlecConfirm">确定</button>
-                </view>
+                <saveBottomBox height="110" backgroundColor="#fff">
+                    <view class="btn-box">
+                        <tigButton style="width: 100%;height: 70rpx;"  @click="handlecConfirm"> 提交</tigButton>
+                    </view>
+                </saveBottomBox>
             </view>
         </tigpopup>
     </view>
@@ -57,7 +59,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import type { CartList, StoreShippingType } from "@/types/order/check";
-import { imageFormat } from "@/utils/format";
+import saveBottomBox from '@/components/saveBottomBox/index.vue'
 
 interface Props {
     cartList: CartList[];
@@ -113,6 +115,14 @@ const handlecConfirm = () => {
 </script>
 
 <style lang="scss" scoped>
+.btn-box {
+    padding: 15rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+}
 .payment {
     border-radius: 18rpx;
     background: #fff;

@@ -32,7 +32,7 @@ export const getCateProduct = (params: GetCateProductFilterParams) => {
 // 获取首页商品
 export const getProductList = (params: object) => {
     return request<getProductListFilterState>({
-        url: "decorate/decorate_request/product_list/",
+        url: "home/get_recommend",
         method: "get",
         params
     });

@@ -15,7 +15,7 @@ const props = defineProps({
     },
     backgroundColor: {
         type: String,
-        default: "none"
+        default: "transparent"
     }
 });
 </script>

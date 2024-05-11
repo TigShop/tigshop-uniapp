@@ -130,7 +130,7 @@
                                 <view class="pic"><image lazy-load src="/static/images/user/anquanzhongxin.png"></image></view>
                                 <view>安全中心</view>
                             </view> -->
-                            <view class="item" @click="goPages('/pages/user_invoice/index')">
+                            <view class="item" @click="goPages('/pages/user/invoiceManagement/index')">
                                 <view class="pic">
                                     <image lazy-load src="/static/images/user/fapiao.png"></image>
                                 </view>

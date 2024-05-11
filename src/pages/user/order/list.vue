@@ -89,8 +89,6 @@ const parameter = {
     navbar: "1",
     return: "1",
     title: "我的订单",
-    showHome: true,
-    color: false
 };
 interface MenuType {
     type: string;

@@ -96,9 +96,11 @@
                     </block>
                 </view>
             </view>
-            <view class="button-position">
-                <button hover-class="base-button-hover" class="base-button" @click="handlecConfirm">确定</button>
-            </view>
+            <saveBottomBox height="110" backgroundColor="#fff">
+                <view class="btn-box">
+                    <tigButton style="width: 100%; height: 70rpx" @click="handlecConfirm"> 确定</tigButton>
+                </view>
+            </saveBottomBox>
         </tigpopup>
 
         <tigpopup v-model:show="showPoints" title="积分" backgroundColor="#f5f5f5">
@@ -117,9 +119,11 @@
                     </uni-forms>
                 </view>
 
-                <view class="button-position">
-                    <button hover-class="base-button-hover" class="base-button" @click="onSubmit">确定</button>
-                </view>
+                <saveBottomBox height="110" backgroundColor="#fff">
+                    <view class="btn-box">
+                        <tigButton style="width: 100%; height: 70rpx" @click="onSubmit"> 确定</tigButton>
+                    </view>
+                </saveBottomBox>
 
                 <view class="points-popup-text">该订单最多可用{{ points }} 积分<text class="text-clolor">【如何获得积分？】</text></view>
             </view>
@@ -130,6 +134,7 @@
 <script lang="ts" setup>
 import type { CouponList, EnableCoupon } from "@/types/order/check";
 import tigCheckbox from "@/components/tigCheckbox/index.vue";
+import saveBottomBox from "@/components/saveBottomBox/index.vue";
 import { reactive, ref, watch } from "vue";
 import { priceFormat } from "@/utils/format";
 interface Props {
@@ -267,6 +272,13 @@ const handleBalance = () => {
 </script>
 
 <style lang="scss" scoped>
+.btn-box {
+    padding: 15rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
 .coupon {
     border-radius: 18rpx 18rpx 0 0;
     background: #fff;

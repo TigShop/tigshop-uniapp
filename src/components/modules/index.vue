@@ -49,7 +49,7 @@
             </block>
 
             <block v-if="module.type == 'product' && showCatNav == 0">
-                <product :module="module.module"></product>
+                <product :module="module.module" :module_index="module.module_index"></product>
             </block>
         </block>
 
@@ -132,7 +132,6 @@ import coupon from "@/components/modules/coupon/index.vue";
 import seckill from "@/components/modules/seckill/index.vue";
 import imageHotarea from "@/components/modules/imageHotarea/index.vue";
 import product from "@/components/modules/product/index.vue";
-import { imageFormat } from "@/utils/format";
 import { ref } from "vue";
 
 interface Props {

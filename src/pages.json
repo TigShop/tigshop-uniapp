@@ -130,6 +130,12 @@
         },
         {
             "path":"pages/user/comment/info"
+        },
+        {
+            "path":"pages/user/invoiceManagement/index"
+        },
+        {
+            "path":"pages/user/invoiceManagement/applyInvoice"
         }
 
 	],

@@ -158,11 +158,12 @@
                         </block>
                     </uni-forms>
                 </view>
-                <view class="button-position">
-                    <button :disabled="formState.invoice_type === 2 && !invoiceStatus" hover-class="base-button-hover" class="base-button" @click="onSubmit">
-                        提交
-                    </button>
-                </view>
+                <saveBottomBox height="110" backgroundColor="#fff">
+                    <view class="btn-box">
+                        <tigButton style="width: 100%;height: 70rpx;" :disabled="formState.invoice_type === 2 && !invoiceStatus" @click="onSubmit"> 提交</tigButton>
+                    </view>
+                    
+                </saveBottomBox>
             </view>
         </tigpopup>
     </view>
@@ -171,6 +172,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from "vue";
 import { getInvoiceStatus, getCheckInvoice } from "@/api/order/invoice";
+import saveBottomBox from '@/components/saveBottomBox/index.vue'
 
 const props = defineProps({
     getAddressInfo: {
@@ -395,7 +397,14 @@ const handleApply = () => {
     display: flex;
     align-items: center;
 }
+.btn-box {
+    padding: 15rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 
+}
 :deep(.uni-forms-item) {
     margin-bottom: 30rpx;
 }
