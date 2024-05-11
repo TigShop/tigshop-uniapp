@@ -43,7 +43,7 @@
                             <view class="item-content" :style="allFormat.goods_padding">
                                 <view class="item-con">
                                     <view class="item-photo">
-                                        <navigator :url="''" class="item-image-a">
+                                        <navigator :url="'/pages/productDetail/index?id=' + item.product_id" class="item-image-a">
                                             <!-- <image lazy-load  :src="imageFormat(item.pic_thumb)" mode="widthFix" /> -->
                                             <tigImage v-model:src="item.pic_thumb" mode="widthFix"></tigImage>
                                         </navigator>
@@ -56,7 +56,7 @@
                                         <block v-if="module.show_name">
                                             <view class="item-name">
                                                 <block v-if="module.show_name">
-                                                    <navigator url="" class="item-name-a">
+                                                    <navigator :url="'/pages/productDetail/index?id=' + item.product_id" class="item-name-a">
                                                         {{ item.product_name ?? "" }}
                                                     </navigator>
                                                 </block>
@@ -68,7 +68,7 @@
                                                     <text class="price_format">{{ priceFormat(Number(item.product_price)) }}</text>
                                                 </view>
                                                 <view class="item-buy">
-                                                    <view @click="buy" :data-id="item.product_id" class="buy-btn">
+                                                    <view @click="buy(item.product_id)" :data-id="item.product_id" class="buy-btn">
                                                         <block v-if="module.buy_btn_style == 5 || module.buy_btn_style == 6">
                                                             <view>购买</view>
                                                         </block>
@@ -139,7 +139,9 @@ const className = computed(() => {
     }
 });
 
-const buy = () => {};
+const buy = (id: any) => {
+    uni.navigateTo({ url:'/pages/productDetail/index?id=' + id  })
+};
 
 const seckillList = ref<SeckillList[]>();
 const getData = async () => {

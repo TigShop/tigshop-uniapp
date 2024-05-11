@@ -36,7 +36,7 @@
 			"style": {}
 		},
         {
-            "path": "pages/user/account/detail",
+            "path": "pages/user/account/index",
             "style": {}
         },
 		{
@@ -136,6 +136,18 @@
         },
         {
             "path":"pages/user/invoiceManagement/applyInvoice"
+        },
+        {
+            "path":"pages/user/security/phone"
+        },
+        {
+            "path":"pages/user/security/newPhone"
+        },
+        {
+            "path":"pages/user/security/password"
+        },
+        {
+            "path":"pages/user/point/detail"
         }
 
 	],

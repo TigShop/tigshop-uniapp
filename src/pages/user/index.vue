@@ -35,7 +35,7 @@
                                 <text class="txt">{{ count.collect_store_count >= 0 ? count.collect_store_count : "--" }}</text>
                             </view>
                         </view> -->
-                        <view class="item" @click="goPages('/pages/user_order_comment/index?com_status=1')">
+                        <view class="item" @click="goPages('/pages/user/comment/list')">
                             <view class="tit">
                                 待评价
                                 <text class="txt">{{ orderNum.await_comment >= 0 ? orderNum.await_comment : "--" }}</text>
@@ -88,7 +88,7 @@
                     <view class="list-group my-wallet">
                         <view class="title acea-row row-between-wrapper">
                             <view class="">我的钱包</view>
-                            <view class="more" @click="goPages('/pages/user/account/detail')">
+                            <view class="more" @click="goPages('/pages/user/account/index')">
                                 <view>进入钱包</view>
                                 <view class="iconfont icon-xiangyou"></view>
                             </view>

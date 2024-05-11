@@ -22,7 +22,7 @@
                     </view>
                     <view class="order-list-item-content">
                         <view class="item-content-product">
-                            <block v-for="subItem in item.items" :key="subItem.item_id">
+                            <block v-for="subItem in item.items" :key="subItem.product_id">
                                 <navigator :url="'/pages/productDetail/index?id=' + subItem.product_id" hover-class="navigator-hover">
                                     <view class="item-content-product-item">
                                         <view class="item-content-product-img">
@@ -44,7 +44,7 @@
                     </view>
                     <view class="order-list-item-btn">
                         <view class="item-btn-box">
-                            <view class="base-item-btn detail" @click="handleOrederDetail(item.order_id)"> {{currentType == 0 ? '去评价' : '待晒单'}} </view>
+                            <tigButton :plain="true" :plainMainColor="true" @click="handleEvaluate(item.order_id)"> {{currentType == 0 ? '去评价' : '待晒单'}} </tigButton>
                         </view>
                     </view>
                 </view>
@@ -59,7 +59,7 @@
                     <view class="comment-label flex align-center">
                         <view class="name">评&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价:</view>
                         <view class="content flex align-center justify-between">
-                            <uni-rate :value="item.comment_rank" color="#bbb" active-color="red" size="18" />
+                            <uni-rate :value="item.comment_rank" color="#bfbfbf" active-color="#ffa800" size="18" />
                             <view class="time">{{ item.add_time }}</view>
                         </view>
                     </view>
@@ -91,7 +91,7 @@
                         <view class="name">晒&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单:</view>
                         <view class="content flex-wrap" v-if="item.show_pics.length > 0">
                             <view v-for="product in item.show_pics" class="product-pic">
-                                <tigImage v-model:src="product.pic_thumb" mode="aspectFill"></tigImage>
+                                <tigImage v-model:src="product.pic_thumb" mode="aspectFill" @click="imagePreview(imageFormat(product.pic_url))"></tigImage>
                             </view>
                         </view>
                     </view>
@@ -134,6 +134,11 @@ const menuList = reactive<any>([
     { type: 1, value: "待晒单", num: 0 },
     { type: 2, value: "已评价", num: 0 }
 ]);
+const imagePreview = (url: string) => {
+    uni.previewImage({
+        urls: [url]
+    });
+};
 const getSubNum = async () => {
     try {
         const result = await getCommentSubNum();
@@ -196,13 +201,16 @@ const loadFilter = async () => {
     }
 };
 
-const handleOrederDetail = (id: number) => {
+const handleEvaluate = (id: number) => {
     uni.navigateTo({
-        url: `/pages/user/order/info?id=${id}`
+        url: `/pages/user/comment/info?id=${id}`
     });
 }
 
 onLoad((options) => {
+    if(options && options.currentType){
+        currentType.value = Number(options.currentType);
+    }
     getSubNum();
     loadFilter();
 });
@@ -433,7 +441,7 @@ onReachBottom(() => {
                     color: $tig-color-error;
                 }
                 .product-tag{
-                    background-color: #eee;
+                    background-color: #f5f5f5;
                     border-radius: 5rpx;
                     padding: 5rpx 10rpx;
                     margin: 0 0 5rpx 5rpx;
