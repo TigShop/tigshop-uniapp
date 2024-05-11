@@ -124,6 +124,12 @@
         },
         {
             "path":"pages/user/afterSale/shipments"
+        },
+        {
+            "path":"pages/user/comment/list"
+        },
+        {
+            "path":"pages/user/comment/info"
         }
 
 	],

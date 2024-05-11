@@ -86,7 +86,7 @@ onMounted(() => {
 
 const handleCoupon = (id: number) => {
     uni.navigateTo({
-        url: `/pages/bonus_detail/index?id=${id}`
+        url: `/pages/coupon/detail?id=${id}`
     });
 };
 </script>

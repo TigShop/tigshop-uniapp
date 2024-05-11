@@ -10,6 +10,7 @@ export interface OrderNumItem {
     await_received: number;
     await_comment: number;
     order_completed: number;
+    product_collect: number;
 }
 
 export interface OrderListFilterParams {
