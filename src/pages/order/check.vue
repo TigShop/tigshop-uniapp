@@ -28,14 +28,24 @@
                 :getAddressInfo="getAddressInfo"
             ></invoiceInfo>
             <totalCard :total="totalData" :cartList="cartList"></totalCard>
-            <view class="submit-btn">
+            <!-- <view class="submit-btn">
                 <view class="submit-btn-price">
                     <FormatPrice :priceData="totalData?.unpaid_amount"></FormatPrice>
                 </view>
                 <view>
                     <button :loading="submitLoading" class="submit-btn-content" @click="submit">提交</button>
                 </view>
-            </view>
+            </view> -->
+            <saveBottomBox :height="90" backgroundColor="#fff">
+                <view class="submit-btn">
+                    <view class="submit-btn-price">
+                        <FormatPrice :priceData="totalData?.unpaid_amount"></FormatPrice>
+                    </view>
+                    <view>
+                        <tigButton style="width: 200rpx; height: 60rpx" :loading="submitLoading" @click="submit"> 提交 </tigButton>
+                    </view>
+                </view>
+            </saveBottomBox>
         </view>
     </view>
 </template>
@@ -48,7 +58,8 @@ import stroeCard from "./src/stroeCArd.vue";
 import couponInfo from "./src/couponInfo.vue";
 import invoiceInfo from "./src/invoiceInfo.vue";
 import totalCard from "./src/totalCard.vue";
-import { computed, reactive, ref, watch } from "vue";
+import saveBottomBox from "@/components/saveBottomBox/index.vue";
+import { reactive, ref } from "vue";
 import { getOrderCheckData, updateOrderCheckData, orderSubmit, updateCouponData } from "@/api/order/check";
 import { onShow } from "@dcloudio/uni-app";
 import type { AddressList, AvailablePaymentType, CartList, Total, StoreShippingType } from "@/types/order/check";
@@ -175,6 +186,9 @@ const submit = async () => {
             icon: "none"
         });
     }
+
+    if (submitLoading.value) return;
+
     submitLoading.value = true;
     try {
         const result = await orderSubmit(formState);
@@ -182,7 +196,7 @@ const submit = async () => {
             uni.redirectTo({
                 url: `/pages/user/order/list`
             });
-        }else {
+        } else {
             uni.redirectTo({
                 url: `/pages/order/pay?order_id=${result.order_id}`
             });
@@ -204,16 +218,11 @@ onShow(() => {
     background-color: #fff;
     width: 100%;
     height: 100rpx;
-    box-sizing: border-box;
-    position: fixed;
     bottom: 0;
-    left: 0;
-    z-index: 99;
     padding: 0 30rpx;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-bottom: env(safe-area-inset-bottom);
     border-top: 1rpx solid #f5f5f5;
 
     .submit-btn-price {

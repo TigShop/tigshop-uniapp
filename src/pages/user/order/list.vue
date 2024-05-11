@@ -60,15 +60,13 @@
                     </view>
                     <view class="order-list-item-btn">
                         <view class="item-btn-box">
-                            <view class="base-item-btn detail" @click="handleOrederDetail(item.order_id)"> 订单详情 </view>
-                            <view class="base-item-btn" v-if="item.available_actions.to_pay" @click="handlePay(item.order_id)"> 去付款 </view>
-                            <view class="base-item-btn" v-if="item.available_actions.cancel_order" @click="handleCancelOrder(item.order_id)"> 取消订单 </view>
-                            <view class="base-item-btn" v-if="item.available_actions.del_order" @click="handleDelOrder(item.order_id)"> 删除订单 </view>
-                            <view class="base-item-btn" v-if="item.available_actions.rebuy" @click="handleBuyAgain(item.order_id)"> 再次购买 </view>
-                            <view class="base-item-btn" v-if="item.available_actions.to_comment" @click="handleEvaluate(item.order_id)"> 去评价 </view>
-                            <view class="base-item-btn" v-if="item.available_actions.confirm_receipt" @click="handleConfirmReceipt(item.order_id)">
-                                确认收货
-                            </view>
+                            <tigButton :plain="true" :plainMainColor="true" @click="handleOrederDetail(item.order_id)"> 订单详情 </tigButton>
+                            <tigButton :plain="true" v-if="item.available_actions.to_pay" @click="handlePay(item.order_id)"> 去付款 </tigButton>
+                            <tigButton :plain="true" v-if="item.available_actions.cancel_order" @click="handleCancelOrder(item.order_id)"> 取消订单 </tigButton>
+                            <tigButton :plain="true" v-if="item.available_actions.del_order" @click="handleDelOrder(item.order_id)"> 删除订单 </tigButton>
+                            <tigButton :plain="true" v-if="item.available_actions.rebuy" @click="handleBuyAgain(item.order_id)"> 再次购买 </tigButton>
+                            <tigButton :plain="true" v-if="item.available_actions.to_comment" @click="handleEvaluate(item.order_id)"> 去评价 </tigButton>
+                            <tigButton :plain="true" v-if="item.available_actions.confirm_receipt" @click="handleConfirmReceipt(item.order_id)"> 确认收货 </tigButton>
                         </view>
                     </view>
                 </view>
@@ -251,7 +249,7 @@ const handleConfirmReceipt = (id: number) => {
                     const result = await confirmReceipt({ id });
                     uni.redirectTo({
                         url: "/pages/user/order/list?type=await_comment"
-                    })
+                    });
                 } catch (error: any) {
                     uni.showToast({
                         title: error.message,
@@ -460,20 +458,6 @@ onReachBottom(() => {
 
             .item-btn-box {
                 display: flex;
-                .base-item-btn {
-                    padding: 10rpx 25rpx;
-                    border: 1px solid #ddd;
-                    border-radius: 30rpx;
-                    margin-left: 10rpx;
-                    &.detail {
-                        border: 1px solid $tig-color-primary;
-                        color: $tig-color-primary;
-                    }
-
-                    &:active {
-                        opacity: 0.6;
-                    }
-                }
             }
         }
     }

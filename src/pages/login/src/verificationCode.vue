@@ -1,6 +1,7 @@
 <template>
     <view>
-        <button @click="handBtn" class="btn-verify">{{ btnText }}</button>
+        <tigButton @click="handBtn" :plain="true" :disabled="countdown < 61"  class="btn-verify"> {{ btnText }} </tigButton>
+        <!-- <button @click="handBtn" class="btn-verify">{{ btnText }}</button> -->
         <Verify ref="verify" mode="pop" captchaType="blockPuzzle" :imgSize="{ width: '310px', height: '155px' }" @okCallback="okCallback"></Verify>
     </view>
 </template>
@@ -17,7 +18,6 @@ const props = defineProps({
 });
 const emit = defineEmits(["mobileErrorCallback", "update:isChecked", "update:verifyTokenData"]);
 const { mobile } = toRefs(props);
-// const btnText = ref("获取验证码");
 const btnText = computed(() => {
     if (countdown.value === 61) {
         return "获取验证码";
@@ -95,12 +95,12 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 :deep(.btn-verify) {
-    font-size: 24rpx;
     border-radius: 30rpx;
     background-color: #fff;
     color: #333;
     border: 1rpx solid #333;
     min-width: 200rpx;
     padding: 0 5rpx;
+    line-height: 70rpx;
 }
 </style>

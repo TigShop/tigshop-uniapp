@@ -49,6 +49,7 @@
 
 <script setup lang="ts">
 import navbar from "@/components/navbar/index.vue";
+import tigButton from '@/components/tigButton/index.vue'
 import { reactive, ref } from "vue";
 import { aftersalesRecord } from "@/api/user/afterSale";
 import type { AfterSaleListFilterResult } from "@/types/user/afterSale";
