@@ -23,7 +23,7 @@
                     <view class="flex comment-cell">
                         <view class="lable-text">商品评分：</view>
                         <view class="flex">
-                            <uni-rate :readonly="item.isCommentInfo" :value="item.comment_rank" color="#bbb" active-color="red" size="18" @change="onChange(index, $event)" />
+                            <uni-rate :readonly="item.isCommentInfo" :value="item.comment_rank" color="#bfbfbf" active-color="#ffa800" size="18" @change="onChange(index, $event)" />
                             <text style="margin-left: 10rpx;">{{ item.comment_rank }}分</text>
                         </view>
                     </view>
