@@ -36,7 +36,7 @@
 			"style": {}
 		},
         {
-            "path": "pages/user/account/index",
+            "path": "pages/user/account/detail",
             "style": {}
         },
 		{
@@ -124,6 +124,12 @@
         },
         {
             "path":"pages/user/afterSale/shipments"
+        },
+        {
+            "path":"pages/user/comment/list"
+        },
+        {
+            "path":"pages/user/comment/info"
         }
 
 	],

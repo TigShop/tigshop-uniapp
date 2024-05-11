@@ -7,7 +7,7 @@
         <view class="total-card-item">
             <view class="total-card-item-left"
                 >配送费用
-                <uni-icons class="total-card-ico" color="#999" type="info" size="20" @click="handleDispatching"></uni-icons>
+                <!-- <uni-icons class="total-card-ico" color="#999" type="info" size="20" @click="handleDispatching"></uni-icons> -->
             </view>
             <view class="total-card-item-right red">+ <FormatPrice :priceData="total.shipping_fee"></FormatPrice></view>
         </view>
@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import type { CartList } from "@/types/order/check";
+import type { PropType } from 'vue'
 import { ref } from "vue";
 const props = defineProps({
     total: {
@@ -46,7 +46,7 @@ const props = defineProps({
         default: () => ({ product_amount: 0, shipping_fee: 0, balance: 0, points_amount: 0, coupon_amount: 0 })
     },
     cartList: {
-        type: Array,
+        type: Array as PropType<any[]>,
         default: () => []
     }
 });

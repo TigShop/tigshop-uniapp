@@ -230,6 +230,6 @@ uni-toast {
 .loading-box {
     display: flex;
     justify-content: center;
-    padding-bottom: 30rpx;
+    padding: 30rpx 0;
 }
 </style>

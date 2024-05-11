@@ -1,19 +1,28 @@
 <template>
     <view>
         <navbar :parameter="parameter"></navbar>
-        <view class="message-main" v-if="messageList.length > 0">
-            <view class="sign-btn">
-                <view class="btn marked-read" @click="addMessageAllReadFn">全部标记为已读</view>
-                <view class="btn see-unread" @click="unreadReadFn">只看未读</view>
+        <view class="message-main">
+            <view class="head-tabs-box" :style="'top:' + navH + 'rpx'">
+                <view class="tabs flex align-center justify-between">
+                    <view class="flex align-end">
+                        <view class="tab" :class="{'active': filterParams.unread === 0}" @click="readReadFn(0)">全部消息</view>
+                        <view class="tab" :class="{'active': filterParams.unread === 1}" @click="readReadFn(1)">只看未读</view>
+                    </view>
+                    <view class="clear-unread flex align-end" @click="addMessageAllReadFn">
+                        <text>一键已读</text>
+                        <uni-icons type="auth" size="20" color="#999"></uni-icons>
+                    </view>
+                </view>
             </view>
-            <view class="messages-list">
+            <view class="messages-list" v-if="messageList.length > 0">
                 <uni-swipe-action>
                     <block v-for="(item, index) in messageList" :key="index">
                         <view class="move-item">
                             <uni-swipe-action-item :threshold="0" autoClose>
-                                <view class="mitem" :class="{unread : item.is_read === 0}" @click="__addMessageRead(item)">
+                                <view class="mitem" @click="__addMessageRead(item)">
                                     <view class="message">
                                         <view class="title">
+                                            <text class="dot" v-if="item.is_read === 0"></text>
                                             <text>{{ item.title }}</text>
                                         </view>
                                         <view class="txt">{{ item.content }}</view>
@@ -30,14 +39,14 @@
                     </block>
                 </uni-swipe-action>
             </view>
-        </view>
-        <view class="empty-box" v-else>
-            <view class="pictrue"><image src="/static/images/common/data_empty.png"></image></view>
-            <view class="txt">暂无站内消息！</view>
-        </view>
-        <view class="loading-box" v-if="filterParams.page > 1">
-            <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
-            <view v-else>没有更多了~</view>
+            <view class="empty-box" v-if="messageList.length === 0 && loadend === true">
+                <view class="pictrue"><image src="/static/images/common/data_empty.png"></image></view>
+                <view class="txt">暂无站内消息！</view>
+            </view>
+            <view class="loading-box" v-if="filterParams.page > 1">
+                <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
+                <view v-else>没有更多了~</view>
+            </view>
         </view>
     </view>
 </template>
@@ -48,6 +57,9 @@ import { ref, reactive } from "vue";
 import { onLoad, onReachBottom } from "@dcloudio/uni-app";
 import { getMessageList, addMessageRead, addMessageAllRead, delMessage } from "@/api/user/messageLog";
 import type { UserMsgFilterParams, UserMsgFilterState } from "@/types/user/messageLog";
+import { useConfigStore } from "@/store/config";
+const configStore = useConfigStore();
+const navH = configStore.navHeight;
 const parameter = {
     navbar: "1",
     return: "1",
@@ -61,19 +73,29 @@ const filterParams = reactive<UserMsgFilterParams>({   //初使化用于查询�
 });
 const total = ref(0);
 const loaded = ref(false);
+const loadend = ref(false);
 const messageList = ref<UserMsgFilterState[]>([]);
 const __geMessageList = async () => {
     if (filterParams.page > 1) {
         loaded.value = true;
     }
+    uni.showLoading({
+        title: "请求加载中..."
+    });
     try {
         const result = await getMessageList({ ...filterParams });
         total.value = result.total;
         messageList.value = [...messageList.value, ...result.filter_result];
     } catch (error: any) {
-        console.error(error);
+        uni.showToast({
+            title: error.message,
+            icon: "none",
+            duration: 1000
+        });
     } finally {
         loaded.value = false;
+        loadend.value = true;
+        uni.hideLoading();
     }
 };
 
@@ -117,7 +139,11 @@ const __addMessageRead = async (data: UserMsgFilterState) => {
             url: data.link
         })
     } catch (error: any) {
-        console.error(error);
+        uni.showToast({
+            title: error.message,
+            icon: "none",
+            duration: 1000
+        });
     }
 };
 
@@ -127,20 +153,28 @@ const addMessageAllReadFn = async () => {
         filterParams.unread = 0;
         filterParams.page = 1;
         messageList.value = [];
-        await __geMessageList()
+        await __geMessageList();
     } catch (error: any) {
-        console.error(error);
+        uni.showToast({
+            title: error.message,
+            icon: "none",
+            duration: 1000
+        });
     }
 };
 
-const unreadReadFn = async () => {
-    filterParams.unread = 1;
+const readReadFn = async (type: number) => {
+    filterParams.unread = type;
     try {
         filterParams.page = 1;
         messageList.value = [];
         await __geMessageList();
     } catch (error: any) {
-        console.error(error);
+        uni.showToast({
+            title: error.message,
+            icon: "none",
+            duration: 1000
+        });
     }
 };
 
@@ -157,38 +191,46 @@ onReachBottom(() => {
 </script>
 
 <style lang="scss" scoped>
-.sign-btn {
-    margin: 20rpx;
-    display: flex;
-    .btn {
-        background-color: #F23030;
-        border: 1rpx solid #F23030;
-        border-radius: 6rpx;
-        color: #fff;
-        display: inline-block;
-        font-size: 26rpx;
-        overflow: hidden;
-        padding: 8rpx 24rpx;
-        margin: 0 4rpx;
-    }
-    .marked-read {
-        color: #333;
-        border: 1rpx solid #ddd;
+.head-tabs-box{
+    position: fixed;
+    width: 100%;
+    z-index: 99;
+    .tabs{
         background-color: #fff;
+        padding: 30rpx;
+        .tab{
+            font-size: 26rpx;
+            margin-right: 40rpx;
+            color: #666;
+        }
+        .active{
+            color: $tig-color-primary;
+            font-weight: bold;
+            font-size: 32rpx;
+        }
+        .clear-unread{
+            font-size: 26rpx;
+            color: #999;
+        }
     }
 }
+
 .messages-list {
     position: relative;
-    .move-item:last-child {
-        margin-bottom: 40rpx;
+    padding: 0 20rpx;
+    margin-top: 120rpx;
+    .move-item {
+        margin-bottom: 10rpx;
     }
     .mitem {
         position: relative;
         border-bottom: 1rpx solid #dfdfdf;
+        border-radius: 10rpx;
         .message {
             position: relative;
-            padding: 40rpx 20rpx;
+            padding: 30rpx 20rpx;
             background-color: #fff;
+            border-radius: 20rpx;
             .title {
                 overflow: hidden;
                 white-space: nowrap;
@@ -198,6 +240,16 @@ onReachBottom(() => {
                 color: #333;
                 font-weight: 700;
                 font-size: 32rpx;
+                display: flex;
+                align-items: center;
+                .dot{
+                    display: inline-block;
+                    width: 10rpx;
+                    height: 10rpx;
+                    border-radius: 100rpx;
+                    background-color: $tig-color-primary;
+                    margin-right: 10rpx;
+                }
             }
             .txt {
                 color: #999;

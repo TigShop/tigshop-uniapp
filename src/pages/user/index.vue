@@ -42,10 +42,7 @@
                             </view>
                         </view>
                         <view class="item" @click="goPages('/pages/user/historyProduct/index')">
-                            <view class="tit"
-                                >浏览记录
-                                <!-- <text class='txt'>{{history_count >= 0 ? history_count : '--'}}</text> -->
-                            </view>
+                            <view class="tit">浏览记录 </view>
                         </view>
                     </view>
 
@@ -91,14 +88,14 @@
                     <view class="list-group my-wallet">
                         <view class="title acea-row row-between-wrapper">
                             <view class="">我的钱包</view>
-                            <view class="more" @click="goPages('/pages/user/account/index')">
+                            <view class="more" @click="goPages('/pages/user/account/detail')">
                                 <view>进入钱包</view>
                                 <view class="iconfont icon-xiangyou"></view>
                             </view>
                         </view>
                         <view class="wrap">
                             <view class="li" @click="goPages('/pages/user_account_detail/index')">
-                                <text class="num">{{ member.total_balance >= 0 ? member.total_balance : 0 }}</text>
+                                <text class="num">{{ Number(member.total_balance) >= 0 ? member.total_balance : 0 }}</text>
                                 <view class="txt">余额</view>
                             </view>
                             <view class="li" @click="goPages('/pages/coupon/index')">
@@ -111,13 +108,13 @@
                             </view>
                         </view>
                     </view>
-                    <block v-if="wap_user_center_ads.ad_list" v-for="(ads, index) in wap_user_center_ads.ad_list" :key="index">
+                    <!-- <block v-if="wap_user_center_ads.ad_list" v-for="(ads, index) in wap_user_center_ads.ad_list" :key="index">
                         <view style="margin-top: 10px">
                             <view class="item" @click="goPages(ads.ad_link)">
                                 <image lazy-load :src="ads.pic_url" mode="widthFix" style="width: 100%; display: block"></image>
                             </view>
                         </view>
-                    </block>
+                    </block> -->
                     <view class="list-group my-service">
                         <view class="title acea-row row-middle">我的服务</view>
                         <view class="serviceList acea-row row-middle">
@@ -205,7 +202,7 @@ const parameter = ref({
     color: false,
     class: "user"
 });
-const member = ref<UserItem>();
+const member = ref<UserItem>({} as UserItem);
 const count = ref({
     collect_count: 0,
     collect_store_count: 0,
@@ -215,7 +212,7 @@ const count = ref({
     return_count: 0,
     bonus: 0
 });
-const wap_user_center_ads = ref({});
+// const wap_user_center_ads = ref({});
 
 const scrollTop = ref(0);
 onPageScroll((e) => {
@@ -267,12 +264,16 @@ const __getGuessLike = async () => {
 onShow(() => {
     const res = hasToken();
     if (res) return res();
-    __getUser();
-    page.value = 1;
-    guessLike.value = [];
-    __getGuessLike();
-    uni.hideTabBar();
-    __getOrderNum();
+
+    // 不加延迟会报错
+    setTimeout(() => {
+        __getUser();
+        page.value = 1;
+        guessLike.value = [];
+        __getGuessLike();
+        uni.hideTabBar();
+        __getOrderNum();
+    }, 100);
 });
 
 onReachBottom(() => {

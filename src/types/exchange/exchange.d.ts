@@ -2,9 +2,6 @@
 export interface ExchangeFilterParams {
     page: number;
     size?: number;
-    sort_field: string;
-    sort_order: string;
-    is_enabled?: number;
 }
 
 // 获取列表返回参数类型
