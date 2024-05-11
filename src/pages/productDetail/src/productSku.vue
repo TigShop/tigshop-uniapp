@@ -137,7 +137,7 @@ const attrList = ref(props.modelValue.spe || []);
 const skuList = ref(props.skuList || []);
 const checkedValue = ref(props.checkedValue || []);
 const skuId = ref<number>(0);
-const skuProductImage = ref<string>(props.picList[0].pic_url || "");
+const skuProductImage = ref<string>(props.productInfo.pic_url || "");
 const updateSelectedValue = async () => {
     if (attrList.value.length > 0) {
         if (checkedValue.value.length == 0) {
