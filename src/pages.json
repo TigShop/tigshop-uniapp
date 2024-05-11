@@ -130,6 +130,18 @@
         },
         {
             "path":"pages/user/comment/info"
+        },
+        {
+            "path":"pages/user/security/phone"
+        },
+        {
+            "path":"pages/user/security/newPhone"
+        },
+        {
+            "path":"pages/user/security/password"
+        },
+        {
+            "path":"pages/user/point/detail"
         }
 
 	],

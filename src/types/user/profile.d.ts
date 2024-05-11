@@ -11,6 +11,7 @@ export interface ProfileFormState {
     nickname?: string;
     email?: string;
     mobile?: string;
+    showMobile?: string;
 }
 
 
