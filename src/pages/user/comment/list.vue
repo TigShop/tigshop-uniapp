@@ -441,7 +441,7 @@ onReachBottom(() => {
                     color: $tig-color-error;
                 }
                 .product-tag{
-                    background-color: #eee;
+                    background-color: #f5f5f5;
                     border-radius: 5rpx;
                     padding: 5rpx 10rpx;
                     margin: 0 0 5rpx 5rpx;
