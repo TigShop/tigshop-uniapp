@@ -19,7 +19,7 @@ export const getMyCouponList = (params: CouponFilterParams) => {
 //领取优惠券
 export const addCoupon = (data: object) => {
     return request({
-        url: "user/user_coupon/claim",
+        url: "user/coupon/claim",
         method: "post",
         data
     });
