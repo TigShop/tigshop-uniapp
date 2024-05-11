@@ -25,14 +25,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from "vue";
+import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 import { getDepositList } from "@/api/user/account";
 import type { DepositFilterState } from "@/types/user/account";
 
 const filterState = ref<DepositFilterState[]>([]);
-const total = ref<number>(0);
-
 const __getDepositList = async () => {
     uni.showLoading({
         title: "加载中"
@@ -40,8 +38,6 @@ const __getDepositList = async () => {
     try {
         const result = await getDepositList();
         filterState.value = result.filter_result;
-        console.log(filterState.value);
-        
         //自定义金额
         let temp: any = {
             recharge_id: 0
@@ -50,7 +46,6 @@ const __getDepositList = async () => {
         filterState.value.forEach((item: any) => {
             item.selected = false;
         });
-        total.value = result.total;
     } catch (error: any) {
         console.log(error.message);
     } finally {
@@ -133,7 +128,7 @@ onLoad(() => {
                 background: #fff;
             }
             &:last-child .recharge-amount {
-                border-bottom: 1rpx solid #f2f3f5;
+                border-bottom: 1rpx solid #fef7ec;
                 margin: 0 20rpx 10rpx 20rpx;
             }
             .recharge-amount {
