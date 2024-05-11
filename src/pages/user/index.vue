@@ -35,7 +35,7 @@
                                 <text class="txt">{{ count.collect_store_count >= 0 ? count.collect_store_count : "--" }}</text>
                             </view>
                         </view> -->
-                        <view class="item" @click="goPages('/pages/user_order_comment/index?com_status=1')">
+                        <view class="item" @click="goPages('/pages/user/comment/list')">
                             <view class="tit">
                                 待评价
                                 <text class="txt">{{ orderNum.await_comment >= 0 ? orderNum.await_comment : "--" }}</text>

@@ -1,7 +1,7 @@
 // 列表查询时筛选参数类型
 export interface CommentFilterParams {
     page: number;
-    size?: number;
+    size: number;
 }
 
 // 获取列表返回参数类型
@@ -27,7 +27,7 @@ export interface CommentFilterState {
     product_name?:string;
     content?:string;
     reply?: ReplyObject;
-    show_pics?: any[];
+    show_pics: any[];
 }
 export interface ReplyObject {
 	comment_id: number;

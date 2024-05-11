@@ -236,7 +236,11 @@ const handleOrederDetail = (id: number) => {
         url: `/pages/user/order/info?id=${id}`
     });
 };
-const handleEvaluate = (id: number) => {};
+const handleEvaluate = (id: number) => {
+    uni.navigateTo({
+        url: `/pages/user/comment/info?id=${id}`
+    });
+};
 const handleConfirmReceipt = (id: number) => {
     uni.showModal({
         title: "提示",
