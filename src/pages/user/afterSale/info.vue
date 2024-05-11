@@ -90,8 +90,8 @@
             <saveBottomBox height="90" backgroundColor="#fff">
                 <view class="after-sale-btn">
                     <view class="after-sale-btn-box">
-                        <view class="btn" @click="handleRevocation"> 撤销申请 </view>
-                        <view class="btn special" @click="handleEdit"> 修改申请 </view>
+                        <tigButton :plain="true"  @click="handleRevocation"> 撤销申请 </tigButton >
+                        <tigButton  :plain="true" :plainMainColor="true"  @click="handleEdit"> 修改申请 </tigButton >
                     </view>
                 </view>
             </saveBottomBox>

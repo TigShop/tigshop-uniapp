@@ -66,13 +66,12 @@
                                 ></view>
                             </view>
                         </block>
-                        <button :loading="loginLoading" @click="mobileLogin" class="btn2-css3 submit_btn" :disabled="isloginDisabled">确 认</button>
+                        <tigButton  class="btn2-css3" :loading="loginLoading" @click="mobileLogin" :disabled="isloginDisabled"> 确 认 </tigButton>
                         <view class="rule-text">
-                            <tigCheckbox v-model:checked="is_checked" :checkedSize="0.6" checked-color="#ee0a24"></tigCheckbox>
+                            <tigCheckbox  v-model:checked="is_checked" :checkedSize="0.8" checked-color="#ee0a24"></tigCheckbox>
                             <view class="rule-xieyi">
                                 <text>登录即为同意</text>
                                 <text class="red" @chick="showAgreement">《商城用户服务协议》</text>
-                                <text class="red" @chick="showAgreement">《商城用户隐私协议》</text>
                             </view>
                         </view>
                         <view class="register"> 没有账号？<navigator url="/pages/register/index" class="red">立即注册</navigator> </view>
@@ -462,11 +461,12 @@ page {
 }
 
 .rule-text {
-    font-size: 23rpx;
+    font-size: 26rpx;
     color: #999;
     margin-top: 30rpx;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 .rule-xieyi {
     display: flex;

@@ -1,131 +1,78 @@
 <template>
-    <view>
-        
-        <uni-file-picker
-            :auto-upload="false"
-            v-model="fileLists"
-            @select="handlePicSelect"
-            @delete="handlePicDelete"
-            :limit="limit"
-            :title="title"
-        >
-            <slot></slot>
-        </uni-file-picker>
+    <view @click="handleChoose">
+        <slot></slot>
     </view>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
-import type { PropType } from "vue";
+import { ref } from "vue";
 import indexConfig from "@/config/index.config";
-import { imageFormat } from "@/utils/format";
-interface FileLists {
-    name: string;
-    extname: string;
-    url: string;
-}
 const props = defineProps({
-    limit: {
+    count: {
         type: Number,
         default: 1
     },
-    title: {
+    modelValue: {
         type: String,
-        default: "图片上传"
+        default: ""
     },
-    fileLists: {
-        type: Array as PropType<FileLists[]>,
-        default: () => []
+    requestUrl: {
+        type: String,
+        default: "user/upload_img"
     }
 });
-const fileLists = ref<FileLists[]>(props.fileLists);
-const emit = defineEmits(["change"]);
-const handlePicSelect = (e: any) => {
-    // 兼容多端
-    if (e.tempFilePaths.length === 1) {
-        uploadFile(e.tempFilePaths[0]);
-    } else {
-        e.tempFilePaths.forEach((item: string) => {
-            uploadFile(item);
-        });
-    }
-};
+const files = ref<string[]>([])
+const emit = defineEmits(["update:modelValue", "change"]);
 
-const uploadFile = (filePath: any) => {
-    let name, extname, url;
-    uni.uploadFile({
-        url: indexConfig.baseUrl + indexConfig.requestUrlPrefix + "user/upload_img", //仅为示例，非真实的接口地址
-        filePath,
-        header: {
-            Authorization: uni.getStorageSync("token")
-        },
-        success: (uploadFileRes: any) => {
-            uni.hideLoading();
-            const { data } = JSON.parse(uploadFileRes.data);
-            name = data.pic_name;
-            extname = data.pic_url.split(".")[1];
-            url = imageFormat(data.pic_thumb);
-            fileLists.value.push({
-                name,
-                extname,
-                url
+const handleChoose = () => {
+    uni.chooseImage({
+        count: props.count,
+        success: async (res: any) => {
+            uni.showLoading({
+                title: "上传中..."
             });
-            console.log("fileLists", fileLists.value);
-            // uni.showToast({
-            //     title: "图片上传成功"
-            // });
+            console.log(res.tempFilePaths)
+            res.tempFilePaths.map((file: string) => {
+                uni.uploadFile({
+                    url: indexConfig.baseUrl + indexConfig.requestUrlPrefix + props.requestUrl, //仅为示例，非真实的接口地址
+                    filePath: file,
+                    header: {
+                        Authorization: uni.getStorageSync("token")
+                    },
+                    success: (uploadFileRes) => {
+                        if(props.count > 1){
+                            console.log(uploadFileRes.data)
+                            files.value.push(JSON.parse(uploadFileRes.data).data)
+                            console.log(files.value)
+                            emit("update:modelValue", files.value)
+                            uni.hideLoading();
+                        }else{
+                            uni.showToast({
+                                title: "图片上传成功",
+                            });
+                            emit("change");
+                            uni.hideLoading();
+                        }
+                    },
+                    fail: (error) => {
+                        uni.hideLoading();
+                        uni.showToast({
+                            title: "图片上传失败",
+                            icon: "none"
+                        });
+                    }
+                });
+            })
+            
         },
         fail: (error) => {
-            uni.hideLoading();
             uni.showToast({
-                title: "图片上传失败",
+                title: "图片选择失败",
                 icon: "none"
             });
         }
     });
 };
-const handlePicDelete = (e: any) => {
-    fileLists.value.splice(e.index, 1);
-};
-// const handleChoose = () => {
-//     uni.chooseImage({
-//         count: props.count,
-//         success: async (res: any) => {
-//             uni.showLoading({
-//                 title: "上传中..."
-//             });
-//             uni.uploadFile({
-//                 url: indexConfig.baseUrl + indexConfig.requestUrlPrefix + "user/user/modify_avatar", //仅为示例，非真实的接口地址
-//                 filePath: res.tempFilePaths[0],
-//                 header: {
-//                     Authorization: uni.getStorageSync("token")
-//                 },
-//                 success: (uploadFileRes) => {
-//                     uni.hideLoading();
-
-//                     uni.showToast({
-//                         title: "图片上传成功",
-//                     });
-//                     emit("change");
-//                 },
-//                 fail: (error) => {
-//                     uni.hideLoading();
-
-//                     uni.showToast({
-//                         title: "图片上传失败",
-//                         icon: "none"
-//                     });
-//                 }
-//             });
-//         },
-//         fail: (error) => {
-//             uni.showToast({
-//                 title: "图片选择失败",
-//                 icon: "none"
-//             });
-//         }
-//     });
-// };
 </script>
 
 <style lang="scss" scoped></style>
