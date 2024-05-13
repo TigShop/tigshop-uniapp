@@ -138,6 +138,9 @@
             "path":"pages/user/invoiceManagement/applyInvoice"
         },
         {
+            "path":"pages/user/invoiceManagement/invoiceInfo"
+        },
+        {
             "path":"pages/user/security/phone"
         },
         {

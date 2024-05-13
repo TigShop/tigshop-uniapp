@@ -40,7 +40,7 @@
                     <view class="invoice-list-item-btn">
                         <view class="item-btn-box">
                             <block v-if="item.invoice_data">
-                                <tigButton :plain="true" :plainMainColor="true"> 查看 </tigButton>
+                                <tigButton :plain="true" :plainMainColor="true" @click="handleShowInfo(item.invoice_data, item.order_sn)"> 查看 </tigButton>
                             </block>
                             <tigButton v-else :plain="true" :plainMainColor="true" @click="handleApply"> 申请 </tigButton>
                         </view>
@@ -58,7 +58,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from "vue";
 import { getOrderList } from "@/api/user/order";
-import type { OrderListFilterResult } from "@/types/user/order";
+import type { OrderListFilterResult, OrderListInvoiceData } from "@/types/user/order";
 
 const invoiceList = ref<OrderListFilterResult[]>([]);
 
@@ -104,7 +104,15 @@ const handleApply = () => {
     uni.navigateTo({
         url: "/pages/user/invoiceManagement/applyInvoice"
     });
-}
+};
+
+const handleShowInfo = (data: OrderListInvoiceData, order_sn: string) => {
+    data.order_sn = order_sn;
+    const invoice_data = encodeURIComponent(JSON.stringify(data));
+    uni.navigateTo({
+        url: "/pages/user/invoiceManagement/invoiceInfo?invoice_data=" + invoice_data
+    });
+};
 
 onMounted(() => {
     __getOrderList();

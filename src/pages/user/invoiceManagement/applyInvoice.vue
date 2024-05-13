@@ -27,7 +27,9 @@
                                         style="margin-right: 20rpx; transform: scale(0.9)"
                                         >个人</radio
                                     >
-                                    <radio value="2" activeBackgroundColor="#ee0a24" style="transform: scale(0.9)">企业</radio>
+                                    <radio value="2" :checked="formState.title_type == 2" activeBackgroundColor="#ee0a24" style="transform: scale(0.9)"
+                                        >企业</radio
+                                    >
                                 </radio-group>
                             </view>
                         </uni-forms-item>
@@ -99,23 +101,35 @@
                         </uni-forms-item>
                     </block>
                     <block v-else-if="formState.invoice_type === 2 && invoiceStatus">
-                        <uni-forms-item label="单位名称" name="company_name">
-                            <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_name" />
+                        <uni-forms-item label="单位名称">
+                            <view class="disabled-text">
+                                {{ formState.company_name }}
+                            </view>
                         </uni-forms-item>
-                        <uni-forms-item label="纳税人识别码" name="company_code">
-                            <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_code" />
+                        <uni-forms-item label="纳税人识别码">
+                            <view class="disabled-text">
+                                {{ formState.company_code }}
+                            </view>
                         </uni-forms-item>
-                        <uni-forms-item label="注册地址" name="company_address">
-                            <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_address" />
+                        <uni-forms-item label="注册地址">
+                            <view class="disabled-text">
+                                {{ formState.company_address }}
+                            </view>
                         </uni-forms-item>
-                        <uni-forms-item label="注册电话" name="company_phone">
-                            <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_phone" />
+                        <uni-forms-item label="注册电话">
+                            <view class="disabled-text">
+                                {{ formState.company_phone }}
+                            </view>
                         </uni-forms-item>
-                        <uni-forms-item label="开户银行" name="company_bank">
-                            <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_bank" />
+                        <uni-forms-item label="开户银行">
+                            <view class="disabled-text">
+                                {{ formState.company_bank }}
+                            </view>
                         </uni-forms-item>
-                        <uni-forms-item label="开户银行" name="company_account">
-                            <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_account" />
+                        <uni-forms-item label="银行账户">
+                            <view class="disabled-text">
+                                {{ formState.company_account }}
+                            </view>
                         </uni-forms-item>
                         <uni-forms-item label="收票人手机" name="mobile">
                             <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" v-model="formState.mobile" placeholder="请输入收票人手机" />
@@ -143,16 +157,16 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import { getInvoiceStatus, getCheckInvoice } from "@/api/order/invoice";
-import { orderInvoiceInsert } from "@/api/user/invoiceManagemen";
+import { orderInvoiceInsert, orderInvoiceUpdate } from "@/api/user/invoiceManagemen";
 import saveBottomBox from "@/components/saveBottomBox/index.vue";
 import navbar from "@/components/navbar/index.vue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 
-const parameter = {
+const parameter = reactive({
     navbar: "1",
     return: "1",
     title: "发票申请"
-};
+});
 
 const formState = reactive({
     title_type: 1, // 抬头类型
@@ -187,6 +201,7 @@ const rules = {
         rules: [{ required: true, errorMessage: "手机不能为空!" }]
     }
 };
+const order_id = ref(0);
 
 const clearFormState = () => {
     formState.company_name = "";
@@ -200,6 +215,8 @@ const clearFormState = () => {
 };
 const radioChange = (evt: any) => {
     formState.title_type = evt.detail.value;
+    console.log(formState.title_type);
+    return;
     clearFormState();
     __getCheckInvoice();
 };
@@ -225,6 +242,7 @@ const __getCheckInvoice = async () => {
             invoice_type: formState.invoice_type,
             title_type: formState.title_type
         });
+
         if (result.item) {
             if (formState.invoice_type === 1 && formState.title_type === 1) {
                 formState.company_name = result.item.company_name;
@@ -238,7 +256,6 @@ const __getCheckInvoice = async () => {
                 formState.company_bank = result.item.company_bank;
                 formState.company_account = result.item.company_account;
             }
-
             formState.mobile = result.item.mobile;
             formState.email = result.item.email;
         }
@@ -260,25 +277,59 @@ const handleInvoiceType = (type: number) => {
 
 const formRef = ref();
 
-const __orderInvoiceInsert = () => {
+const __orderInvoiceInsert = async () => {
     try {
-        const result = orderInvoiceInsert(formState);
-        
+        const data = {
+            ...formState,
+            id: order_id.value
+        };
+        const result = await orderInvoiceInsert(formState);
+        uni.redirectTo({
+            url: "/pages/user/invoiceManagement/index?type=list"
+        });
     } catch (error) {
         console.error(error);
     } finally {
     }
 };
+const __orderInvoiceUpdate = async () => {
+    try {
+        const data = {
+            ...formState,
+            id: order_id.value
+        };
+        const result = await orderInvoiceUpdate(data);
+        uni.redirectTo({
+            url: "/pages/user/invoiceManagement/index?type=list"
+        });
+    } catch (error) {
+        console.error(error);
+    } finally {
+    }
+};
+const submitStatus = ref("insert");
 const onSubmit = () => {
     formRef.value
         .validate()
         .then((res: any) => {
-            __orderInvoiceInsert();
+            if (submitStatus.value === "insert") {
+                __orderInvoiceInsert();
+            } else {
+                __orderInvoiceUpdate();
+            }
         })
         .catch((err: any) => {
             console.log("表单错误信息：", err);
         });
 };
+
+onLoad((options) => {
+    if (options && options.type) {
+        // parameter.title = options.type === 'insert'? '发票申请' :'发票修改'
+        submitStatus.value = options.type;
+        order_id.value = options.order_id;
+    }
+});
 
 onShow(() => {
     __getInvoiceStatus();
@@ -286,7 +337,7 @@ onShow(() => {
 });
 
 const handleApply = () => {
-    uni.navigateTo({
+    uni.redirectTo({
         url: "/pages/user/invoiceManagement/index?type=invoice"
     });
 };
@@ -357,6 +408,16 @@ const handleApply = () => {
             }
         }
     }
+}
+
+.disabled-text {
+    height: 100%;
+    line-height: 68rpx;
+    font-size: 24rpx;
+    width: 450rpx;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 :deep(.uni-forms-item) {
