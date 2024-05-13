@@ -102,7 +102,7 @@
                                 <text class="num">{{ member.coupon >= 0 ? member.coupon : 0 }}</text>
                                 <view class="txt">优惠券</view>
                             </view>
-                            <view class="li" @click="goPages('/pages/user_point_detail/index')">
+                            <view class="li" @click="goPages('/pages/user/point/detail')">
                                 <text class="num">{{ member.points >= 0 ? member.points : 0 }}</text>
                                 <view class="txt">积分</view>
                             </view>
