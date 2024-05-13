@@ -53,3 +53,39 @@ export interface DepositFilterState {
     recharge_id?: number;
     selected?: boolean;
 }
+
+
+// 获取详情返回参数类型
+export interface AccountFormState {
+    amount?: string;
+    account_data: AccountData;
+}
+
+export interface AccountData {
+    account_type?: number;
+    account_name?: string;
+    account_no?: string;
+    identity?: string;
+    bank_name?: string;
+}
+
+export interface AccountInfoResult {
+    filter_result: AccountInfo[];
+    filter: object;
+    errcode: number;
+    message: string;
+}
+
+export interface AccountInfo {
+    account_type_name: string;
+    account_id: number;
+    user_id: number;
+    account_type: number;
+    account_name: string;
+    account_no: string;
+    identity: string;
+    bank_name: string;
+}
+export interface AccountFormResult {
+    account_detail: AccountInfo;
+}
