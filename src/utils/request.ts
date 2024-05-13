@@ -44,6 +44,7 @@ export default function request<T extends ResponseData>(config: RequestConfig): 
             },
             fail: (err) => {
                 reject(err);
+                
             }
         });
     });

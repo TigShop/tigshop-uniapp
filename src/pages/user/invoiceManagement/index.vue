@@ -11,16 +11,17 @@
         <view class="placeholder"></view>
         <view class="invoice-content">
             <invoiceList ref="invoiceListRef" v-if="currentType === 'list'"></invoiceList>
-            <!-- <invoice-qualification v-if="currentType === 'invoice'"></invoice-qualification> -->
+            <certification v-if="currentType === 'invoice'"></certification>
         </view>
     </view>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive } from "vue";
-import { onReachBottom } from "@dcloudio/uni-app";
+import { onLoad, onReachBottom } from "@dcloudio/uni-app";
 import navbar from "@/components/navbar/index.vue";
 import invoiceList from "./src/invoiceList.vue";
+import certification from "./src/certification.vue";
 
 const menuTypeList = reactive([
     { type: "list", value: "已完成订单" },
@@ -38,6 +39,12 @@ const parameter = {
     return: "1",
     title: "发票管理"
 };
+
+onLoad((options) => {
+    if(options && options.type) {
+        currentType.value = options.type;
+    }
+})
 
 onReachBottom(() => {
     if (currentType.value === "list") {
