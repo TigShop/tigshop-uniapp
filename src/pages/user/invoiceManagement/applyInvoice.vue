@@ -6,7 +6,7 @@
                 <view class="invoice-explain">
                     我公司依法开具发票，请您按照税法规定使用发票。根据现行税收政策，部分公司提供数电票,
                     数电（专用发票）法律效力与现有增值税专用发票相同;如商品由第三方卖家销售，发票类型和内容将由该卖家决定，发票由卖家开具并提供。如您为企业采购，需要多单合并开具或批量提交发票可注册企业用户；<text
-                        class="red"
+                        class="main-color"
                         >使用礼品卡支付部分的金额，不支持开发票</text
                     >
                 </view>
@@ -142,11 +142,11 @@
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
-import { getInvoiceStatus } from "@/api/order/invoice";
+import { getInvoiceStatus, getCheckInvoice } from "@/api/order/invoice";
 import { orderInvoiceInsert } from "@/api/user/invoiceManagemen";
 import saveBottomBox from "@/components/saveBottomBox/index.vue";
 import navbar from "@/components/navbar/index.vue";
-import { onLoad } from "@dcloudio/uni-app";
+import { onLoad, onShow } from "@dcloudio/uni-app";
 
 const parameter = {
     navbar: "1",
@@ -201,6 +201,7 @@ const clearFormState = () => {
 const radioChange = (evt: any) => {
     formState.title_type = evt.detail.value;
     clearFormState();
+    __getCheckInvoice();
 };
 
 const invoiceStatus = ref(false);
@@ -218,6 +219,34 @@ const __getInvoiceStatus = async () => {
     }
 };
 
+const __getCheckInvoice = async () => {
+    try {
+        const result = await getCheckInvoice({
+            invoice_type: formState.invoice_type,
+            title_type: formState.title_type
+        });
+        if (result.item) {
+            if (formState.invoice_type === 1 && formState.title_type === 1) {
+                formState.company_name = result.item.company_name;
+                formState.mobile = result.item.mobile;
+                formState.email = result.item.email;
+            } else {
+                formState.company_code = result.item.company_code;
+                formState.company_name = result.item.company_name;
+                formState.company_address = result.item.company_address;
+                formState.company_phone = result.item.company_phone;
+                formState.company_bank = result.item.company_bank;
+                formState.company_account = result.item.company_account;
+            }
+
+            formState.mobile = result.item.mobile;
+            formState.email = result.item.email;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 const handleInvoiceType = (type: number) => {
     formState.invoice_type = type;
     if (type === 2) {
@@ -226,6 +255,7 @@ const handleInvoiceType = (type: number) => {
         formState.title_type = 1;
     }
     clearFormState();
+    __getCheckInvoice();
 };
 
 const formRef = ref();
@@ -233,6 +263,7 @@ const formRef = ref();
 const __orderInvoiceInsert = () => {
     try {
         const result = orderInvoiceInsert(formState);
+        
     } catch (error) {
         console.error(error);
     } finally {
@@ -249,12 +280,15 @@ const onSubmit = () => {
         });
 };
 
-onLoad((options) => {
+onShow(() => {
     __getInvoiceStatus();
+    __getCheckInvoice();
 });
 
 const handleApply = () => {
-    // uni.navigateTo()
+    uni.navigateTo({
+        url: "/pages/user/invoiceManagement/index?type=invoice"
+    });
 };
 </script>
 
@@ -270,6 +304,19 @@ const handleApply = () => {
     display: flex;
     align-items: center;
     height: 100%;
+}
+
+.notPass {
+    padding: 10rpx 0;
+    line-height: 40rpx;
+
+    .notPassBtn {
+        color: $tig-color-primary;
+    }
+}
+
+.main-color {
+    color: $tig-color-primary;
 }
 .invoice-popup-content {
     padding: 30rpx;
