@@ -25,7 +25,7 @@
         </uni-forms>
     </view>
     <view class="button-position">
-        <button class="base-button recharge-btn" hover-class="base-button-hover" @click="onSubmit">确定提现</button>
+        <button class="base-button recharge-btn" hover-class="base-button-hover" @click="onSubmit">提交申请</button>
     </view>
 </template>
 
