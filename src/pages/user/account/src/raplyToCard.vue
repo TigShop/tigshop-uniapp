@@ -10,7 +10,7 @@
             <view class="reply-content">
                 <uni-forms-item label="提现至">
                     <uni-data-select :localdata="dataList" :clear="false" @change="selectNo" ></uni-data-select>
-                    <view class="tips">当前{{ accountPlaceholder }}账号已不用？<span class="font-color" style="cursor: pointer">点击这里</span>去添加新的{{ accountPlaceholder }}账号。</view>
+                    <view class="tips">当前{{ accountPlaceholder }}账号已不用？<span class="font-color">点击这里</span>去添加新的{{ accountPlaceholder }}账号。</view>
                 </uni-forms-item>
                 <uni-forms-item label="提现姓名" name="account_name">
                     <uni-easyinput v-model="formState.account_data.account_name" disabled :placeholder="'请选择'+accountPlaceholder+'账号'" />
@@ -25,7 +25,7 @@
         </uni-forms>
     </view>
     <view class="button-position">
-        <button class="base-button recharge-btn" hover-class="base-button-hover" @click="onSubmit">确认提现</button>
+        <button class="base-button recharge-btn" hover-class="base-button-hover" @click="onSubmit">确定提现</button>
     </view>
 </template>
 
@@ -238,7 +238,7 @@ onLoad(() => {
 
     .reply-content {
         background-color: #fff;
-        border-radius: 15rpx;
+        border-radius: 10rpx;
         padding: 20rpx;
         margin-bottom: 30rpx;
         .tips {
