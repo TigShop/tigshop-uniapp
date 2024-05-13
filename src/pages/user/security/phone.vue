@@ -32,7 +32,6 @@
                 </view>
                 <view class="item">
                     <index :disabled="isRegisterDisabled" class="next" @click="onNext">下一步</index>
-                    <!--                    <index class="next" @click="onNext">下一步</index>-->
                 </view>
             </view>
 
