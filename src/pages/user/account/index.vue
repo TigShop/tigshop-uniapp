@@ -5,7 +5,7 @@
             可用余额
         </view>
         <view class="amount-row">
-            <FormatPrice :priceData="123123" :currencyStyle="{fontSize:'14px',lineHeight:'30px'}"></FormatPrice>
+            <FormatPrice :priceData="formState.balance" :currencyStyle="{fontSize:'14px',lineHeight:'30px'}"></FormatPrice>
         </view>
         <view class="button-row">
             <view class="round-button" :class="{ 'active': activeTab === 'deposit' }" @click="actionClick('deposit')">充值</view>
@@ -32,7 +32,7 @@
     </block>
 
     <block v-if="activeTab === 'raplytocard'">
-
+        <raplyToCard></raplyToCard>
     </block>
 </template>
 
@@ -42,6 +42,7 @@ import navbar from "@/components/navbar/index.vue";
 import detail from "@/pages/user/account/src/detail.vue";
 import log from "@/pages/user/account/src/log.vue";
 import deposit from "@/pages/user/account/src/deposit.vue";
+import raplyToCard from "@/pages/user/account/src/raplyToCard.vue";
 import { onLoad, onReachBottom } from "@dcloudio/uni-app";
 import { getUser } from "@/api/user/user";
 import type { UserItem } from "@/types/user/user";
