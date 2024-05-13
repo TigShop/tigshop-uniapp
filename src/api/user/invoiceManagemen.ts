@@ -9,6 +9,15 @@ export const orderInvoiceInsert = (data: object) => {
     });
 };
 
+// 编辑
+export const orderInvoiceUpdate = (data: object) => {
+    return request({
+        url: "user/order_invoice/update",
+        method: "post",
+        data
+    });
+}
+
 /**    增票资质          */
 export const getUserInvoice = () => {
     return request<any>({

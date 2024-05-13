@@ -122,6 +122,7 @@ export interface OrderListInvoiceData {
     user_id: number;
     status: number;
     order_id: number;
+    order_sn?: string
 }
 
 export interface OrderListItem {
