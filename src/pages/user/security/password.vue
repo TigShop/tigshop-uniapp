@@ -10,7 +10,7 @@
                         <view>收到的短信验证码</view>
                     </view>
                 </view>
-                <uni-forms ref="formRef" :modelValue="formState" :rules="formRules">
+                <uni-forms :label-width="80" ref="formRef" :modelValue="formState" :rules="formRules">
                     <uni-forms-item label="验证码" name="mobileCode" required>
                         <view class="item-one input">
                             <uni-easyinput :inputBorder="false" :value="formState.mobileCode" class="uni-input item-input" focus placeholder="手机短信验证码" primaryColor="rgb(192, 196, 204)" @input="inputMobileCode" />
@@ -28,7 +28,7 @@
                             <uni-easyinput :inputBorder="false" :value="formState.password" class="uni-input item-input" placeholder="请输入新密码" primaryColor="rgb(192, 196, 204)" @input="inputPassword"></uni-easyinput>
                         </view>
                     </uni-forms-item>
-                    <uni-forms-item label="新密码" name="confirm_password" required>
+                    <uni-forms-item label="确认密码" name="confirm_password" required>
                         <view class="  input">
                             <uni-easyinput :inputBorder="false" :value="formState.confirmPassword" class="uni-input item-input" placeholder="请再次输入新密码" primaryColor="rgb(192, 196, 204)" @input="inputConfirmPassword"></uni-easyinput>
                         </view>
@@ -36,7 +36,7 @@
 
                 </uni-forms>
                 <view class="item">
-                    <index class="next" @click="onNext()">提交</index>
+                    <index :disabled="isRegisterDisabled" class="next" @click="onNext()">提交</index>
                 </view>
             </view>
             <view class="profile-edit-content">
@@ -52,7 +52,7 @@
     </view>
 </template>
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
+import { reactive, ref,computed } from "vue";
 import navbar from "@/components/navbar/index.vue";
 import VerificationCode from "@/pages/login/src/verificationCode.vue";
 import Index from "@/components/tigButton/index.vue";
@@ -80,7 +80,9 @@ const formState = ref({
     password: "",
     confirmPassword: ""
 });
-
+const isRegisterDisabled = computed(() => {
+    return !formState.value.mobile || !formState.value.mobileCode||!formState.value.password||!formState.value.confirmPassword|| !verifyToken.value;
+});
 const validatePassword = (rule: any, value: any, callback: any) => {
     if (!value) {
         return callback(new Error("密码不能为空"));
