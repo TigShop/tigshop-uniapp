@@ -10,7 +10,7 @@
             <view class="reply-content">
                 <uni-forms-item label="提现至">
                     <uni-data-select :localdata="dataList" :clear="false" @change="selectNo" ></uni-data-select>
-                    <view class="tips">当前{{ accountPlaceholder }}账号已不用？<span class="font-color">点击这里</span>去添加新的{{ accountPlaceholder }}账号。</view>
+                    <view class="tips">当前{{ accountPlaceholder }}账号已不用？<navigator url="/pages/user/account/cardManagement/index" class="font-color">点击这里</navigator>去添加新的{{ accountPlaceholder }}账号。</view>
                 </uni-forms-item>
                 <uni-forms-item label="提现姓名" name="account_name">
                     <uni-easyinput v-model="formState.account_data.account_name" disabled :placeholder="'请选择'+accountPlaceholder+'账号'" />
@@ -245,6 +245,9 @@ onLoad(() => {
             font-size: 12px;
             color: #a5a5a5;
             margin-top: 10rpx;
+            navigator {
+                display: inline;
+            }
         }
     }
 }
