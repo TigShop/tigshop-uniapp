@@ -15,31 +15,7 @@
                 </view>
             </view>
             <block v-if="paymentList?.length > 1">
-                <view class="pay-list">
-                    <radio-group class="radio-group" @change="paymentChange">
-                        <block v-for="(payment, idx) in paymentList" :key="idx">
-                            <view class="item">
-                                <view class="payment-info">
-                                    <view class="payment-info-text">
-                                        {{ paymentText[payment] }}
-                                    </view>
-
-                                    <image
-                                        v-if="payment !== 'offline'"
-                                        class="payment-info-img"
-                                        :src="'/src/static/images/payment/pay_' + payment + '.png'"
-                                    ></image>
-                                </view>
-                                <radio
-                                    :value="payment"
-                                    activeBackgroundColor="#ee0a24"
-                                    :checked="payment === paymentType"
-                                    style="margin-right: 20rpx; transform: scale(0.9)"
-                                ></radio>
-                            </view>
-                        </block>
-                    </radio-group>
-                </view>
+                <payment v-model="paymentType" :paymentList="paymentList"></payment>
             </block>
 
             <block v-if="paymentType === 'offline'">
@@ -75,9 +51,11 @@
                     <text>{{ order.add_time }}</text>
                 </view>
             </view>
-            <view class="button-position" v-if="!(paymentType === 'offline')">
-                <button :disabled="paymentDisabled" hover-class="base-button-hover" class="base-button" @click="handlePay">立即支付</button>
-            </view>
+            <saveBottomBox height="110" backgroundColor="#fff" v-if="!(paymentType === 'offline')">
+                <view class="btn-box">
+                    <tigButton style="width: 100%; height: 70rpx" :disabled="paymentDisabled" @click="handlePay"> 立即支付</tigButton>
+                </view>
+            </saveBottomBox>
         </view>
         <!-- #ifdef H5 -->
         <div ref="formContainer"></div>
@@ -87,6 +65,8 @@
 
 <script setup lang="ts">
 import navbar from "@/components/navbar/index.vue";
+import payment from "./src/payment.vue";
+import saveBottomBox from "@/components/saveBottomBox/index.vue";
 import { onLoad } from "@dcloudio/uni-app";
 import { onBeforeUnmount, reactive, ref } from "vue";
 import { orderPayInfo, creatPay, checkPayStatus } from "@/api/order/pay";
@@ -99,14 +79,7 @@ const parameter = reactive({
     title: "订单支付",
     returnUrl: "/pages/user/order/list"
 });
-interface PaymentText {
-    [key: string]: string;
-}
-const paymentText: PaymentText = {
-    wechat: "微信支付",
-    alipay: "支付宝支付",
-    offline: "线下支付"
-};
+
 const loading = ref(false);
 const paymentList = ref<string[]>([]);
 const paymentDisabled = ref(false);
@@ -151,10 +124,6 @@ const loadOrderPayInfo = async () => {
     } finally {
         loading.value = false;
     }
-};
-
-const paymentChange = (e: any) => {
-    paymentType.value = e.detail.value;
 };
 
 let intervalId: any = null; // 存储定时器 ID，便于后续清除
@@ -298,6 +267,13 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
+.btn-box {
+    padding: 15rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
 .order-pay-warp {
     padding-bottom: 100rpx;
 }
@@ -309,7 +285,7 @@ onBeforeUnmount(() => {
 }
 .order_infos .order_amount {
     font-size: 46rpx;
-    color: #f23030;
+    color: $tig-color-primary;
     font-weight: bold;
     :deep(.util) {
         font-size: 30rpx;

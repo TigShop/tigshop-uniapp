@@ -104,11 +104,10 @@ onLoad(() => {
 .recharge-box {
     margin: 0 10px;
     margin-top: 20px;
-    border-radius: 9px;
+    border-radius: 10rpx;
     background: #fff;
     .recharge-wrap {
         padding:20rpx;
-        border-radius:18rpx;
         display:flex;
         flex-wrap:wrap;
         align-content:flex-start;
