@@ -104,7 +104,11 @@ const __updateRechargeOrder = async (data: object) => {
             url: `/pages/order/pay?order_id=${result.order_id}&type=recharge`
         })
     } catch (error: any) {
-        console.log(error.message);
+        uni.showToast({
+            title: error.message,
+            icon: "none",
+            duration: 1000
+        });
     }
 }
 
