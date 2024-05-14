@@ -19,22 +19,8 @@
             </block>
 
             <block v-if="paymentType === 'offline'">
-                <view class="offline-warp">
-                    <view class="offline-menu">
-                        <view class="offline-menu-item" :class="{ active: activeName === '银行汇款' }" @click="handleTabsActive('银行汇款')">银行汇款</view>
-                        <view class="offline-menu-item" :class="{ active: activeName === '企业汇款' }" @click="handleTabsActive('企业汇款')">企业汇款</view>
-                    </view>
-                    <block v-if="activeName === '银行汇款'">
-                        <view class="offline-content">
-                            <rich-text :nodes="offline_payment_list?.offline_pay_bank"></rich-text>
-                        </view>
-                    </block>
-                    <block v-if="activeName === '企业汇款'">
-                        <view class="offline-content">
-                            <rich-text :nodes="offline_payment_list?.offline_pay_company"></rich-text>
-                        </view>
-                    </block>
-                </view>
+                <offline :offline_payment_list="offline_payment_list"></offline>
+
             </block>
             <view class="other-info">
                 <view class="tit">其它信息</view>
@@ -67,6 +53,7 @@
 import navbar from "@/components/navbar/index.vue";
 import payment from "./src/payment.vue";
 import saveBottomBox from "@/components/saveBottomBox/index.vue";
+import offline from './src/offline.vue'
 import { onLoad } from "@dcloudio/uni-app";
 import { onBeforeUnmount, reactive, ref } from "vue";
 import { orderPayInfo, creatPay, checkPayStatus } from "@/api/order/pay";
@@ -83,7 +70,7 @@ const parameter = reactive({
 const loading = ref(false);
 const paymentList = ref<string[]>([]);
 const paymentDisabled = ref(false);
-const offline_payment_list = ref<OfflinePaymentList>();
+const offline_payment_list = ref<OfflinePaymentList>({} as OfflinePaymentList);
 const paymentType = ref("wechat");
 const order = ref<Order>();
 const activeName = ref("银行汇款");
