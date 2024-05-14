@@ -1,5 +1,5 @@
 <template>
-    <view class="buy" @click="handleBuy">
+    <view class="buy" @click.stop="handleBuy">
         <slot></slot>
     </view>
 </template>

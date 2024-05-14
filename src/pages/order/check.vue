@@ -28,14 +28,6 @@
                 :getAddressInfo="getAddressInfo"
             ></invoiceInfo>
             <totalCard :total="totalData" :cartList="cartList"></totalCard>
-            <!-- <view class="submit-btn">
-                <view class="submit-btn-price">
-                    <FormatPrice :priceData="totalData?.unpaid_amount"></FormatPrice>
-                </view>
-                <view>
-                    <button :loading="submitLoading" class="submit-btn-content" @click="submit">提交</button>
-                </view>
-            </view> -->
             <saveBottomBox :height="90" backgroundColor="#fff">
                 <view class="submit-btn">
                     <view class="submit-btn-price">

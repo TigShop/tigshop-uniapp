@@ -22,7 +22,7 @@
             </view>
         </view>
         <view class="balance">
-            <view class="balance-title"
+            <view class="balance-title" @click="handleToBalance"
                 >余额
                 <view class="balance-text"
                     >当前账户余额：<text class="red">{{ balance }}</text></view
@@ -269,6 +269,12 @@ const handleBalance = () => {
     isBalance.value = !isBalance.value;
     emit("sendBalanceStatus", isBalance.value);
 };
+
+const handleToBalance = () =>{
+    uni.navigateTo({
+        url: "/pages/user/account/index"
+    });
+}
 </script>
 
 <style lang="scss" scoped>
