@@ -9,7 +9,7 @@
                     </view>
                 </view>
             </view>
-            <view class="card-list">
+            <view class="card-list" v-if="filterState.length > 0">
                 <uni-swipe-action>
                     <block v-for="(item, index) in filterState" :key="index">
                         <view class="move-item">
