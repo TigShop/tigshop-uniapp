@@ -4,11 +4,14 @@
         <view class="card-edit-main">
             <uni-forms ref="formRef" :modelValue="formState" label-width="170rpx">
                 <view class="card-edit-content">
-                   <uni-forms-item label="卡片类型" name="account_type" required>
+                   <uni-forms-item v-if="!id" label="卡片类型" name="account_type" required>
                        <picker :range="accountTypeList" :value="selectedAccountType" mode="selector" @change="acTypeChange">
                            <view class="card-idx">{{ accountTypeList[selectedAccountType] }}</view>
                        </picker>
                    </uni-forms-item>
+                    <uni-forms-item v-else label="卡片类型" name="account_type" required>
+                        <uni-easyinput :inputBorder="false" :placeholder="accountPlaceholder" disabled primaryColor="rgb(192, 196, 204)" />
+                    </uni-forms-item>
                     <uni-forms-item label="真实姓名" name="account_name" required>
                         <uni-easyinput v-model="formState.account_name" :inputBorder="false" placeholder="请输入真实姓名" primaryColor="rgb(192, 196, 204)" />
                     </uni-forms-item>
@@ -96,21 +99,21 @@ const rules = {
     account_name: {
         rules: [{ required: true, errorMessage: "请输入真实姓名" }]
     },
-    // identity: {
-    //     rules: [
-    //         { required: true, errorMessage: "请输入身份证号码" },
-    //         {
-    //             validateFunction: function (rule: any, value: any, data: any, callback: any) {
-    //                 const regex = /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
-    //                 const status = regex.test(value);
-    //                 if (!status) {
-    //                     callback("请输入正确的身份证号码");
-    //                 }
-    //                 return true;
-    //             }
-    //         }
-    //     ]
-    // },
+    identity: {
+        rules: [
+            { required: true, errorMessage: "请输入身份证号码" },
+            {
+                validateFunction: function (rule: any, value: any, data: any, callback: any) {
+                    const regex = /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
+                    const status = regex.test(value);
+                    if (!status) {
+                        callback("请输入正确的身份证号码");
+                    }
+                    return true;
+                }
+            }
+        ]
+    },
     account_no: {
         rules: [
             { required: true, errorMessage: `请输入正确的${accountPlaceholder.value}账号` },
