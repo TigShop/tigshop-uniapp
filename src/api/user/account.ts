@@ -4,7 +4,8 @@ import type {
     AccountDetailFilterResult,
     AccountFilterResult,
     DepositFilterResult,
-    AccountInfoResult
+    AccountInfoResult,
+    AccountNoFilterParams
 } from '@/types/user/account'
 
 // 账户变动记录
@@ -42,7 +43,7 @@ export const updateRechargeOrder = (data: object) => {
 }
 
 // 提现
-export const getAccountNoList = (params?: AccountFilterParams) => {
+export const getAccountNoList = (params?: AccountNoFilterParams) => {
     return request<AccountInfoResult>({
         url: 'user/withdraw_apply/list/',
         method: 'get',
@@ -57,3 +58,11 @@ export const updateWithdrawApply = (data: object) => {
         data
     });
 }
+
+export const delAccount = (params: object) => {
+    return request({
+        url: "user/withdraw_apply/del_account/",
+        method: "post",
+        params
+    });
+};
