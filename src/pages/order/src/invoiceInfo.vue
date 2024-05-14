@@ -15,7 +15,7 @@
                     <view class="invoice-explain">
                         我公司依法开具发票，请您按照税法规定使用发票。根据现行税收政策，部分公司提供数电票,
                         数电（专用发票）法律效力与现有增值税专用发票相同;如商品由第三方卖家销售，发票类型和内容将由该卖家决定，发票由卖家开具并提供。如您为企业采购，需要多单合并开具或批量提交发票可注册企业用户；<text
-                            class="red"
+                            class="special-text"
                             >使用礼品卡支付部分的金额，不支持开发票</text
                         >
                     </view>
@@ -376,7 +376,7 @@ const handleApply = () => {
 
             &.active {
                 color: #fff;
-                background-color: #ff3700;
+                background-color: $tig-color-primary;
             }
         }
 
@@ -385,8 +385,8 @@ const handleApply = () => {
             font-size: 20rpx;
             color: #999;
 
-            .red {
-                color: #ff3700;
+            .special-text {
+                color: $tig-color-primary;
             }
         }
     }
@@ -430,7 +430,7 @@ const handleApply = () => {
 .notPass {
     padding: 20rpx;
     .notPassBtn {
-        color: #ff3700;
+        color: $tig-color-primary;
     }
 }
 </style>

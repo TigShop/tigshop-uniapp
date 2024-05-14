@@ -32,7 +32,7 @@ export const getProductSkuDetail = (id: string, params: object) => {
         params: { id, ...params }
     });
 };
-export const addToCart = (params: { id: string; number: number; sku_id?: number; is_quick?: number }) => {
+export const addToCart = (params: { id: number; number: number; sku_id?: number; is_quick?: number }) => {
     return request({
         url: "product/add_to_cart/",
         method: "post",

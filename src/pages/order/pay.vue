@@ -20,23 +20,25 @@
 
             <block v-if="paymentType === 'offline'">
                 <offline :offline_payment_list="offline_payment_list"></offline>
-
             </block>
-            <view class="other-info">
-                <view class="tit">其它信息</view>
-                <view class="item">
-                    支付方式：
-                    <text>在线支付</text>
+            <block v-if="typeText !== 'recharge'">
+                <view class="other-info">
+                    <view class="tit">其它信息</view>
+                    <view class="item">
+                        支付方式：
+                        <text>在线支付</text>
+                    </view>
+                    <view class="item">
+                        配送方式：
+                        <text>{{ order.shipping_type_name || "专线物流" }}</text>
+                    </view>
+                    <view class="item">
+                        下单时间：
+                        <text>{{ order.add_time }}</text>
+                    </view>
                 </view>
-                <view class="item">
-                    配送方式：
-                    <text>{{ order.shipping_type_name || "专线物流" }}</text>
-                </view>
-                <view class="item">
-                    下单时间：
-                    <text>{{ order.add_time }}</text>
-                </view>
-            </view>
+            </block>
+
             <saveBottomBox height="110" backgroundColor="#fff" v-if="!(paymentType === 'offline')">
                 <view class="btn-box">
                     <tigButton style="width: 100%; height: 70rpx" :disabled="paymentDisabled" @click="handlePay"> 立即支付</tigButton>
@@ -53,7 +55,7 @@
 import navbar from "@/components/navbar/index.vue";
 import payment from "./src/payment.vue";
 import saveBottomBox from "@/components/saveBottomBox/index.vue";
-import offline from './src/offline.vue'
+import offline from "./src/offline.vue";
 import { onLoad } from "@dcloudio/uni-app";
 import { onBeforeUnmount, reactive, ref } from "vue";
 import { orderPayInfo, creatPay, checkPayStatus } from "@/api/order/pay";
@@ -73,20 +75,17 @@ const paymentDisabled = ref(false);
 const offline_payment_list = ref<OfflinePaymentList>({} as OfflinePaymentList);
 const paymentType = ref("wechat");
 const order = ref<Order>();
-const activeName = ref("银行汇款");
 const formContainer = ref<HTMLElement | null>(null);
+const typeText = ref("");
 
 const orderId = ref<number | null>(null);
 onLoad((options) => {
     if (options && options.order_id) {
         orderId.value = options.order_id;
+        typeText.value = options.type;
         loadOrderPayInfo();
     }
 });
-
-const handleTabsActive = (str: string) => {
-    activeName.value = str;
-};
 
 const loadOrderPayInfo = async () => {
     loading.value = true;

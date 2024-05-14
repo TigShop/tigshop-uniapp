@@ -24,10 +24,6 @@
                     <view class="payment-desc-title">在线支付</view>
                     <view class="payment-desc-text"> 支持微信即时到账（绝大数银行借记卡及部分银行信用卡） </view>
                 </view>
-
-                <!-- <view class="button-position">
-                    <button hover-class="base-button-hover" class="base-button" @click="handlecConfirm">确定</button>
-                </view> -->
                 <saveBottomBox height="110" backgroundColor="#fff">
                     <view class="btn-box">
                         <tigButton style="width: 100%;height: 70rpx;"  @click="handlecConfirm"> 提交</tigButton>
@@ -156,7 +152,7 @@ const handlecConfirm = () => {
 
             &.active {
                 color: #fff;
-                background-color: #ff3700;
+                background-color: $tig-color-primary;
             }
 
             &.disabled {
