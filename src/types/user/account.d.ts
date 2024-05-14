@@ -88,6 +88,8 @@ export interface AccountInfo {
 }
 export interface AccountFormResult {
     account_detail: AccountInfo;
+    errcode: number;
+    message: string;
 }
 export interface AccountNoFilterParams {
     page: number;

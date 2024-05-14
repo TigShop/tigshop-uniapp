@@ -5,7 +5,8 @@ import type {
     AccountFilterResult,
     DepositFilterResult,
     AccountInfoResult,
-    AccountNoFilterParams
+    AccountNoFilterParams,
+    AccountFormResult
 } from '@/types/user/account'
 
 // 账户变动记录
@@ -62,6 +63,22 @@ export const updateWithdrawApply = (data: object) => {
 export const delAccount = (params: object) => {
     return request({
         url: "user/withdraw_apply/del_account/",
+        method: "post",
+        params
+    });
+};
+
+export const getAccount = (params?: object) => {
+    return request<AccountFormResult>({
+        url: 'user/withdraw_apply/account_detail/',
+        method: 'get',
+        params,
+    });
+}
+
+export const updateAccount = (params: object,url:string) => {
+    return request({
+        url: "user/withdraw_apply/"+url+"/",
         method: "post",
         params
     });

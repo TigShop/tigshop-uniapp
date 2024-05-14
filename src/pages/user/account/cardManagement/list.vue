@@ -7,6 +7,10 @@
                     <view class="flex align-end">
                         <view class="tab" v-for="(tab, index) in tabs" :key="index" :class="{ 'active': activeTab === tab.account_type }" @click="actionClick(tab.account_type)">{{ tab.title }}</view>
                     </view>
+                    <view class="clear-unread flex align-end" @click="__addAccountNo">
+                        <text>添加账号</text>
+                        <uni-icons type="auth" size="20" color="#999"></uni-icons>
+                    </view>
                 </view>
             </view>
             <view class="card-list" v-if="filterState.length > 0">
@@ -36,7 +40,7 @@
                                 </view>
                                 <template #right>
                                     <view class="card-move-box">
-                                        <view class="btn-edit" @click="__editAccountNo"><text>编辑</text></view>
+                                        <view class="btn-edit" @click="__editAccountNo(item.account_id)"><text>编辑</text></view>
                                         <view class="btn-del" @click="__delAccount(item, index)"><text>删除</text></view>
                                     </view>
                                 </template>
@@ -52,7 +56,7 @@
 <script setup lang="ts">
 import navbar from "@/components/navbar/index.vue";
 import { ref, reactive } from "vue";
-import { onLoad, onReachBottom } from "@dcloudio/uni-app";
+import { onLoad, onShow } from "@dcloudio/uni-app";
 import { delAccount, getAccountNoList } from "@/api/user/account";
 import type { AccountNoFilterParams, AccountInfo } from "@/types/user/account";
 import { useConfigStore } from "@/store/config";
@@ -105,9 +109,15 @@ const __getAccountNoList = async () => {
     }
 };
 
-const __editAccountNo = () => {
+const __editAccountNo = (id: number) => {
     uni.navigateTo({
-        url: "/pages/user/account/cardManagement/edit"
+        url: `/pages/user/account/cardManagement/edit?id=${id}`
+    })
+}
+
+const __addAccountNo = () => {
+    uni.navigateTo({
+        url: `/pages/user/account/cardManagement/edit`
     })
 }
 
@@ -142,11 +152,13 @@ const deleteAcNo = async (data: AccountInfo, index: number) => {
     }
 }
 
-onLoad(() => {
+
+onShow(() => {
     __getAccountNoList();
 });
 
-onReachBottom(() => {
+onLoad(() => {
+    __getAccountNoList();
 });
 </script>
 
