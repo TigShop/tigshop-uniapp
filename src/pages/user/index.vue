@@ -98,7 +98,7 @@
                                 <text class="num">{{ Number(member.total_balance) >= 0 ? member.total_balance : 0 }}</text>
                                 <view class="txt">余额</view>
                             </view>
-                            <view class="li" @click="goPages('/pages/coupon/index')">
+                            <view class="li" @click="goPages('/pages/coupon/index?type=2')">
                                 <text class="num">{{ member.coupon >= 0 ? member.coupon : 0 }}</text>
                                 <view class="txt">优惠券</view>
                             </view>
