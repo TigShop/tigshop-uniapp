@@ -10,7 +10,7 @@
                        </picker>
                    </uni-forms-item>
                     <uni-forms-item v-else label="卡片类型" name="account_type" required>
-                        <uni-easyinput :inputBorder="false" :placeholder="accountPlaceholder" disabled primaryColor="rgb(192, 196, 204)" />
+                        <uni-easyinput :inputBorder="false" :placeholder="accountPlaceholder" disabled />
                     </uni-forms-item>
                     <uni-forms-item label="真实姓名" name="account_name" required>
                         <uni-easyinput v-model="formState.account_name" :inputBorder="false" placeholder="请输入真实姓名" primaryColor="rgb(192, 196, 204)" />
