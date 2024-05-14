@@ -4,21 +4,21 @@
         <view class="card-edit-main">
             <uni-forms ref="formRef" :modelValue="formState" label-width="170rpx">
                 <view class="card-edit-content">
-                   <uni-forms-item label="卡片类型" name="account_type">
+                   <uni-forms-item label="卡片类型" name="account_type" required>
                        <picker :range="accountTypeList" :value="selectedAccountType" mode="selector" @change="acTypeChange">
                            <view class="card-idx">{{ accountTypeList[selectedAccountType] }}</view>
                        </picker>
                    </uni-forms-item>
-                    <uni-forms-item label="真实姓名" name="account_name">
+                    <uni-forms-item label="真实姓名" name="account_name" required>
                         <uni-easyinput v-model="formState.account_name" :inputBorder="false" placeholder="请输入真实姓名" primaryColor="rgb(192, 196, 204)" />
                     </uni-forms-item>
-                    <uni-forms-item label="身份证号" name="identity">
+                    <uni-forms-item label="身份证号" name="identity" required>
                         <uni-easyinput v-model="formState.identity" :inputBorder="false" placeholder="请输入身份证号码" primaryColor="rgb(192, 196, 204)" />
                     </uni-forms-item>
-                    <uni-forms-item :label="`${accountPlaceholder}号`" name="account_no">
+                    <uni-forms-item :label="`${accountPlaceholder}号`" name="account_no" required>
                         <uni-easyinput v-model="formState.account_no" :inputBorder="false" :placeholder="`请输入${accountPlaceholder}账号`" primaryColor="rgb(192, 196, 204)" />
                     </uni-forms-item>
-                    <uni-forms-item label="银行详情" name="bank_name" v-if="formState.account_type === 1">
+                    <uni-forms-item label="银行卡详情" name="bank_name" v-if="formState.account_type === 1">
                         <uni-easyinput v-model="formState.bank_name" :inputBorder="false" placeholder="请选择银行卡账号" primaryColor="rgb(192, 196, 204)" />
                     </uni-forms-item>
                 </view>
@@ -42,15 +42,26 @@ const parameter = {
     title: "添加账号",
     color: false
 };
+
 const id = ref(null);
 const selectedAccountType = ref(0);
-// const accountTypeList = ref(["请选择账号", "银行卡", "支付宝", "微信"]);
 const accountTypeList = ref(["银行卡", "支付宝", "微信"]);
 const acTypeChange = (e: any) => {
     selectedAccountType.value = e.detail.value;
     formState.value.account_type = e.detail.value + 1;
+    resetForm();
+    // __getAccount();
 };
-const formRef = shallowRef();
+const resetForm = () => {  
+    formState.value = {
+        account_name: '',
+        identity: '',
+        account_no: '',
+        account_type: 1,
+        bank_name: '',
+    };
+}
+
 const formState = ref<AccountData>({
     account_type: 1
 });
@@ -74,7 +85,7 @@ const __getAccount = async () => {
     try {
         const result = await getAccount({ account_id: id.value });
         console.log(result);
-        selectedAccountType.value = result.account_detail.account_type;
+        selectedAccountType.value = result.account_detail.account_type -1;
         Object.assign(formState.value, result.account_detail);
     } catch (error: any) {
         console.error(error.message);
@@ -84,20 +95,42 @@ const __getAccount = async () => {
 };
 
 const rules = {
-    // account_type: {
-    //     rules: [{ required: true, errorMessage: "请输入真实姓名" }]
-    // },
     account_name: {
         rules: [{ required: true, errorMessage: "请输入真实姓名" }]
     },
     identity: {
-        rules: [{ required: true, errorMessage: "请输入身份证号" }]
+        rules: [
+            { required: true, errorMessage: "请输入身份证号码" },
+            {
+                validateFunction: function (rule: any, value: any, data: any, callback: any) {
+                    const regex = /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
+                    const status = regex.test(value);
+                    if (!status) {
+                        callback("请输入正确的身份证号码");
+                    }
+                    return true;
+                }
+            }
+        ]
     },
     account_no: {
-        rules: [{ required: true, errorMessage: `${accountPlaceholder.value}账号` }]
+        rules: [
+            { required: true, errorMessage: `请输入正确的${accountPlaceholder.value}账号` },
+            {
+                validateFunction: function (rule: any, value: any, data: any, callback: any) {
+                    const regex = /^\d{6,}$/;
+                    const status = regex.test(value);
+                    if (!status && formState.value.account_type===1) {
+                        callback(`请输入正确的${accountPlaceholder.value}账号`);
+                    }
+                    return true;
+                }
+            }
+        ]
     }
 };
 
+const formRef = shallowRef();
 const onSubmit = (values: any) => {
     formRef.value
         .validate()
@@ -114,8 +147,6 @@ const onSubmit = (values: any) => {
 };
 
 const add = async () => {
-    console.log({...formState});
-    // return
     try {
         const result = await updateAccount({ ...formState.value }, 'update_account');
         if (result.message) {
@@ -168,24 +199,6 @@ const edit = async () => {
         });
     }
 };
-
-// const edit = async () => {
-//     try {
-//         await formRef.value.validate();
-//         // const result = await updateAccount({ ...formState.value }, props.act == "add" ? "update_account" : "edit_account");
-//         // await formRef.value.resetFields();
-//         // message.success(result.message);
-//         // dialogTableVisible.value = false;
-//         // formState.value.account_type = 1;
-//         // emit("loadFilter");
-//     } catch (error: any) {
-//         uni.showToast({
-//             title: error.message,
-//             icon: "none",
-//             duration: 1000
-//         });
-//     }
-// };
 
 onShow(() => {
     nextTick(() => {
