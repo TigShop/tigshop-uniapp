@@ -209,7 +209,7 @@ onShow(() => {
 .submit-btn {
     background-color: #fff;
     width: 100%;
-    height: 100rpx;
+    height: 100%;
     bottom: 0;
     padding: 0 30rpx;
     display: flex;
@@ -218,7 +218,7 @@ onShow(() => {
     border-top: 1rpx solid #f5f5f5;
 
     .submit-btn-price {
-        color: #f23030;
+        color: $tig-color-primary;
         font-size: 40rpx;
         font-weight: bold;
         :deep(.util) {
@@ -228,16 +228,5 @@ onShow(() => {
         }
     }
 
-    .submit-btn-content {
-        width: 260rpx;
-        height: 70rpx;
-        background-color: #ee0a24;
-        color: #fff;
-        border-radius: 40rpx;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24rpx;
-    }
 }
 </style>

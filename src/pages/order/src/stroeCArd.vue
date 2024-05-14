@@ -163,7 +163,7 @@ const handlecConfirm = () => {
 
             &.active {
                 color: #fff;
-                background-color: #ff3700;
+                background-color: $tig-color-primary;
             }
 
             &.disabled {
@@ -204,7 +204,7 @@ const handlecConfirm = () => {
         align-items: center;
 
         .store-card-item-label {
-            background-color: #e93b3d;
+            background-color: $tig-color-primary;
             border-radius: 4rpx;
             color: #fff;
             font-size: 22rpx;
@@ -240,7 +240,7 @@ const handlecConfirm = () => {
             .store-card-item-content-right-price {
                 font-size: 32rpx;
                 line-height: 56rpx;
-                color: #f23030;
+                color: $tig-color-primary;
                 display: inline-block;
                 margin-right: 10rpx;
                 :deep(.util) {

@@ -56,18 +56,17 @@
                     </view>
                 </view>
             </view>
-            <view class="coupon-list flex justify-between">
+            <view class="coupon-list flex justify-between" @click="handleCoupon">
                 <view class="flex">
                     <view class="title"> 领券 </view>
                     <block v-for="item in portionCouponList" :key="item.coupon_id">
                         <view class="coupon-item">{{ item.coupon_name }}</view>
                     </block>
                 </view>
-                <view @click="handleCoupon">
+                <view >
                     <image class="icon-image" src="/static/images/common/more.png" />
                 </view>
             </view>
-
             <productComment :productId="product.product_id"></productComment>
             <view class="product-card-row">
                 <view class="tab-box flex align-center justify-around">
@@ -427,40 +426,43 @@ const getCoupon = async (value: any) => {
         .coupon-item {
             position: relative;
             display: inline-block;
-            margin-right: 5px;
-            padding: 0 9px 0 12px;
-            border: 0.5px solid $tig-color-primary;
-            height: 18px;
-            line-height: 17px;
-            color: $tig-color-primary;
-            font-size: 10px;
+            margin-right: 20rpx;
+            padding: 0 18rpx 0 24rpx;
+            height: 36rpx;
+            line-height: 35rpx;
+            color: #fff;
+            font-size: 20rpx;
+            background: $tig-color-primary;
 
             &::before {
-                content: " ";
+                content: "";
                 position: absolute;
-                width: 3px;
-                height: 5px;
-                border-radius: 0 3px 3px 0;
-                border: 0.5px solid $tig-color-primary;
-                background-color: #fff;
-                bottom: 50%;
-                left: -1px;
-                margin-bottom: -3px;
-                border-left-color: #fff;
+                left: -3px;
+                top: 0;
+                bottom: 0;
+                width: 6px;
+                height: 100%;
+                color: $tig-color-primary;
+                background: $tig-color-primary;
+                -webkit-mask: radial-gradient(circle at 2px, #0000 2px, $tig-color-primary 0);
+                -webkit-mask-position: -3px;
+                -webkit-mask-size: 100% 6px;
             }
 
             &::after {
-                content: " ";
+                content: "";
+                content: "";
                 position: absolute;
-                width: 3px;
-                height: 5px;
-                border-radius: 3px 0 0 3px;
-                border: 0.5px solid $tig-color-primary;
-                background-color: #fff;
-                right: -1px;
-                bottom: 50%;
-                margin-bottom: -3px;
-                border-right-color: #fff;
+                right: -3px;
+                top: 0;
+                bottom: 0;
+                width: 6px;
+                height: 100%;
+                color: #fff;
+                background:$tig-color-primary;
+                -webkit-mask: radial-gradient(circle at 2px, #0000 2px, $tig-color-primary 0);
+                -webkit-mask-position: 5px;
+                -webkit-mask-size: 100% 6px;
             }
         }
     }

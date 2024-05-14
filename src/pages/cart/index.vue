@@ -64,7 +64,7 @@
                                             </view>
                                             <template #right>
                                                 <view class="cart-move-box">
-                                                    <view class="btn-collect" @click="handleCollect(goods.cart_id)">
+                                                    <view class="btn-collect" @click="handleCollect(goods.product_id, goods.cart_id)">
                                                         <text>移入收藏</text>
                                                     </view>
                                                     <view class="btn-del" @click="handleDel(goods.cart_id)"><text>删除</text></view>
@@ -135,6 +135,7 @@ import tigCheckbox from "@/components/tigCheckbox/index.vue";
 import { onLoad, onShow, onReachBottom } from "@dcloudio/uni-app";
 import { usetabbarStore } from "@/store/tabbar";
 import { getCart, updateCartItemData, updateCartCheck, clearCart, removeCartItemData } from "@/api/cart/cart";
+import { updateCollectProduct } from "@/api/product/product";
 import { getGuessLike } from "@/api/common";
 import type { GuessLikeProductList } from "@/types/common";
 import type { updateCartCheckitem } from "@/types/cart/cart";
@@ -205,8 +206,10 @@ const updateCheckData = async () => {
 };
 
 onLoad(() => {
-    getCartList();
     __getGuessLike();
+});
+onShow(() => {
+    getCartList();
 });
 const Instance = getCurrentInstance();
 const getCartList = async () => {
@@ -318,9 +321,19 @@ const handleCheckout = () => {
         url: "/pages/order/check"
     });
 };
-const handleCollect = (cartId: number) => {
-    console.log("收藏", cartId);
+const handleCollect = async (product_id: number, cart_id: number) => {
+    try {
+        const result = await updateCollectProduct({
+            product_id
+        });
+    } catch (error) {
+        console.error(error);
+    } finally {
+        const result = await removeCartItemData({ cart_ids: [cart_id] });
+        getCartList();
+    }
 };
+
 const handleDel = (cartId: number) => {
     uni.showModal({
         title: "提示",

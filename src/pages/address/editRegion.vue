@@ -34,9 +34,11 @@
                 </uni-forms>
             </view>
         </view>
-        <view class="button-position">
-            <button hover-class="base-button-hover" class="base-button" @click="onSubmit">提交</button>
-        </view>
+        <saveBottomBox :height="90" backgroundColor="#fff">
+            <view class="btn-box">
+                <tigButton style="width: 100%;" @click="onSubmit"> 提交 </tigButton>
+            </view>
+        </saveBottomBox>
 
         <selectRegion v-model:show="showSelectRegion" v-model="form.region_ids" @sendRegionNames="getRegionNames"></selectRegion>
     </view>
@@ -45,6 +47,7 @@
 <script lang="ts" setup>
 import navbar from "@/components/navbar/index.vue";
 import selectRegion from "@/components/region/selectRegion.vue";
+import saveBottomBox from "@/components/saveBottomBox/index.vue";
 import { nextTick, reactive, ref } from "vue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import { getAddressData, updateAddressData } from "@/api/user/address";
@@ -224,6 +227,14 @@ const edit = async () => {
 }
 :deep(.is-disabled) {
     background-color: #fff;
+}
+
+.btn-box {
+    padding: 15rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 }
 .address-edit-main {
     padding: 30rpx;
