@@ -48,7 +48,7 @@ const paymentChange = (e: any) => {
 <style lang="scss" scoped>
 .pay-list {
     background: #fff;
-    padding: 30rpx 36rpx 15rpx;
+    padding: 5rpx 36rpx 15rpx;
     border-radius: 18rpx;
     margin-top: 40rpx;
 }

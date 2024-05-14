@@ -71,6 +71,7 @@ export interface Order {
     invoice_data: InvoiceData;
     username: string;
     items: Item[];
+    amount?: string;
 }
 
 export interface InvoiceData {
@@ -132,9 +133,7 @@ export interface ShippingType {
     type_name: string;
 }
 
-
-
 export interface creatPayParams {
-  id: number;
-  type: string;
+    id: number;
+    type: string;
 }

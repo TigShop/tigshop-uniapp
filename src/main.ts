@@ -4,6 +4,8 @@ import pinia from "@/store/index";
 import "./font/iconfont.css";
 import "./static/css/style.css"; /**app.wxss**/
 
+import "@/utils/permission"
+
 import tabbar from "./components/tabbar/index.vue";
 import FormatPrice from "./components/format/price.vue";
 import tigpopup from "@/components/tigpopup/index.vue";
