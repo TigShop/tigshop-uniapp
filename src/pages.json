@@ -43,6 +43,10 @@
             "path": "pages/user/account/cardManagement/list",
             "style": {}
         },
+        {
+            "path": "pages/user/account/cardManagement/edit",
+            "style": {}
+        },
 		{
 			"path": "pages/login/index",
 			"style": {}
