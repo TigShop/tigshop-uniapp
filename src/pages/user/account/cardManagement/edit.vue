@@ -50,14 +50,13 @@ const acTypeChange = (e: any) => {
     selectedAccountType.value = e.detail.value;
     formState.value.account_type = e.detail.value + 1;
     resetForm();
-    // __getAccount();
 };
 const resetForm = () => {  
     formState.value = {
         account_name: '',
         identity: '',
         account_no: '',
-        account_type: 1,
+        account_type: selectedAccountType.value + 1,
         bank_name: '',
     };
 }
@@ -84,8 +83,7 @@ const __getAccount = async () => {
     });
     try {
         const result = await getAccount({ account_id: id.value });
-        console.log(result);
-        selectedAccountType.value = result.account_detail.account_type -1;
+        selectedAccountType.value = result.account_detail.account_type - 1;
         Object.assign(formState.value, result.account_detail);
     } catch (error: any) {
         console.error(error.message);
@@ -98,21 +96,21 @@ const rules = {
     account_name: {
         rules: [{ required: true, errorMessage: "请输入真实姓名" }]
     },
-    identity: {
-        rules: [
-            { required: true, errorMessage: "请输入身份证号码" },
-            {
-                validateFunction: function (rule: any, value: any, data: any, callback: any) {
-                    const regex = /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
-                    const status = regex.test(value);
-                    if (!status) {
-                        callback("请输入正确的身份证号码");
-                    }
-                    return true;
-                }
-            }
-        ]
-    },
+    // identity: {
+    //     rules: [
+    //         { required: true, errorMessage: "请输入身份证号码" },
+    //         {
+    //             validateFunction: function (rule: any, value: any, data: any, callback: any) {
+    //                 const regex = /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
+    //                 const status = regex.test(value);
+    //                 if (!status) {
+    //                     callback("请输入正确的身份证号码");
+    //                 }
+    //                 return true;
+    //             }
+    //         }
+    //     ]
+    // },
     account_no: {
         rules: [
             { required: true, errorMessage: `请输入正确的${accountPlaceholder.value}账号` },
@@ -164,7 +162,6 @@ const add = async () => {
             });
         }, 1000);
     } catch (error: any) {
-        console.error(error);
         uni.showToast({
             title: error.message,
             icon: "none",
@@ -191,7 +188,6 @@ const edit = async () => {
             });
         }, 1000);
     } catch (error: any) {
-        console.error(error);
         uni.showToast({
             title: error.message,
             icon: "none",
@@ -216,38 +212,12 @@ onLoad((option: any) => {
 </script>
 
 <style lang="scss" scoped>
-.head-tabs-box{
-    position: fixed;
-    width: 100%;
-    z-index: 99;
-    .tabs{
-        background-color: #fff;
-        padding: 30rpx;
-        .tab{
-            font-size: 26rpx;
-            margin-right: 40rpx;
-            color: #666;
-        }
-        .active{
-            color: $tig-color-primary;
-            font-weight: bold;
-            font-size: 32rpx;
-        }
-        .clear-unread{
-            font-size: 26rpx;
-            color: #999;
-        }
-    }
-}
-
 :deep(.uni-forms-item) {
     margin-bottom: 30rpx;
-    // border-bottom: 1rpx solid #f2f3f5;
 }
 
 :deep(.uni-forms-item:last-child) {
     margin-bottom: 0;
-    border-bottom: 0;
 }
 
 :deep(.uni-forms-item__label) {
@@ -284,7 +254,6 @@ onLoad((option: any) => {
 
 .card-edit-main {
     padding: 20rpx;
-    // margin-top: 120rpx;
     .card-edit-content {
         background-color: #fff;
         border-radius: 10rpx;
