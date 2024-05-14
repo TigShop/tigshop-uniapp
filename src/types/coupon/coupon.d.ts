@@ -27,12 +27,15 @@ export interface CouponFilterResult {
     use_day: number;
     use_start_date: string;
     use_end_date: string;
+    end_date?: string;
     is_show: number;
     is_global: number;
     is_new_user: number;
     enabled_click_get: number;
     limit_user_rank: number[] | null;
     store_id: number;
+    status?: number;
+    status_name?:string;
 }
 
 export interface CouponDetailResponse {

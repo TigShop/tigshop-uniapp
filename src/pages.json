@@ -39,6 +39,10 @@
             "path": "pages/user/account/index",
             "style": {}
         },
+        {
+            "path": "pages/user/account/cardManagement/index",
+            "style": {}
+        },
 		{
 			"path": "pages/login/index",
 			"style": {}

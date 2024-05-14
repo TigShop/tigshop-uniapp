@@ -74,7 +74,7 @@
                                 <text class="red" @chick="showAgreement">《商城用户服务协议》</text>
                             </view>
                         </view>
-                        <view class="register"> 没有账号？<navigator url="/pages/register/index" class="red">立即注册</navigator> </view>
+                        <view class="register"> 没有账号？<navigator open-type="redirect" url="/pages/register/index" class="red">立即注册</navigator> </view>
                     </view>
                 </view>
             </view>

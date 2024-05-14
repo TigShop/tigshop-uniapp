@@ -32,6 +32,15 @@ export const getDepositList = () => {
     });
 }
 
+// 提交充值申请
+export const updateRechargeOrder = (data: object) => {
+    return request({
+        url: 'user/recharge_order/update',
+        method: 'post',
+        data
+    });
+}
+
 // 提现
 export const getAccountNoList = (params?: AccountFilterParams) => {
     return request<AccountInfoResult>({

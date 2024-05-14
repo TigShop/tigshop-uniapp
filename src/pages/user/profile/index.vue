@@ -13,11 +13,11 @@
                     <uni-forms-item label="出生日期" name="birthday">
                         <uni-datetime-picker v-model="form.birthday" :border="false" :clear-icon="false" type="date" @change="handleDateChange" />
                     </uni-forms-item>
-                    <uni-forms-item label="性别" name="sex">
-                        <picker :range="genderList" :value="selectedGender" mode="selector" @change="onPickerChange">
-                            <view style="line-height: 78rpx;text-align: right;">{{ genderList[selectedGender] }}</view>
-                        </picker>
-                    </uni-forms-item>
+<!--                    <uni-forms-item label="性别" name="sex">-->
+<!--                        <picker :range="genderList" :value="selectedGender" mode="selector" @change="onPickerChange">-->
+<!--                            <view style="line-height: 78rpx;text-align: right;">{{ genderList[selectedGender] }}</view>-->
+<!--                        </picker>-->
+<!--                    </uni-forms-item>-->
                 </view>
                 <view class="profile-edit-content">
                     <uni-forms-item label="登录密码" @click="goPages('/pages/user/security/password'+'?mobile='+form.mobile,'password')">

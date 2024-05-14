@@ -5,7 +5,7 @@
             <view class="h1_tit">会员注册</view>
         </view>
         <view class="profile-edit-content">
-            <uni-forms ref="formRef" :label-width="80" :modelValue="formState" :rules="formRules">
+            <uni-forms label-align="right" ref="formRef" :label-width="80" :modelValue="formState" :rules="formRules">
                 <uni-forms-item label="用户名" name="username" required>
                     <view class=" input">
                         <uni-easyinput :inputBorder="false" :value="formState.username" class="uni-input item-input" placeholder="请输入用户名" primaryColor="rgb(192, 196, 204)" @input="inputUsername"></uni-easyinput>
@@ -45,7 +45,7 @@
                         </view>
                         <view class="lf-input">
                             <view>已有账号？</view>
-                            <navigator class="red" url="/pages/login/index">立即登录</navigator>
+                            <navigator open-type="redirect" class="red" url="/pages/login/index">立即登录</navigator>
                         </view>
                     </view>
                 </uni-forms-item>

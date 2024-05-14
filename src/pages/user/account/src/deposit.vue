@@ -27,7 +27,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
-import { getDepositList } from "@/api/user/account";
+import { getDepositList, updateRechargeOrder } from "@/api/user/account";
 import type { DepositFilterState } from "@/types/user/account";
 
 const filterState = ref<DepositFilterState[]>([]);
@@ -63,7 +63,7 @@ const pay = ref<any>({
     id: 0,
     amount: null,
     money: "",
-    payType:'wechat'
+    payType:'recharge'
 });
 const onSubmit = () => {
     let flag = false;
@@ -81,12 +81,13 @@ const onSubmit = () => {
         }
     });
     if (flag) {
-        console.log(pay.value);
-        const payParams = Object.keys(pay.value).map(key => `${key}=${encodeURIComponent(pay.value[key])}`).join('&');
-        console.log(payParams);
-        uni.navigateTo({
-            url: `/pages/user/pay/index?${payParams}`
-        })
+        // console.log(pay.value);
+        // const payParams:any = Object.keys(pay.value).map(key => `${key}=${encodeURIComponent(pay.value[key])}`).join('&');
+        // console.log(payParams);
+        // uni.navigateTo({
+        //     url: `/pages/user/pay/index?${payParams}`
+        // })
+        __updateRechargeOrder(pay.value);
     } else {
         uni.showToast({
             title: '请选择充值金额',
@@ -95,6 +96,17 @@ const onSubmit = () => {
         });
     }
 };
+
+const __updateRechargeOrder = async (data: object) => {
+    try {
+        const result = await updateRechargeOrder(data);
+        uni.navigateTo({
+            url: `/pages/order/pay?order_id=${result.order_id}&type=recharge`
+        })
+    } catch (error: any) {
+        console.log(error.message);
+    }
+}
 
 onLoad(() => {
     __getDepositList();
