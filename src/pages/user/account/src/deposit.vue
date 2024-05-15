@@ -1,5 +1,5 @@
 <template>
-    <view class="recharge-box">
+    <view class="recharge-box" v-if="filterState.length > 0">
         <view class="recharge-wrap">
             <block v-for="(item, index) in filterState" :key="index">
                 <view v-if="item.recharge_id!=0" class="recharge-item" :class="{ selected : item.selected}" @click="selectCard(index)">
@@ -20,6 +20,7 @@
         </view>
         <view class="button-position">
             <button hover-class="base-button-hover" class="base-button recharge-btn" @click="onSubmit">提交申请</button>
+            <button hover-class="base-button-hover" class="base-button cancel-btn" @click="backDetail">取消充值</button>
         </view>
     </view>
 </template>
@@ -112,6 +113,11 @@ const __updateRechargeOrder = async (data: object) => {
     }
 }
 
+const emit = defineEmits(["backDetail"]);
+const backDetail = () => {
+    emit('backDetail');
+}
+
 onLoad(() => {
     __getDepositList();
 })
@@ -157,11 +163,23 @@ onLoad(() => {
         }
     }
 }
-.recharge-btn {
-    background: linear-gradient(90deg,#fee2b7,#fdc383);
-    color: #5d3324;
-    &::after {
-        border: 0;
+.button-position {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20rpx;
+    .base-button {
+        flex: 1;
+        color: #5d3324;
+        &::after {
+            border: 0;
+        }
+    }
+    .recharge-btn {
+        background: linear-gradient(90deg,#fee2b7,#fdc383);
+    }
+    .cancel-btn {
+        background: #eaeaea;
     }
 }
 :deep(.uni-easyinput__content-input) {

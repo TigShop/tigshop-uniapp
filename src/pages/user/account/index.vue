@@ -28,11 +28,11 @@
     </block>
 
     <block v-if="activeTab === 'deposit'">
-        <deposit></deposit>
+        <deposit @backDetail="backDetail" ></deposit>
     </block>
 
     <block v-if="activeTab === 'raplytocard'">
-        <raplyToCard></raplyToCard>
+        <raplyToCard @backDetail="backDetail"></raplyToCard>
     </block>
 </template>
 
@@ -71,6 +71,10 @@ const activeTab = ref('detail');
 const actionClick = (value: string) => {
     if (value === activeTab.value) return;
     activeTab.value = value;
+}
+
+const backDetail = () =>{
+    activeTab.value = "detail";
 }
 
 onLoad(() => {

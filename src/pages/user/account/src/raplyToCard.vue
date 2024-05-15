@@ -26,11 +26,12 @@
     </view>
     <view class="button-position">
         <button class="base-button recharge-btn" hover-class="base-button-hover" @click="onSubmit">提交申请</button>
+        <button hover-class="base-button-hover" class="base-button cancel-btn" @click="backDetail">返回列表</button>
     </view>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, shallowRef, computed, nextTick } from "vue";
+import { ref, shallowRef, computed, nextTick } from "vue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import { getAccountNoList, updateWithdrawApply } from "@/api/user/account";
 import type { AccountFormState, AccountInfo } from "@/types/user/account";
@@ -153,7 +154,9 @@ const dataList = computed(() => {
 
 const rules = {
     amount: {
-        rules: [{ required: true, errorMessage: "请输入提现金额" }]
+        rules: [
+            { required: true, errorMessage: "请输入提现金额" }
+        ]
     }
 };
 
@@ -170,6 +173,11 @@ const onSubmit = async () => {
         console.log("表单错误信息：", error);
     }
 };
+
+const emit = defineEmits(["backDetail"]);
+const backDetail = () => {
+    emit('backDetail');
+}
 
 onShow(() => {
     nextTick(() => {
@@ -252,11 +260,23 @@ onLoad(() => {
     }
 }
 
-.recharge-btn {
-    background: linear-gradient(90deg,#fee2b7,#fdc383);
-    color: #5d3324;
-    &::after {
-        border: 0;
+.button-position {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20rpx;
+    .base-button {
+        flex: 1;
+        color: #5d3324;
+        &::after {
+            border: 0;
+        }
+    }
+    .recharge-btn {
+        background: linear-gradient(90deg,#fee2b7,#fdc383);
+    }
+    .cancel-btn {
+        background: #eaeaea;
     }
 }
 </style>
