@@ -148,28 +148,7 @@
             </view>
         </tigpopup>
         <tigpopup v-model:show="showCoupon" title="优惠券" paddingBottom="0" height="60vh" backgroundColor="#f5f5f5">
-            <view class="bonus-box">
-                <view class="bonus-bd enable_select" :class="{ disabled: item.is_receive }" v-for="(item, idx) in couponList" :key="idx">
-                    <view class="bonus-left">
-                        <view class="bonus-amount price">
-                            <block v-if="item.coupon_type === 2">
-                                {{ `${item.coupon_discount} 折` }}
-                            </block>
-
-                            <FormatPrice v-else :priceData="item.coupon_money"></FormatPrice>
-                        </view>
-                        <view class="bonus-desc">{{ item.coupon_name }}</view>
-                    </view>
-
-                    <view class="bonus-right">
-                        <view class="bonus-name">{{ item.is_global ? "[全场券]" : "" }} </view>
-                        <view class="bonus-time">截止时间 {{ item.use_end_date }}</view>
-                    </view>
-                    <view class="coupon-btn" @click="getCoupon(item)">
-                        <view class="coupon-btn-con" :class="{ disabled: item.is_receive }">{{ item.is_receive ? "已领取" : "立即领取" }}</view>
-                    </view>
-                </view>
-            </view>
+            <CouponList  :productId="product_id"></CouponList>
         </tigpopup>
         <selectRegion v-model:show="showRegion" @sendRegionNames="getRegionText"></selectRegion>
         <tigBackTop :class="{ show: scrollTop > 100 }"></tigBackTop>
@@ -194,6 +173,8 @@ import { getExchangeDetail } from "@/api/exchange/exchange";
 import tigBackTop from "@/components/tigBackTop/index.vue";
 import { asyncGetCartCount } from "@/api/cart/cart";
 import type { PicList, ProductItem, AttrList, SkuList, ServiceList, RankDetail, DescArr, ProductCouponItem } from "@/types/product/product";
+
+import CouponList from "@/components/coupon/couponList.vue";
 const tabIndex = ref(0);
 const parameter = reactive({
     navbar: "1",
@@ -332,31 +313,14 @@ const handleCoupon = () => {
 const getCouponList = async () => {
     try {
         const result = await getProductCouponList(Number(product_id.value));
+        console.log("查询");
         couponList.value = result.list;
         portionCouponList.value = result.list.slice(0, 3);
     } catch (error: any) {
         console.error(error.message);
     }
 };
-const getCoupon = async (value: any) => {
-    if (value.is_receive === 1) return;
-    try {
-        console.log(value);
-        const result = await addCoupon({ coupon_id: value.coupon_id });
-        showCoupon.value = false;
-        uni.showToast({
-            title: "领取成功"
-        });
-        await getCouponList();
-    } catch (error: any) {
-        uni.showToast({
-            title: error.message,
-            icon: "none"
-        });
-    } finally {
-        showCoupon.value = false;
-    }
-};
+
 </script>
 <style lang="scss" scoped>
 .icon-image {
@@ -618,10 +582,13 @@ const getCoupon = async (value: any) => {
     background-image: -webkit-linear-gradient(left, #5dd5cf 20%, #54d1b8);
 }
 .bonus-box .bonus-bd .bonus-right {
-    flex-grow: 1;
+    box-sizing: border-box;
+    width: 100%;
     padding: 0 0 20rpx 20rpx;
     flex-shrink: 1;
-    position: relative;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
 }
 .bonus-box .bonus-bd .bonus-amount {
     font-size: 48rpx;
@@ -630,14 +597,20 @@ const getCoupon = async (value: any) => {
 }
 .bonus-box .bonus-bd .bonus-desc {
     height: 40rpx;
+    white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 24rpx;
+    width: 100%;
 }
 .bonus-box .bonus-bd .bonus-name {
     height: 50rpx;
     line-height: 50rpx;
+    white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
     color: #333;
+    width: 55%;
 }
 .bonus-box .bonus-bd .bonus-brief {
     height: 65rpx;
@@ -688,15 +661,12 @@ const getCoupon = async (value: any) => {
     color: #aaa;
 }
 
-.coupon-btn {
-    position: absolute;
-    bottom: 10rpx;
-    right: 15rpx;
 
     .coupon-btn-con {
         font-size: 22rpx;
         padding: 10rpx 25rpx;
         border-radius: 40rpx;
+
         color: #fff;
         background-image: -webkit-linear-gradient(left, #609dde 20%, #6781da);
         &:active {
@@ -706,7 +676,7 @@ const getCoupon = async (value: any) => {
             background-image: -webkit-linear-gradient(left, #aaa 20%, #aaa);
         }
     }
-}
+
 
 .balance-title {
     display: flex;
