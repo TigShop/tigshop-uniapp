@@ -946,7 +946,7 @@ onShow(() => {
     width: 100%;
 }
 .cart-total-box .btn-checkout {
-    background: #e4393c;
+    background: $tig-color-primary;
     color: #fff;
     display: block;
     float: right;

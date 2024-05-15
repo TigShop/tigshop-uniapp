@@ -16,7 +16,11 @@ onExit(() => {
     configStore.setCurrentActiveValue(0);
 });
 </script>
-<style>
+<style lang="scss">
+@import "uview-plus/index.scss";
+:root {
+    --general: " #39bf3e";
+}
 page {
     font-size: 28rpx;
     background-color: #f5f5f5;
@@ -89,7 +93,6 @@ view {
     background: none;
     opacity: 1;
 }
-
 
 .line1 {
     overflow: hidden;
