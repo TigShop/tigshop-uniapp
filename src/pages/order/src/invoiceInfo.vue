@@ -39,7 +39,7 @@
                                 </view>
                             </uni-forms-item>
                             <block v-if="formState.title_type == 1">
-                                <uni-forms-item label="个人名称" name="company_name" :rules="[{'required': true,errorMessage: '个人名称不能为空'}]">
+                                <uni-forms-item label="个人名称" name="company_name" :rules="[{ required: true, errorMessage: '个人名称不能为空' }]">
                                     <uni-easyinput
                                         primaryColor="rgb(192, 196, 204)"
                                         :inputBorder="false"
@@ -49,7 +49,7 @@
                                 </uni-forms-item>
                             </block>
                             <block v-else>
-                                <uni-forms-item label="企业名称" name="company_name" :rules="[{'required': true,errorMessage: '企业名称不能为空'}]" >
+                                <uni-forms-item label="企业名称" name="company_name" :rules="[{ required: true, errorMessage: '企业名称不能为空' }]">
                                     <uni-easyinput
                                         primaryColor="rgb(192, 196, 204)"
                                         :inputBorder="false"
@@ -116,24 +116,26 @@
                             </uni-forms-item>
                         </block>
                         <block v-else-if="formState.invoice_type === 2 && invoiceStatus">
-                            <uni-forms-item label="单位名称" name="company_name">
-                                <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_name" />
-                            </uni-forms-item>
-                            <uni-forms-item label="纳税人识别码" name="company_code">
-                                <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_code" />
-                            </uni-forms-item>
-                            <uni-forms-item label="注册地址" name="company_address">
-                                <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_address" />
-                            </uni-forms-item>
-                            <uni-forms-item label="注册电话" name="company_phone">
-                                <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_phone" />
-                            </uni-forms-item>
-                            <uni-forms-item label="开户银行" name="company_bank">
-                                <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_bank" />
-                            </uni-forms-item>
-                            <uni-forms-item label="开户银行" name="company_account">
-                                <uni-easyinput primaryColor="rgb(192, 196, 204)" :inputBorder="false" :disabled="true" v-model="formState.company_account" />
-                            </uni-forms-item>
+                            <view class="invoiceInfo-content-item">
+                                <view class="item-label">纳税人识号</view>
+                                <view class="item-value">{{ formState.company_code }}</view>
+                            </view>
+                            <view class="invoiceInfo-content-item">
+                                <view class="item-label">单位地址</view>
+                                <view class="item-value">{{ formState.company_address }}</view>
+                            </view>
+                            <view class="invoiceInfo-content-item">
+                                <view class="item-label">单位电话</view>
+                                <view class="item-value">{{ formState.company_phone }}</view>
+                            </view>
+                            <view class="invoiceInfo-content-item">
+                                <view class="item-label">开户银行</view>
+                                <view class="item-value">{{ formState.company_bank }}</view>
+                            </view>
+                            <view class="invoiceInfo-content-item">
+                                <view class="item-label">银行账户</view>
+                                <view class="item-value">{{ formState.company_account }}</view>
+                            </view>
                             <uni-forms-item label="收票人手机" name="mobile">
                                 <uni-easyinput
                                     primaryColor="rgb(192, 196, 204)"
@@ -160,9 +162,10 @@
                 </view>
                 <saveBottomBox height="110" backgroundColor="#fff">
                     <view class="btn-box">
-                        <tigButton style="width: 100%;height: 70rpx;" :disabled="formState.invoice_type === 2 && !invoiceStatus" @click="onSubmit"> 提交</tigButton>
+                        <tigButton style="width: 100%; height: 70rpx" :disabled="formState.invoice_type === 2 && !invoiceStatus" @click="onSubmit">
+                            提交</tigButton
+                        >
                     </view>
-                    
                 </saveBottomBox>
             </view>
         </tigpopup>
@@ -172,7 +175,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from "vue";
 import { getInvoiceStatus, getCheckInvoice } from "@/api/order/invoice";
-import saveBottomBox from '@/components/saveBottomBox/index.vue'
+import saveBottomBox from "@/components/saveBottomBox/index.vue";
 import { useThemeStore } from "@/store/theme";
 
 const props = defineProps({
@@ -219,7 +222,7 @@ const rules: any = {
     },
     mobile: {
         rules: [{ required: true, errorMessage: "手机不能为空!" }]
-    },
+    }
 };
 
 const radioChange = (evt: any) => {
@@ -409,14 +412,13 @@ const handleApply = () => {
     align-items: center;
     justify-content: center;
     height: 100%;
-
 }
 :deep(.uni-forms-item) {
     margin-bottom: 30rpx;
 }
 :deep(.uni-forms-item__error) {
     top: 90%;
-    left: 18rpx
+    left: 18rpx;
 }
 :deep(.uni-easyinput__placeholder-class) {
     font-size: 26rpx;
@@ -431,6 +433,23 @@ const handleApply = () => {
     right: 0;
     padding: 0 30rpx;
     padding-bottom: env(safe-area-inset-bottom) !important;
+}
+
+.invoiceInfo-content-item {
+    display: flex;
+    padding: 30rpx 0;
+
+    &:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .item-label {
+        width: 140rpx;
+    }
+    .item-value {
+        padding-left: 48rpx;
+    }
 }
 
 .notPass {

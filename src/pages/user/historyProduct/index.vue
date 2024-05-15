@@ -108,7 +108,7 @@ onLoad(() => {
                 .price {
                     font-size: 32rpx;
                     line-height: 56rpx;
-                    color: #f23030;
+                    color: $tig-color-primary;
 
                     :deep(.util) {
                         font-weight: normal;

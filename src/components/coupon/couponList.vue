@@ -1,116 +1,88 @@
 <template>
-    <view>
-        <navbar :parameter="parameter"></navbar>
-        <block v-if="detailData">
-            <view class='coupon-box'>
-                <view  class="coupon-item">
-                    <view class="left">
-                        <view class="col-1">
-                            <view v-if="detailData.is_global" class="tag">全场券</view>
-                            <view v-if="Number(detailData.min_order_amount)==0" class="tag">无门槛</view>
+    <view class='coupon-box'>
+        <view v-for="item in couponList" class="coupon-item">
+            <view class="left">
+                <view class="col-1">
+                    <view v-if="item.is_global" class="tag">全场券</view>
+                    <view v-if="Number(item.min_order_amount)==0" class="tag">无门槛</view>
 
-                        </view>
-                        <view class="col-1">
-                            <view class="title">{{ detailData.coupon_name }}</view>
-                        </view>
-                        <view v-if="detailData.coupon_desc" class="col-2">
-                            {{ detailData.coupon_desc }}
-                        </view>
-                        <view class="col-3">
-                            有效期：{{ detailData.use_end_date }}
-                        </view>
-                    </view>
-                    <view class="right">
-                        <view class="right-1">
-                            <block v-if="detailData.coupon_type === 2">
-                                <view class="zhekou"> {{ detailData.coupon_discount }}</view>
-                                <view class="zhe">折</view>
-                            </block>
-                            <block v-else >
-                                <FormatPrice :fontStyle="{fontSize:'48rpx',lineHeight:1}" :currencyStyle="{selfAlign:'end',fontSize:'24rpx'}" :priceData="detailData.coupon_money"></FormatPrice>
-                            </block>
-                        </view>
-                    </view>
-                    <view class="dotted-line"></view>
+                </view>
+                <view class="col-1">
+                    <view class="title">{{ item.coupon_name }}</view>
+                </view>
+                <view v-if="item.coupon_desc" class="col-2">
+                    {{ item.coupon_desc }}
+                </view>
+                <view class="col-3">
+                    有效期：{{ item.use_end_date }}
                 </view>
             </view>
-            <view class="button-position">
-                <view class="safe-padding">
-                    <tigButton  @click="handleSubmit" :disabled="detailData!.is_receive === 1"> {{ detailData!.is_receive ? "已领取" : "领取" }}</tigButton>
+            <view class="right">
+                <view class="right-1">
+                    <block v-if="item.coupon_type === 2">
+                        <view class="zhekou"> {{ item.coupon_discount }}</view>
+                        <view class="zhe">折</view>
+                    </block>
+                    <block v-else >
+                        <FormatPrice :fontStyle="{fontSize:'48rpx',lineHeight:1}" :currencyStyle="{selfAlign:'end',fontSize:'24rpx'}" :priceData="item.coupon_money"></FormatPrice>
+                    </block>
+                </view>
+                <view class="right-2">
+                    <tigButton  @click="getCoupon(item)" :disabled="item.is_receive===1"> {{ item.is_receive ? "已领取" : "马上领" }}</tigButton>
                 </view>
             </view>
-        </block>
+            <view class="dotted-line"></view>
+        </view>
     </view>
 </template>
-
-<script setup lang="ts">
-import { onLoad } from "@dcloudio/uni-app";
-import { ref } from "vue";
-import navbar from "@/components/navbar/index.vue";
-import { getMyCouponInfo, addCoupon } from "@/api/coupon/coupon";
-import type { CouponDetailItem } from "@/types/coupon/coupon";
-const parameter = {
-    navbar: "1",
-    return: "1",
-    title: "优惠券详情",
-    color: false
-};
-const detailData = ref<CouponDetailItem>();
-const id = ref<number>();
-const getDetail = async () => {
-    uni.showLoading({
-        title: "加载中"
-    });
-
-    try {
-        if (id.value) {
-            const result = await getMyCouponInfo({ id: id.value });
-            detailData.value = result.item;
-        }
-    } catch (error) {
-        console.error(error);
-    } finally {
-        uni.hideLoading();
-    }
-};
-
-onLoad((options) => {
-    if (options && options.id) {
-        id.value = Number(options.id);
-        getDetail();
+<script lang="ts" setup>
+import type { ProductCouponItem } from "@/types/product/product";
+import { addCoupon } from "@/api/coupon/coupon";
+import { getProductCouponList } from "@/api/product/product";
+import {  ref } from "vue";
+const props = defineProps({
+    productId: {
+        type: Number,
+        default: 0
     }
 });
 
-const handleSubmit = async () => {
+const getCoupon = async (value: any) => {
+    if (value.is_receive === 1) return;
     try {
-        if (id.value) {
-            const result = await addCoupon({ coupon_id: id.value });
-            uni.showToast({
-                title: "领取成功",
-                duration: 1500
-            });
-        }
+        const result = await addCoupon({ coupon_id: value.coupon_id });
+        // showCoupon.value = false;
+        uni.showToast({
+            title: "领取成功"
+        });
+        await getCouponList();
     } catch (error: any) {
         uni.showToast({
             title: error.message,
-            icon: "none",
-            duration: 1500
+            icon: "none"
         });
-        console.error(error);
+    } finally {
+        // showCoupon.value = false;
     }
 };
+const couponList = ref<ProductCouponItem[]>([]);
+const getCouponList = async () => {
+    try {
+        const result = await getProductCouponList(Number(props.productId));
+        couponList.value = result.list;
+    } catch (error: any) {
+        console.error(error.message);
+    }
+};
+getCouponList()
 </script>
-
 <style lang="scss" scoped>
 .coupon-box {
     display: flex;
     flex-direction: column;
     gap: 20rpx;
-    padding: 30rpx;
+    padding: 30rpx 30rpx 150rpx 30rpx;
 
-    .grayScaleDiv {
-        filter: grayscale(100%); /* 全部转为灰度 */
-    }
 
     .coupon-item {
         box-shadow: 0px 0px 5px #f5f5f5;
@@ -181,23 +153,35 @@ const handleSubmit = async () => {
                 justify-content: center;
                 align-items: flex-end;
 
-                .zhekou {
+                .zhekou{
                     font-size: 48rpx;
                     line-height: 1; /* 添加这行 */
                 }
-
-                .zhe {
+                .zhe{
                     margin-left: 8rpx;
                     font-size: 24rpx;
                     self-align: end; /* 添加这行 */
                 }
 
             }
-
-            .right-2 {
+            .right-2{
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                .coupon-btn-con{
+                    font-size: 22rpx;
+                    padding: 10rpx 25rpx;
+                    border-radius: 40rpx;
+
+                    color: #fff;
+                    background-image: -webkit-linear-gradient(left, #609dde 20%, #6781da);
+                    &:active {
+                        opacity: 0.7;
+                    }
+                    &.disabled {
+                        background-image: -webkit-linear-gradient(left, #aaa 20%, #aaa);
+                    }
+                }
             }
         }
 
@@ -235,23 +219,6 @@ const handleSubmit = async () => {
         border-radius: 50%; /* 使元素成为完美的圆形 */
 
     }
-
-    .grayScaleDiv::after {
-        content: "已失效";
-        position: absolute;
-        top: 25%;
-        left: 50%;
-        transform: translate(-50%, -50%) rotate(-20deg);
-        width: 120rpx;
-        height: 120rpx;
-        line-height: 120rpx;
-        text-align: center;
-        border: 1.5px solid #818181;
-        background-color: white;
-        border-radius: 50%;
-        color: #818181;
-        font-weight: 500;
-        font-size: 16px;
-    }
 }
+
 </style>

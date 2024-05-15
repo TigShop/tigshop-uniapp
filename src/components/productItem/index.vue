@@ -84,6 +84,20 @@ const toPage = (item:any) => {
 .item-li .info .detail {
     margin: 0 20rpx 10rpx;
     display: block;
+    line-height: 40rpx;
+    height: 80rpx;
+    overflow: hidden;
+    font-size: 26rpx;
+    display: block;
+    font-weight: bold;
+    color: #2a3145;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    display: -moz-box;
+    -webkit-line-clamp: 2;
+    -moz-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
 }
 
 .item-li .info .detail .name {
@@ -98,21 +112,6 @@ const toPage = (item:any) => {
     display: -moz-box;
     -webkit-line-clamp: 2;
     -moz-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    -moz-box-orient: vertical;
-}
-.item-li .info .detail .brief {
-    line-height: 40rpx;
-    height: 40rpx;
-    font-size: 22rpx;
-    overflow: hidden;
-    display: block;
-    color: #aaa;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    display: -moz-box;
-    -webkit-line-clamp: 1;
-    -moz-line-clamp: 1;
     -webkit-box-orient: vertical;
     -moz-box-orient: vertical;
 }
@@ -172,7 +171,7 @@ const toPage = (item:any) => {
  .pricenum {
     font-size: 32rpx;
     line-height: 56rpx;
-    color: #f23030;
+    color: $tig-color-primary;
     min-width: 200rpx;
     :deep(.util) {
         font-weight: normal;

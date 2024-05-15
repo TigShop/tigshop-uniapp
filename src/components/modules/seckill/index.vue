@@ -214,7 +214,7 @@ onMounted(() => {
 .goods-ad-warp .goods-ad-item .item-info .count-down em {
     font-size: 32rpx;
     font-weight: normal;
-    color: #f23030;
+    color: $tig-color-primary;
     padding: 0 4rpx;
 }
 
@@ -263,7 +263,7 @@ onMounted(() => {
 }
 .goods-ad-warp .goods-ad-item .item-info .item-price {
     font-size: 20rpx;
-    color: #f23030;
+    color: $tig-color-primary;
     line-height: 60rpx;
     height: 60rpx;
 }
@@ -283,7 +283,7 @@ onMounted(() => {
 .goods-ad-warp .goods-ad-item .item-info .item-buy .module_ico {
     width: 48rpx;
     height: 48rpx;
-    color: #f23030;
+    color: $tig-color-primary;
     font-size: 36rpx;
 }
 .goods-ad-warp .goods-ad-item .item-info .item-buy .module_ico::before {
@@ -456,14 +456,14 @@ onMounted(() => {
     font-size: 40rpx;
 }
 .ad-buy_btn_style__5 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view {
-    color: #f23030;
+    color: $tig-color-primary;
     height: 44rpx;
     line-height: 44rpx;
     padding: 0 16rpx;
     display: inline-block;
     position: relative;
     border-radius: 4rpx;
-    border: 0 solid #f23030;
+    border: 0 solid $tig-color-primary;
 }
 .ad-buy_btn_style__5 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view:before {
     content: "";
@@ -483,7 +483,7 @@ onMounted(() => {
     border-radius: 4rpx;
 }
 .ad-buy_btn_style__6 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view {
-    background: #f23030;
+    background: $tig-color-primary;
     color: #fff;
     height: 44rpx;
     line-height: 44rpx;
@@ -493,14 +493,14 @@ onMounted(() => {
     border-radius: 44rpx;
 }
 .ad-buy_btn_style__7 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view {
-    color: #f23030;
+    color: $tig-color-primary;
     height: 44rpx;
     line-height: 44rpx;
     padding: 0 16rpx;
     display: inline-block;
     position: relative;
     border-radius: 4rpx;
-    border: 0 solid #f23030;
+    border: 0 solid $tig-color-primary;
 }
 .ad-buy_btn_style__7 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view:before {
     content: "";
@@ -520,7 +520,7 @@ onMounted(() => {
     border-radius: 4rpx;
 }
 .ad-buy_btn_style__8 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view {
-    background: #f23030;
+    background: $tig-color-primary;
     color: #fff;
     height: 44rpx;
     line-height: 44rpx;

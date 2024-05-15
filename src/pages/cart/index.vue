@@ -5,7 +5,7 @@
             <view class="top-text" v-if="cartList.length > 0">
                 <view class="fl">
                     已选商品
-                    <text class="num font-color">{{ total.checked_count }}</text>
+                    <text class="select-num">{{ total.checked_count }}</text>
                     件
                 </view>
                 <view class="fr administrate acea-row row-center-wrapper" @click="cartManageFun">
@@ -84,8 +84,8 @@
                     </view>
                 </view>
                 <view class="edit-cart-action" v-if="cartManage">
-                    <view class="l_a_tool lt_delete" @click="checkClearCart" id="del-all">清空购物车</view>
-                    <view id="del-checked" class="l_a_tool lt_disable" @click.stop.prevent="delCartItem">删除勾选商品</view>
+                    <view class="l_a_tool lt_delete" @click="checkClearCart">清空购物车</view>
+                    <view class="l_a_tool" :class="{ lt_disable: cartIds.length === 0 }" @click="delCartItem">删除勾选商品</view>
                 </view>
                 <view class="cart-total-box" v-if="!cartManage">
                     <view class="cart-total">
@@ -127,7 +127,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, getCurrentInstance } from "vue";
+import { ref, getCurrentInstance, computed } from "vue";
 import navbar from "@/components/navbar/index.vue";
 import masonry from "@/components/masonry/masonry.vue";
 import tigCheckbox from "@/components/tigCheckbox/index.vue";
@@ -285,26 +285,32 @@ const checkClearCart = () => {
         success: async (res) => {
             if (res.confirm) {
                 const result = await clearCart();
-
                 getCartList();
             }
         }
     });
 };
+
+const cartIds = computed(() => {
+    const carti_ds: number[] = [];
+    cartList.value.forEach((item: any) => {
+        item.carts.forEach((product: any) => {
+            if (product.is_checked) carti_ds.push(product.cart_id);
+        });
+    });
+    console.log(carti_ds)
+    return carti_ds || [];
+});
 const delCartItem = () => {
+    console.log(cartIds.value)
+    if (cartIds.value.length == 0) return uni.$u.toast("请选择要删除的商品");
     uni.showModal({
         title: "提示",
         content: "确认要删除指定的商品吗？",
         success: async (res) => {
             if (res.confirm) {
-                const cartIds: number[] = [];
-                cartList.value.forEach((item: any) => {
-                    item.carts.forEach((product: any) => {
-                        if (product.is_checked) cartIds.push(product.cart_id);
-                    });
-                });
                 try {
-                    const result = await removeCartItemData({ cart_ids: cartIds });
+                    const result = await removeCartItemData({ cart_ids: cartIds.value });
 
                     getCartList();
                 } catch (error) {
@@ -356,6 +362,9 @@ onShow(() => {
 });
 </script>
 <style lang="scss" scoped>
+.select-num {
+    color: $tig-color-primary;
+}
 .shoppingCart .labelNav {
     height: 76rpx;
     padding: 0 30rpx;
@@ -790,7 +799,7 @@ onShow(() => {
 .goods-list-cart .cart_item .price-one {
     font-size: 32rpx;
     line-height: 56rpx;
-    color: #f23030;
+    color: $tig-color-primary;
 
     :deep(.util) {
         font-weight: normal;
@@ -972,7 +981,7 @@ onShow(() => {
     padding-top: 10rpx;
     height: 40rpx;
     text-align: right;
-    color: #f23030;
+    color: $tig-color-primary;
     font-size: 32rpx;
     .txt {
         font-weight: normal;
@@ -1001,7 +1010,7 @@ onShow(() => {
     display: inline-block;
     text-align: center;
     color: #fff;
-    background: #e4393c;
+    background: $tig-color-primary;
     font-size: 24rpx;
     height: 60rpx;
     line-height: 60rpx;
@@ -1009,6 +1018,10 @@ onShow(() => {
     margin-top: 20rpx;
     margin-right: 20rpx;
     padding: 0 30rpx;
+
+    &.lt_disable {
+        opacity: 0.5;
+    }
 }
 .edit-cart-action .l_a_tool.lt_delete {
     background: #eee;

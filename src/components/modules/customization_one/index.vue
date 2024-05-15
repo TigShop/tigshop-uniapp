@@ -200,7 +200,7 @@ const buy = () => {};
     font-size: 20rpx;
     display: inline-block;
     padding-right: 10rpx;
-    color: #f23030;
+    color: $tig-color-primary;
 }
 .dOne .goods-li .price-box .market-price {
     font-size: 20rpx;

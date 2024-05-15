@@ -65,9 +65,7 @@
                                                 </block>
                                                 <view class="item-action" v-if="module?.show_price">
                                                     <view class="item-price">
-                                                        <text class="price_format">
-                                                            {{ priceFormat(Number(subItem.product_price)) }}
-                                                        </text>
+                                                        <FormatPrice :priceData="subItem.product_price"></FormatPrice>
                                                     </view>
                                                     <view class="item-buy"> </view>
                                                 </view>
@@ -104,7 +102,7 @@
                                             <block v-if="module.show_price">
                                                 <view class="item-action">
                                                     <view class="item-price">
-                                                        <text>{{ priceFormat(Number(item.product_price)) }}</text>
+                                                        <FormatPrice :priceData="item.product_price"></FormatPrice>
                                                     </view>
                                                     <view class="item-buy">
                                                         <view @click="buy" class="buy-btn">
@@ -157,7 +155,7 @@ const props = defineProps({
         default: 0
     }
 });
-console.log('product', props.module);
+console.log("product", props.module);
 const { frame } = props.module;
 const frameFormat = computed(() => {
     return formatFrame(frame ?? {});
@@ -174,7 +172,7 @@ const allFormat = computed(() => {
     };
 });
 
-const decorate_id:any = inject("decorate_id");
+const decorate_id: any = inject("decorate_id");
 onMounted(() => {
     _getproductList();
 });
@@ -255,8 +253,8 @@ const swiperOption = ref<any>({
 
 const buy = () => {};
 </script>
-<style>
-@import "../../../static/css/modules.css";
+<style lang="scss" scoped>
+/* @import "../../../static/css/modules.css"; */
 /*商品类型*/
 .module-goods_ad .module-ad-content {
     overflow: hidden;
@@ -273,8 +271,6 @@ const buy = () => {};
 .goods-ad-warp .goods-ad-con {
     display: flex;
     flex-wrap: wrap;
-}
-.goods-ad-warp .goods-ad-con .goods-ad-item {
 }
 
 .goods-ad-warp .goods-ad-item .item-photo {
@@ -304,7 +300,7 @@ const buy = () => {};
 .goods-ad-warp .goods-ad-item .item-info .count-down em {
     font-size: 32rpx;
     font-weight: normal;
-    color: #f23030;
+    color: $tig-color-primary;
     padding: 0 4rpx;
 }
 
@@ -352,15 +348,18 @@ const buy = () => {};
     align-items: center;
 }
 .goods-ad-warp .goods-ad-item .item-info .item-price {
-    font-size: 20rpx;
-    color: #f23030;
+    font-size: 36rpx;
+    color: $tig-color-primary;
     line-height: 60rpx;
     height: 60rpx;
 }
-.goods-ad-warp .goods-ad-item .item-info .item-price text {
-    font-weight: normal;
-    font-size: 36rpx;
+
+.item-price {
+    :deep(.util) {
+        font-size: 26rpx;
+    }
 }
+
 .goods-ad-warp .goods-ad-item .item-info .item-buy {
     justify-content: center;
     height: 60rpx;
@@ -373,15 +372,13 @@ const buy = () => {};
 .goods-ad-warp .goods-ad-item .item-info .item-buy .module_ico {
     width: 48rpx;
     height: 48rpx;
-    color: #f23030;
+    color: $tig-color-primary;
     font-size: 36rpx;
 }
 .goods-ad-warp .goods-ad-item .item-info .item-buy .module_ico::before {
     content: "\e611";
 }
-/*.goods-ad-warp .goods-ad-item .item-info .tag{border-bottom-right-radius:16rpx;border:1rpx solid;padding:2rpx 6rpx;font-size:20rpx;border-top-left-radius:16rpx;font-weight:300;}*/
-/*.goods-ad-warp .goods-ad-item .item-info .market_price b{font-size:130%;}*/
-/*.goods-ad-warp .goods-ad-item .item-info .buy{background:url("../../../static/flow/cart_ico.png") no-repeat scroll 50% center / 30rpx auto;bottom:10rpx;height:60rpx;position:absolute;right:14rpx;width:60rpx;}*/
+
 .ad-style__1 .goods-ad-warp .goods-ad-item .item-info .item-name .item-name-a {
     font-size: 28rpx;
 }
@@ -493,11 +490,7 @@ const buy = () => {};
 .ad-style__7 .goods-ad-warp .goods-ad-con .goods-ad-item {
     width: 33.333%;
 }
-.ad-style__7 .goods-ad-warp .goods-ad-item .item-info {
-}
-.ad-style__7 .goods-ad-warp .goods-ad-item .item-info .item-price text {
-    font-size: 28rpx;
-}
+
 .ad-style__7 .goods-ad-warp .goods-ad-item .item-info .item-buy {
     display: none;
 }
@@ -548,14 +541,14 @@ const buy = () => {};
     font-size: 40rpx;
 }
 .ad-buy_btn_style__5 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view {
-    color: #f23030;
+    color: $tig-color-primary;
     height: 44rpx;
     line-height: 44rpx;
     padding: 0 16rpx;
     display: inline-block;
     position: relative;
     border-radius: 4rpx;
-    border: 0 solid #f23030;
+    border: 0 solid $tig-color-primary;
 }
 .ad-buy_btn_style__5 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view:before {
     content: "";
@@ -575,7 +568,7 @@ const buy = () => {};
     border-radius: 4rpx;
 }
 .ad-buy_btn_style__6 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view {
-    background: #f23030;
+    background: $tig-color-primary;
     color: #fff;
     height: 44rpx;
     line-height: 44rpx;
@@ -585,14 +578,14 @@ const buy = () => {};
     border-radius: 44rpx;
 }
 .ad-buy_btn_style__7 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view {
-    color: #f23030;
+    color: $tig-color-primary;
     height: 44rpx;
     line-height: 44rpx;
     padding: 0 16rpx;
     display: inline-block;
     position: relative;
     border-radius: 4rpx;
-    border: 0 solid #f23030;
+    border: 0 solid $tig-color-primary;
 }
 .ad-buy_btn_style__7 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view:before {
     content: "";
@@ -612,7 +605,7 @@ const buy = () => {};
     border-radius: 4rpx;
 }
 .ad-buy_btn_style__8 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view {
-    background: #f23030;
+    background: $tig-color-primary;
     color: #fff;
     height: 44rpx;
     line-height: 44rpx;

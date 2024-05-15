@@ -1,5 +1,5 @@
 <template>
-    <label @click="onCheckAll">
+    <label class="check" @click="onCheckAll">
         <up-checkbox @change="onCheckAll" :shape="shape" :usedAlone="true" :disabled="disabled" :activeColor="checkedColor" :checked="checked"> </up-checkbox>
         {{ checkedText }}
     </label>
@@ -47,5 +47,10 @@ const onCheckAll = () => {
 <style lang="scss" scoped>
 :deep(.uni-checkbox-input) {
     padding: 6rpx;
+}
+.check{
+    display: flex;
+    align-items: center;
+
 }
 </style>
