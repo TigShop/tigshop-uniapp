@@ -1,6 +1,6 @@
 import { useUserStore } from "@/store/user";
 const userStore = useUserStore();
-const whiteList = ["/pages/login/index", "/pages/index/index", "/pages/search/index", "/pages/search/result", "/pages/productCate/index", "/pages/cart/index","/pages/productDetail/index"];
+const whiteList = ["/pages/login/index","/pages/register/index", "/pages/index/index", "/pages/search/index", "/pages/search/result", "/pages/productCate/index", "/pages/cart/index","/pages/productDetail/index"];
 
 function hasPermission(url: string): boolean {
     let currentUrl = url
