@@ -7,19 +7,9 @@ declare module "*.vue" {
     export default component;
 }
 declare module "uview-plus" {
-    export function install(): void;
-
-    interface test {
-        /** 邮箱格式校验 */
-        email(email: string): boolean;
-    }
-    interface $u {
-        test: test;
-    }
-
     global {
         interface Uni {
-            $u: $u;
+            $u: any;
         }
     }
 }
