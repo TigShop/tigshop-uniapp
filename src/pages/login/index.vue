@@ -68,7 +68,9 @@
                         </block>
                         <tigButton class="btn2-css3" :loading="loginLoading" @click="mobileLogin" :disabled="isloginDisabled"> 确 认 </tigButton>
                         <view class="rule-text">
-                            <tigCheckbox v-model:checked="is_checked" :checkedSize="0.8" checked-color="#ee0a24"></tigCheckbox>
+                            <tigCheckbox v-model:checked="is_checked" :checkedSize="0.8"></tigCheckbox>
+                            <!-- <up-checkbox shape="circle" activeColor="#ee0a24"  :customStyle="{ marginBottom: '8px' }" name="agree" :checked="is_checked">
+                            </up-checkbox> -->
                             <view class="rule-xieyi">
                                 <text>登录即为同意</text>
                                 <text class="red" @chick="showAgreement">《商城用户服务协议》</text>
@@ -204,7 +206,6 @@ const signin = async () => {
                 });
             }
         }, 1500);
-        
     } catch (error: any) {
         if (error.errcode == 1002 && verify.value) {
             verify.value.show();

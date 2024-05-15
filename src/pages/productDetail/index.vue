@@ -63,7 +63,7 @@
                         <view class="coupon-item">{{ item.coupon_name }}</view>
                     </block>
                 </view>
-                <view >
+                <view>
                     <image class="icon-image" src="/static/images/common/more.png" />
                 </view>
             </view>
@@ -87,25 +87,28 @@
             </view>
         </view>
         <view class="bottom-bar-box">
-            <view class="bottom-bar flex align-center justify-between">
-                <view class="label">
-                    <view>
-                        <uni-icons type="chatboxes" size="22" color="#9b9c9f"></uni-icons>
+            <view class="bottom-bar flex align-center">
+                <view class="icon-box">
+                    <view class="label">
+                        <view>
+                            <uni-icons type="chat" size="22" color="#9b9c9f"></uni-icons>
+                        </view>
+                        <view>
+                            <text>客服</text>
+                        </view>
                     </view>
-                    <view>
-                        <text>客服</text>
+                    <view class="label" @click="toPage('/pages/cart/index')">
+                        <view>
+                            <uni-badge class="uni-badge-left-margin" :text="cartCount" absolute="rightTop" size="small">
+                                <uni-icons type="cart" size="22" color="#9b9c9f"></uni-icons>
+                            </uni-badge>
+                        </view>
+                        <view>
+                            <text>购物车</text>
+                        </view>
                     </view>
                 </view>
-                <view class="label" @click="toPage('/pages/cart/index')">
-                    <view>
-                        <uni-badge class="uni-badge-left-margin" :text="cartCount" absolute="rightTop" size="small">
-                            <uni-icons type="cart" size="22" color="#9b9c9f"></uni-icons>
-                        </uni-badge>
-                    </view>
-                    <view>
-                        <text>购物车</text>
-                    </view>
-                </view>
+
                 <productSku
                     v-if="attrList.spe"
                     v-model="attrList"
@@ -120,12 +123,16 @@
                     @change="onProductSkuChange"
                     @addCart="_getCartCount"
                 >
-                    <view class="flex align-center justify-between" v-if="!isExchange">
+                    <!-- <view class="flex align-center justify-between" v-if="!isExchange">
                         <view class="btn cart">加入购物车</view>
                         <view class="btn buy">立即购买 </view>
                     </view>
                     <view class="flex align-center justify-between" v-if="isExchange">
                         <view class="btn cart" style="width: 60vw">立即兑换 </view>
+                    </view> -->
+                    <view class="btn-box">
+                        <view class="btn cart">加入购物车</view>
+                        <view class="btn buy">立即购买 </view>
                     </view>
                 </productSku>
             </view>
@@ -459,7 +466,7 @@ const getCoupon = async (value: any) => {
                 width: 6px;
                 height: 100%;
                 color: #fff;
-                background:$tig-color-primary;
+                background: $tig-color-primary;
                 -webkit-mask: radial-gradient(circle at 2px, #0000 2px, $tig-color-primary 0);
                 -webkit-mask-position: 5px;
                 -webkit-mask-size: 100% 6px;
@@ -478,6 +485,18 @@ const getCoupon = async (value: any) => {
     .bottom-bar {
         height: 100rpx;
         padding: 0 20rpx;
+
+        .icon-box {
+            width: 200rpx;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .btn-box {
+            display: flex;
+            padding-left: 8rpx;
+        }
         .label {
             color: #666;
             font-size: 20rpx;
@@ -486,20 +505,18 @@ const getCoupon = async (value: any) => {
         .btn {
             width: 250rpx;
             text-align: center;
-            border-radius: 100rpx;
-            line-height: 55rpx;
-            height: 55rpx;
+            line-height: 60rpx;
+            height: 60rpx;
             color: #fff;
             font-size: 24rpx;
-            &:first-child {
-                margin-right: 20rpx;
-            }
         }
         .cart {
             background: $tig-color-yellow;
+            border-radius: 100rpx 0 0 100rpx;
         }
         .buy {
             background: $tig-color-error;
+            border-radius: 0 100rpx 100rpx 0;
         }
     }
 }

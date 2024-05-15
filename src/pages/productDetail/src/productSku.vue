@@ -5,7 +5,7 @@
         </view>
         <tigpopup v-model:show="showDrawerRef" position="bottom" paddingBottom="0" height="60vh" @change="popupChange" :showClose="false" :showTitle="false">
             <view class="product-sku-box flex justify-between">
-                <view class="product-info flex align-end">
+                <view class="product-info flex">
                     <view class="img">
                         <image lazy-load :src="imageFormat(skuProductImage)" class="slide-image" />
                     </view>
@@ -228,6 +228,7 @@ const loadPrice = async (skuId:any) => {
         }
         .info{
             margin-left: 20rpx;
+            padding-top: 30rpx;
             .price{
                 color: $tig-color-primary;
                 font-weight: bold;
@@ -275,8 +276,7 @@ const loadPrice = async (skuId:any) => {
         .sku-tag {
             .tag {
                 margin-right: 30rpx;
-                background-color: #FFFFFF;
-                border: 1rpx solid #E7E7E7;
+                background-color: #f7f8fa;
                 color: #333;
                 height: 55rpx;
                 line-height: 55rpx;
