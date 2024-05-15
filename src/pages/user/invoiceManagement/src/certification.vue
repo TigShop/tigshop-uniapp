@@ -13,10 +13,6 @@
                 <view> 您的增票资质状态：</view>
                 <view class="specaial-text">{{ formatText }}</view>
             </view>
-            <view class="status-text" v-if="!showEdit">
-                <view> 操作：</view>
-                <view class="specaial-text" @click="handleShowEdit"> {{ formState.status === 0 ? "添加增票资质" : "修改并重新审核" }}</view>
-            </view>
         </view>
         <view class="certification-content">
             <view v-if="showEdit" class="content-title"> 填写增票资质信息<text class="specaial-text">（所有信息均为必填）</text> </view>
@@ -123,6 +119,11 @@
             <view class="btn-box">
                 <tigButton plain style="width: 100%; height: 70rpx" @click="showEdit = false"> 取消</tigButton>
                 <tigButton style="width: 100%; height: 70rpx" @click="onSubmit"> 提交</tigButton>
+            </view>
+        </saveBottomBox>
+        <saveBottomBox height="110" backgroundColor="#fff" v-if="!showEdit">
+            <view class="btn-box">
+                <tigButton style="width: 100%; height: 70rpx" @click="handleShowEdit"> {{ formState.status === 0 ? "添加增票资质" : "修改并重新审核" }}</tigButton>
             </view>
         </saveBottomBox>
     </view>

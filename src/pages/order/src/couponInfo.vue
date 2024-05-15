@@ -11,7 +11,7 @@
             <view class="points-title"
                 >积分
                 <view class="points-text"
-                    >当前账户积分：<text class="red">{{ points }}</text>
+                    >当前账户积分：<text class="special-text">{{ points }}</text>
                 </view>
             </view>
             <view class="points-content" @click="handlePoints">
@@ -22,10 +22,10 @@
             </view>
         </view>
         <view class="balance">
-            <view class="balance-title"
+            <view class="balance-title" @click="handleToBalance"
                 >余额
                 <view class="balance-text"
-                    >当前账户余额：<text class="red">{{ balance }}</text></view
+                    >当前账户余额：<text class="special-text">{{ balance }}</text></view
                 >
             </view>
             <view>
@@ -269,6 +269,12 @@ const handleBalance = () => {
     isBalance.value = !isBalance.value;
     emit("sendBalanceStatus", isBalance.value);
 };
+
+const handleToBalance = () =>{
+    uni.navigateTo({
+        url: "/pages/user/account/index"
+    });
+}
 </script>
 
 <style lang="scss" scoped>
@@ -338,19 +344,9 @@ const handleBalance = () => {
     height: 100%;
 }
 
-.button-position {
-    position: fixed;
-    bottom: 30rpx;
-    left: 0;
-    right: 0;
-    padding: 0 30rpx;
-    padding-bottom: env(safe-area-inset-bottom) !important;
-}
-
 .bonus-box {
     padding: 20rpx;
     overflow: hidden;
-    // position: absolute;
 }
 .bonus-box .bonus-bd {
     display: flex;
@@ -443,15 +439,6 @@ const handleBalance = () => {
     font-size: 24rpx;
     color: #999;
 }
-.bonus-box .bonus-bd .bonus-btn {
-    border: 1rpx solid;
-    padding: 6rpx 20rpx;
-    border-radius: 30rpx;
-    color: #e93b3d;
-    position: absolute;
-    top: 0;
-    right: 0;
-}
 
 .bonus-bd {
     opacity: 0.7;
@@ -504,8 +491,8 @@ const handleBalance = () => {
         align-items: flex-end;
     }
 }
-.red {
-    color: #f23030;
+.special-text {
+    color: $tig-color-primary;
 }
 
 .points-popup {
@@ -559,21 +546,12 @@ const handleBalance = () => {
                     bottom: 0;
                     height: 5rpx;
                     width: 80rpx;
-                    background-color: #e93b3d;
+                    background-color: $tig-color-primary;
                     border-radius: 10rpx;
                 }
             }
         }
     }
-}
-
-.button-position {
-    position: fixed;
-    bottom: 30rpx;
-    left: 0;
-    right: 0;
-    padding: 0 30rpx;
-    padding-bottom: env(safe-area-inset-bottom) !important;
 }
 
 .coupon-empty {

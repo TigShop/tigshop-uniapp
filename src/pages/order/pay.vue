@@ -7,7 +7,12 @@
         <view class="order-pay-warp" v-if="order">
             <view class="order_infos">
                 <view class="order_amount">
-                    <FormatPrice :priceData="order.unpaid_amount"></FormatPrice>
+                    <block v-if="typeText !== 'recharge'">
+                        <FormatPrice :priceData="order.unpaid_amount"></FormatPrice>
+                    </block>
+                    <block v-else>
+                        <FormatPrice :priceData="order.amount"></FormatPrice>
+                    </block>
                 </view>
                 <view class="order_sn">
                     订单号：
@@ -20,23 +25,25 @@
 
             <block v-if="paymentType === 'offline'">
                 <offline :offline_payment_list="offline_payment_list"></offline>
-
             </block>
-            <view class="other-info">
-                <view class="tit">其它信息</view>
-                <view class="item">
-                    支付方式：
-                    <text>在线支付</text>
+            <block v-if="typeText !== 'recharge'">
+                <view class="other-info">
+                    <view class="tit">其它信息</view>
+                    <view class="item">
+                        支付方式：
+                        <text>在线支付</text>
+                    </view>
+                    <view class="item">
+                        配送方式：
+                        <text>{{ order.shipping_type_name || "专线物流" }}</text>
+                    </view>
+                    <view class="item">
+                        下单时间：
+                        <text>{{ order.add_time }}</text>
+                    </view>
                 </view>
-                <view class="item">
-                    配送方式：
-                    <text>{{ order.shipping_type_name || "专线物流" }}</text>
-                </view>
-                <view class="item">
-                    下单时间：
-                    <text>{{ order.add_time }}</text>
-                </view>
-            </view>
+            </block>
+
             <saveBottomBox height="110" backgroundColor="#fff" v-if="!(paymentType === 'offline')">
                 <view class="btn-box">
                     <tigButton style="width: 100%; height: 70rpx" :disabled="paymentDisabled" @click="handlePay"> 立即支付</tigButton>
@@ -53,10 +60,10 @@
 import navbar from "@/components/navbar/index.vue";
 import payment from "./src/payment.vue";
 import saveBottomBox from "@/components/saveBottomBox/index.vue";
-import offline from './src/offline.vue'
+import offline from "./src/offline.vue";
 import { onLoad } from "@dcloudio/uni-app";
 import { onBeforeUnmount, reactive, ref } from "vue";
-import { orderPayInfo, creatPay, checkPayStatus } from "@/api/order/pay";
+import { orderPayInfo, creatPay, checkPayStatus, rechargeOrderPay, rechargeOrderCreate } from "@/api/order/pay";
 import type { Order, OfflinePaymentList } from "@/types/order/pay";
 import { useConfigStore } from "@/store/config";
 const configStore = useConfigStore();
@@ -73,33 +80,33 @@ const paymentDisabled = ref(false);
 const offline_payment_list = ref<OfflinePaymentList>({} as OfflinePaymentList);
 const paymentType = ref("wechat");
 const order = ref<Order>();
-const activeName = ref("银行汇款");
 const formContainer = ref<HTMLElement | null>(null);
+const typeText = ref("");
 
 const orderId = ref<number | null>(null);
 onLoad((options) => {
     if (options && options.order_id) {
-        orderId.value = options.order_id;
-        loadOrderPayInfo();
+        console.log(options);
+        if (!options.type) {
+            loadOrderPayInfo(options.order_id);
+        } else {
+            typeText.value = options.type;
+            parameter.title = "充值支付";
+            getRechargeOrderPay(options.order_id);
+        }
     }
 });
 
-const handleTabsActive = (str: string) => {
-    activeName.value = str;
-};
-
-const loadOrderPayInfo = async () => {
+// 订单信息
+const loadOrderPayInfo = async (id: number) => {
     loading.value = true;
     try {
-        if (orderId.value) {
-            const result = await orderPayInfo(orderId.value);
-            order.value = result.order;
-            paymentList.value = result.payment_list;
-            if (paymentList.value.length === 1) {
-                paymentType.value = paymentList.value[0];
-            }
-            offline_payment_list.value = result.offline_payment_list;
-        }
+        const result = await orderPayInfo(id);
+        order.value = result.order;
+        paymentList.value = result.payment_list;
+        paymentType.value = paymentList.value[0];
+        offline_payment_list.value = result.offline_payment_list;
+        orderId.value = result.order.order_id;
     } catch (error: any) {
         console.error(error.message);
         uni.showToast({
@@ -107,7 +114,32 @@ const loadOrderPayInfo = async () => {
             duration: 1500,
             icon: "none"
         });
-        // 跳转用户订单页面
+        setTimeout(() => {
+            uni.navigateBack();
+        }, 1500);
+    } finally {
+        loading.value = false;
+    }
+};
+
+// 充值信息
+const getRechargeOrderPay = async (id: number) => {
+    try {
+        const result = await rechargeOrderPay({ order_id: id });
+        order.value = result.order;
+        paymentList.value = result.payment_list;
+        paymentType.value = paymentList.value[0];
+        orderId.value = result.order.order_id;
+    } catch (error: any) {
+        console.error(error.message);
+        uni.showToast({
+            title: error.message,
+            duration: 1500,
+            icon: "none"
+        });
+        setTimeout(() => {
+            uni.navigateBack();
+        }, 1500);
     } finally {
         loading.value = false;
     }
@@ -120,10 +152,19 @@ const handlePay = async () => {
 
     try {
         if (orderId.value) {
-            const result = await creatPay({
-                id: orderId.value,
-                type: paymentType.value
-            });
+            let result;
+            if (typeText.value === "recharge") {
+                result = await rechargeOrderCreate({
+                    id: orderId.value,
+                    type: paymentType.value
+                });
+            } else {
+                result = await creatPay({
+                    id: orderId.value,
+                    type: paymentType.value
+                });
+            }
+
             // 支付宝
             if (paymentType.value === "alipay") {
                 alipay(result.pay_info.html);
@@ -282,40 +323,6 @@ onBeforeUnmount(() => {
     }
 }
 
-.pay-list {
-    background: #fff;
-    padding: 30rpx 36rpx 15rpx;
-    border-radius: 18rpx;
-    margin-top: 40rpx;
-}
-.pay-list .item:last-child {
-    border: 0;
-}
-.pay-list .item {
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-    height: 100rpx;
-    border-bottom: 1rpx solid #eee;
-    padding-top: 20rpx;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    .payment-info {
-        display: flex;
-        align-items: center;
-
-        .payment-info-text {
-            min-width: 145rpx;
-        }
-
-        .payment-info-img {
-            width: 66rpx;
-            height: 66rpx;
-        }
-    }
-}
 
 .other-info {
     background: #fff;

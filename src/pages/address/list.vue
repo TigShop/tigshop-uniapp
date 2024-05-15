@@ -42,17 +42,17 @@
             <view v-else>没有更多了~</view>
         </view>
         <view style="height: 90rpx"></view>
-        <view class="bottom">
-            <view class="addressBnt" @click="handleAdd">
-                <text class="iconfont icon-dizhi"></text>
-                添加新地址
+        <saveBottomBox :height="90" backgroundColor="#fff">
+            <view class="btn-box">
+                <tigButton style="width: 100%; font-size: 28rpx;" @click="handleAdd"> <text class="iconfont icon-dizhi"></text> 添加新地址 </tigButton>
             </view>
-        </view>
+        </saveBottomBox>
     </view>
 </template>
 
 <script lang="ts" setup>
 import navbar from "@/components/navbar/index.vue";
+import saveBottomBox from "@/components/saveBottomBox/index.vue";
 import { getAddressList, delAddress, selectedAddress } from "@/api/user/address";
 import { reactive, ref } from "vue";
 import { onLoad, onReachBottom, onShow, onUnload } from "@dcloudio/uni-app";
@@ -174,6 +174,14 @@ onReachBottom(() => {
 </script>
 
 <style lang="scss" scoped>
+.btn-box {
+    padding: 15rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 28rpx;
+}
 .address-list {
     padding: 20rpx;
 
@@ -236,28 +244,5 @@ onReachBottom(() => {
         font-size: 22rpx;
     }
 }
-
-.bottom {
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 106rpx;
-    padding: 0 20rpx;
-    padding-bottom: env(safe-area-inset-bottom) !important;
-
-    .addressBnt {
-        background-color: #ee0a24;
-        width: 100%;
-        height: 76rpx;
-        border-radius: 50rpx;
-        text-align: center;
-        line-height: 76rpx;
-        font-size: 30rpx;
-        color: #fff;
-    }
-}
-
 
 </style>

@@ -40,7 +40,11 @@
             "style": {}
         },
         {
-            "path": "pages/user/account/cardManagement/index",
+            "path": "pages/user/account/cardManagement/list",
+            "style": {}
+        },
+        {
+            "path": "pages/user/account/cardManagement/edit",
             "style": {}
         },
 		{

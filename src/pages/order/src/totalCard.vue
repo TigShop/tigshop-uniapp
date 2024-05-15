@@ -7,9 +7,8 @@
         <view class="total-card-item">
             <view class="total-card-item-left"
                 >配送费用
-                <!-- <uni-icons class="total-card-ico" color="#999" type="info" size="20" @click="handleDispatching"></uni-icons> -->
             </view>
-            <view class="total-card-item-right red">+ <FormatPrice :priceData="total.shipping_fee"></FormatPrice></view>
+            <view class="total-card-item-right special-text">+ <FormatPrice :priceData="total.shipping_fee"></FormatPrice></view>
         </view>
         <view class="total-card-item" v-if="total.balance > 0">
             <view class="total-card-item-left">使用余额</view>
@@ -24,16 +23,6 @@
             <view class="total-card-item-right"><FormatPrice :priceData="total.coupon_amount"></FormatPrice></view>
         </view>
         <view class="total-card-tig"> * 该订单完成后，您将获得 <text class="special-text">111111</text> 积分 </view>
-
-        <tigpopup v-model:show="show" title="配送费用" height="40vh" width="75vw" position="center">
-            <view class="distribution">
-                <view class="distribution-content">
-                    <view class="distribution-item" v-for="(item, index) in cartList" :key="index">
-                        <view class="shop_name">{{ item?.store_id == 0 ? "自营" : item.store_name }}</view>
-                    </view>
-                </view>
-            </view>
-        </tigpopup>
     </view>
 </template>
 
@@ -75,7 +64,7 @@ const handleDispatching = () => {
         }
 
         .red {
-            color: #ff3700;
+            color: $tig-color-primary;
         }
 
         .total-card-ico {
