@@ -10,8 +10,8 @@
                                 <view class="address-item-content">
                                     <view class="address-item-left flex-center">
                                         <radio
-                                            :value="item.address_id"
-                                            activeBackgroundColor="#ee0a24"
+                                            :value="item.address_id.toString()"
+                                            :activeBackgroundColor="checkedColor"
                                             :checked="item.is_selected === 1"
                                             style="margin-right: 20rpx; transform: scale(0.9)"
                                         ></radio>
@@ -44,7 +44,7 @@
         <view style="height: 90rpx"></view>
         <saveBottomBox :height="90" backgroundColor="#fff">
             <view class="btn-box">
-                <tigButton style="width: 100%; font-size: 28rpx;" @click="handleAdd"> <text class="iconfont icon-dizhi"></text> 添加新地址 </tigButton>
+                <tigButton style="width: 100%; font-size: 28rpx" @click="handleAdd"> <text class="iconfont icon-dizhi"></text> 添加新地址 </tigButton>
             </view>
         </saveBottomBox>
     </view>
@@ -54,10 +54,11 @@
 import navbar from "@/components/navbar/index.vue";
 import saveBottomBox from "@/components/saveBottomBox/index.vue";
 import { getAddressList, delAddress, selectedAddress } from "@/api/user/address";
-import { reactive, ref } from "vue";
+import { reactive, ref, computed } from "vue";
 import { onLoad, onReachBottom, onShow, onUnload } from "@dcloudio/uni-app";
 import type { AddressFilterResult } from "@/types/user/address";
-const pages = getCurrentPages();
+import { useThemeStore } from "@/store/theme";
+
 const parameter = reactive({
     navbar: "1",
     return: "1",
@@ -70,6 +71,12 @@ const filterParams = reactive({
 });
 const total = ref(0);
 const loaded = ref(false);
+
+const themeStore = useThemeStore();
+const checkedColor = computed(() => {
+    return themeStore.themeStyle["--general"] || "#ee0a24";
+});
+
 const __getAddressList = async () => {
     if (filterParams.page > 1) {
         loaded.value = true;
@@ -137,15 +144,20 @@ const __selectedAddress = async () => {
     uni.showLoading({
         title: "切换中"
     });
+    const pages = getCurrentPages();
     try {
         const result = await selectedAddress({ id: isCheckedId.value });
         filterParams.page = 1;
         addressList.value = [];
-        if (pages[0].route === "pages/order/check") {
-            uni.navigateBack();
-        } else {
-            __getAddressList();
-        }
+        if (pages.length > 1) {
+            const prevRoute = pages[pages.length - 2].route;
+
+            if (prevRoute === "pages/order/check") {
+                uni.navigateBack();
+            }
+        } 
+
+        __getAddressList();
     } catch (errore) {
         console.error(errore);
     } finally {
@@ -235,7 +247,7 @@ onReachBottom(() => {
     }
     .address-del {
         height: 100%;
-        background-color: #ee0a24;
+        background-color: $tig-color-primary;
         width: 100rpx;
         color: #fff;
         display: flex;
@@ -244,5 +256,4 @@ onReachBottom(() => {
         font-size: 22rpx;
     }
 }
-
 </style>

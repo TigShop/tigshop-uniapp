@@ -68,7 +68,7 @@
                         </block>
                         <tigButton class="btn2-css3" :loading="loginLoading" @click="mobileLogin" :disabled="isloginDisabled"> 确 认 </tigButton>
                         <view class="rule-text">
-                            <tigCheckbox v-model:checked="is_checked" :checkedSize="0.8"></tigCheckbox>
+                            <tigCheckbox v-model:checked="is_checked"></tigCheckbox>
                             <view class="rule-xieyi">
                                 <text>登录即为同意</text>
                                 <text class="red" @chick="showAgreement">《商城用户服务协议》</text>
@@ -111,6 +111,7 @@ import tigCheckbox from "@/components/tigCheckbox/index.vue";
 import { reactive, ref, computed } from "vue";
 import { sendMobileCode, userSignin } from "@/api/login/login";
 import { useUserStore } from "@/store/user";
+import { onShow } from "@dcloudio/uni-app";
 
 const userStore = useUserStore();
 
@@ -241,9 +242,14 @@ const passwordInput = (e: any) => {
 const showAgreement = () => {
     console.log("协议");
 };
-const userRegistration = () => {
-    console.log("注册");
-};
+
+onShow(() => {
+    if (uni.getStorageSync("token" || userStore.token)) {
+        uni.reLaunch({
+            url: "/pages/index/index"
+        });
+    }
+});
 </script>
 <style lang="scss" scoped>
 page {

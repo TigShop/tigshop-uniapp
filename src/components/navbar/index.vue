@@ -1,5 +1,5 @@
 <template>
-    <view style="height: 100%">
+    <view>
         <view :class="'navbar ' + parameter.class" :style="'height:' + navH + 'rpx'">
             <view class="navbarH" :style="'height:' + navH + 'rpx;'">
                 <view class="navbarCon acea-row row-center-wrapper" v-if="parameter.navbar == 0">

@@ -12,15 +12,15 @@
         </view>
         <view class="total-card-item" v-if="total.balance > 0">
             <view class="total-card-item-left">使用余额</view>
-            <view class="total-card-item-right"><FormatPrice :priceData="total.balance"></FormatPrice></view>
+            <view class="total-card-item-right">- <FormatPrice :priceData="total.balance"></FormatPrice></view>
         </view>
         <view class="total-card-item" v-if="total.points_amount > 0">
             <view class="total-card-item-left">使用积分</view>
-            <view class="total-card-item-right"><FormatPrice :priceData="total.points_amount"></FormatPrice></view>
+            <view class="total-card-item-right">- <FormatPrice :priceData="total.points_amount"></FormatPrice></view>
         </view>
         <view class="total-card-item" v-if="total.coupon_amount > 0">
             <view class="total-card-item-left">使用优惠券</view>
-            <view class="total-card-item-right"><FormatPrice :priceData="total.coupon_amount"></FormatPrice></view>
+            <view class="total-card-item-right">- <FormatPrice :priceData="total.coupon_amount"></FormatPrice></view>
         </view>
         <view class="total-card-tig"> * 该订单完成后，您将获得 <text class="special-text">111111</text> 积分 </view>
     </view>

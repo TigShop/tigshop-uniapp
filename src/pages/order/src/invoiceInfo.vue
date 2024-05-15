@@ -29,12 +29,12 @@
                                     <radio-group @change="radioChange">
                                         <radio
                                             value="1"
-                                            activeBackgroundColor="#ee0a24"
+                                            :activeBackgroundColor="checkedColor"
                                             :checked="formState.title_type == 1"
                                             style="margin-right: 20rpx; transform: scale(0.9)"
                                             >个人</radio
                                         >
-                                        <radio value="2" activeBackgroundColor="#ee0a24" style="transform: scale(0.9)">企业</radio>
+                                        <radio value="2" :activeBackgroundColor="checkedColor" style="transform: scale(0.9)">企业</radio>
                                     </radio-group>
                                 </view>
                             </uni-forms-item>
@@ -173,6 +173,7 @@
 import { computed, reactive, ref, watch } from "vue";
 import { getInvoiceStatus, getCheckInvoice } from "@/api/order/invoice";
 import saveBottomBox from '@/components/saveBottomBox/index.vue'
+import { useThemeStore } from "@/store/theme";
 
 const props = defineProps({
     getAddressInfo: {
@@ -190,6 +191,11 @@ const props = defineProps({
 const emit = defineEmits(["update:invoiceInfo", "change"]);
 const typeCodeText = computed(() => {
     return props.typeCode === 1 ? "普通发票" : "增值税专用发票";
+});
+
+const themeStore = useThemeStore();
+const checkedColor = computed(() => {
+    return themeStore.themeStyle["--general"] || "#ee0a24";
 });
 
 const rules: any = {

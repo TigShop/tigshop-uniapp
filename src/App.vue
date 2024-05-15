@@ -2,8 +2,14 @@
 import { onLaunch, onShow, onExit } from "@dcloudio/uni-app";
 import { useConfigStore } from "@/store/config";
 import { usetabbarStore } from "@/store/tabbar";
+import { useThemeStore } from "@/store/theme";
+import { computed } from "vue";
 const configStore = useConfigStore();
 const tabbarStore = usetabbarStore();
+const themeStore = useThemeStore();
+const themeStyle = computed(() => {
+    return themeStore.themeStyle;
+});
 onLaunch(() => {
     configStore.getNavHeight();
     configStore.setXClientType();
@@ -19,7 +25,7 @@ onExit(() => {
 <style lang="scss">
 @import "uview-plus/index.scss";
 :root {
-    --general: " #39bf3e";
+    --general: v-bind("themeStyle[" --general "]");
 }
 page {
     font-size: 28rpx;

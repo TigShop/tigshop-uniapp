@@ -29,7 +29,7 @@
                 >
             </view>
             <view>
-                <switch :checked="isBalance" color="#ee0a24" @change="handleBalance" style="transform: scale(0.8)" />
+                <switch :checked="isBalance" :color="checkedColor" @change="handleBalance" style="transform: scale(0.8)" />
             </view>
         </view>
         <tigpopup v-model:show="show" title="优惠券" height="60vh" backgroundColor="#f5f5f5">
@@ -60,7 +60,7 @@
                                         <view class="bonus-time">截止时间 {{ item.end_date }}</view>
                                     </view>
                                     <view class="coupon-btn">
-                                        <tigCheckbox checked-color="#ee0a24" v-model:checked="item.selected" @change="handleCheck(item)"></tigCheckbox>
+                                        <tigCheckbox v-model:checked="item.selected" @change="handleCheck(item)"></tigCheckbox>
                                     </view>
                                 </view>
                             </view>
@@ -135,8 +135,9 @@
 import type { CouponList, EnableCoupon } from "@/types/order/check";
 import tigCheckbox from "@/components/tigCheckbox/index.vue";
 import saveBottomBox from "@/components/saveBottomBox/index.vue";
-import { reactive, ref, watch } from "vue";
+import { reactive, ref, watch, computed } from "vue";
 import { priceFormat } from "@/utils/format";
+import { useThemeStore } from "@/store/theme";
 interface Props {
     couponList: CouponList;
     useCouponIds: number[];
@@ -149,7 +150,10 @@ interface Props {
 }
 const props = defineProps<Props>();
 const emit = defineEmits(["update:useCouponIds", "sendBalanceStatus", "change", "update:usePoint"]);
-
+const themeStore = useThemeStore();
+const checkedColor = computed(() => {
+    return themeStore.themeStyle["--general"] || "#ee0a24";
+});
 const selectedDatas = ref<EnableCoupon[]>([]);
 const couponListData = ref<CouponList>({
     enable_coupons: [],

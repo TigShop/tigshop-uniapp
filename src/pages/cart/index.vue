@@ -16,7 +16,7 @@
                 <block v-for="(item, index) in cartList" :key="index">
                     <view class="cart_table" id="">
                         <view class="cart_store_title noborder">
-                            <tigCheckbox v-model:checked="item.is_checked" @change="onCheckAllItem(index)" checked-color="#ee0a24"></tigCheckbox>
+                            <tigCheckbox v-model:checked="item.is_checked" @change="onCheckAllItem(index)"></tigCheckbox>
                             <view class="store_label">{{ item.store_title ? item.store_title : "自营" }}</view>
                         </view>
                         <view class="goods-list-cart">
@@ -29,7 +29,6 @@
                                                     class="check-item"
                                                     v-model:checked="goods.is_checked"
                                                     @change="onChangeCheck"
-                                                    checked-color="#ee0a24"
                                                     :disabled="goods.is_disabled"
                                                 ></tigCheckbox>
                                                 <navigator :url="'/pages/productDetail/index?id=' + goods.cart_id" class="photo">
