@@ -73,6 +73,7 @@ const props = defineProps({
         color: rgba(53, 53, 53, 0.6);
         border-color: rgba(53, 53, 53, 0.6);
     }
+    
     &.plainMainColor {
         border-color: $tig-color-primary;
         color: $tig-color-primary;
