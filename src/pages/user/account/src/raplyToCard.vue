@@ -197,10 +197,11 @@ const onSubmit = async () => {
             icon: "success",
             duration: 1000
         });
+        setTimeout(() => {
+            backDetail();
+        }, 1500)
     } catch (error: any) {
         console.log("表单错误信息：", error);
-    } finally {
-        backDetail();
     }
 };
 
