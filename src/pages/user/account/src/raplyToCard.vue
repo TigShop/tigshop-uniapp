@@ -6,23 +6,24 @@
         </view>
     </view>
     <view class="reply-main">
-        <uni-forms ref="formRef" :modelValue="formState" label-width="170rpx">
-            <view class="reply-content">
-                <uni-forms-item label="提现至">
-                    <uni-data-select :localdata="dataList" :clear="false" @change="selectNo" ></uni-data-select>
-                    <view class="tips">当前{{ accountPlaceholder }}账号已不用？<navigator url="/pages/user/account/cardManagement/list" class="font-color">点击这里</navigator>去添加新的{{ accountPlaceholder }}账号。</view>
-                </uni-forms-item>
-                <uni-forms-item label="提现姓名" name="account_name">
-                    <uni-easyinput v-model="formState.account_data.account_name" disabled :placeholder="'请选择'+accountPlaceholder+'账号'" />
-                </uni-forms-item>
-                <uni-forms-item label="银行详情" name="bank_name" v-if="formState.account_data.account_type === 1">
-                    <uni-easyinput type="textarea" v-model="formState.account_data.bank_name" disabled placeholder="请选择银行卡账号" />
-                </uni-forms-item>
-                <uni-forms-item label="提现金额" name="amount">
-                    <uni-easyinput v-model="formState.amount" placeholder="请输入提现金额" primaryColor="#fcc282" />
-                </uni-forms-item>
-            </view>
-        </uni-forms>
+        <view class="reply-content">
+            <up-form ref="formRef" :model="formState" label-width="170rpx">
+                <up-form-item label="提现至">
+                    <up-picker :show="show" :columns="dataList" keyName="text" @confirm="confirm" @cancel="cancel"></up-picker>
+                    <up-button @click="show = true" style="justify-content: flex-start;">{{ selectedData.text }}</up-button>
+                </up-form-item>
+                <view class="tips">当前{{ accountPlaceholder }}账号已不用？<navigator url="/pages/user/account/cardManagement/list" class="font-color">点击这里</navigator>去添加新的{{ accountPlaceholder }}账号。</view>
+                <up-form-item label="提现姓名" prop="account_name">
+                    <up-input v-model="formState.account_data.account_name" :placeholder="'请选择'+accountPlaceholder+'账号'" disabled fontSize="12" />
+                </up-form-item>
+                <up-form-item label="银行详情" prop="bank_name" v-if="formState.account_data.account_type === 1">
+                    <up-textarea  v-model="formState.account_data.bank_name" placeholder="请选择银行卡账号" disabled fontSize="12" />
+                </up-form-item>
+                <up-form-item label="提现金额" prop="amount">
+                    <up-input type="number" v-model="formState.amount" placeholder="请输入提现金额" clearable fontSize="12" />
+                </up-form-item>
+            </up-form>
+        </view>
     </view>
     <view class="button-position">
         <button class="base-button recharge-btn" hover-class="base-button-hover" @click="onSubmit">提交申请</button>
@@ -51,6 +52,10 @@ const actionClick = async (value: number) => {
     __getAccountNoList(value);
 }
 const resetForm = () => {  
+    selectedData.value = {
+        id: '',
+        text: '请选择'
+    }
     formState.value = {
         account_data: {
             account_no: '',
@@ -60,6 +65,33 @@ const resetForm = () => {
         },
         amount: '',
     };
+}
+
+const show = ref(false);
+const selectedData = ref(
+    {
+        id: '',
+        text: '请选择'
+    }
+);
+const cancel = () => {
+    show.value = false;
+};
+const confirm = (e: any) => {
+    show.value = false;
+    selectedData.value.id = e.value[0].id;
+    selectedData.value.text = e.value[0].text;
+    upAcData(e.value[0].id);
+};
+
+const upAcData = (value: any) => {
+    const list  = formState.value.account_data.account_type === 1 ? yhkList
+                : formState.value.account_data.account_type === 2 ? zfbList
+                : wxList;
+    let selectedItem:any = list.value.find((item:any) => item.account_id === value);
+    formState.value.account_data.account_no = selectedItem?.account_no;
+    formState.value.account_data.account_name = selectedItem?.account_name;
+    formState.value.account_data.bank_name = selectedItem?.bank_name;
 }
 
 const yhkList = ref<AccountInfo[]>([]);
@@ -81,26 +113,32 @@ const __getAccountNoList = async (type: number) => {
             yhkList.value.length = 0;
             yhkList.value.push(...result.filter_result);
             let arr:any = yhkList.value.map((item:any) => ({
-                value: item.account_id,
+                id: item.account_id,
                 text: item.account_no
             }));
-            newYhlList.value = arr;
+            let newArr:any = [];
+            newArr.push(arr);
+            newYhlList.value = newArr;
         } else if (type === 2) {
             zfbList.value.length = 0;
             zfbList.value.push(...result.filter_result);
             let arr:any = zfbList.value.map((item:any) => ({
-                value: item.account_id,
+                id: item.account_id,
                 text: item.account_no
             }));
-            newZfbList.value = arr;
+            let newArr:any = [];
+            newArr.push(arr);
+            newZfbList.value = newArr;
         } else {
             wxList.value.length = 0;
             wxList.value.push(...result.filter_result);
             let arr:any = wxList.value.map((item:any) => ({
-                value: item.account_id,
+                id: item.account_id,
                 text: item.account_no
             }));
-            newWxList.value = arr;
+            let newArr:any = [];
+            newArr.push(arr);
+            newWxList.value = newArr;
         }
     } catch (error: any) {
         console.log(error.message);
@@ -114,17 +152,6 @@ const formState = ref<AccountFormState>({
         account_type: 1
     }
 });
-
-const selectNo = (value: any) => {
-    const list  = formState.value.account_data.account_type === 1 ? yhkList
-                : formState.value.account_data.account_type === 2 ? zfbList
-                : wxList;
-    let selectedItem:any = list.value.find((item:any) => item.account_id === value);
-    formState.value.account_data.account_no = selectedItem?.account_no;
-    formState.value.account_data.account_name = selectedItem?.account_name;
-    formState.value.account_data.bank_name = selectedItem?.bank_name;
-    console.log(formState.value.account_data);
-};
 
 const accountPlaceholder = computed(() => {
     switch (formState.value.account_data.account_type) {
@@ -154,10 +181,11 @@ const dataList = computed(() => {
 
 const rules = {
     amount: {
-        rules: [
-            { required: true, errorMessage: "请输入提现金额" }
-        ]
-    }
+        type: 'string',
+        required: true,
+        message: '请输入提现金额',
+        trigger: 'change'
+    },
 };
 
 const onSubmit = async () => {
@@ -171,6 +199,8 @@ const onSubmit = async () => {
         });
     } catch (error: any) {
         console.log("表单错误信息：", error);
+    } finally {
+        backDetail();
     }
 };
 
@@ -196,7 +226,6 @@ onLoad(() => {
     flex-direction: row;
     gap: 120rpx;
     margin: 20rpx;
-
     .tab {
         padding: 10px;
         width: 100%;
@@ -205,45 +234,14 @@ onLoad(() => {
         color: black;
         text-align: center;
     }
-    &.active-tab {
+    & .active-tab {
         border-bottom: 2px solid #fa0;
         color: #fa0;
     }
 }
 
-.custom-tabs .active-tab {
-    border-bottom: 2px solid #fa0;
-    color: #fa0;
-}
-:deep(.uni-forms-item) {
-    margin-bottom: 30rpx;
-}
-
-:deep(.uni-forms-item__label) {
-    font-size: 26rpx;
-}
-
-:deep(.uni-forms-item__error) {
-    top: 100%;
-    left: 18rpx;
-}
-
-:deep(.uni-easyinput__placeholder-class) {
-    font-size: 26rpx;
-}
-
-:deep(.icon-calendar) {
-    display: none;
-}
-
-:deep(.uni-date__x-input) {
-    text-align: right;
-    color: #333;
-}
-
 .reply-main {
     padding: 20rpx;
-
     .reply-content {
         background-color: #fff;
         border-radius: 10rpx;
@@ -252,12 +250,16 @@ onLoad(() => {
         .tips {
             font-size: 12px;
             color: #a5a5a5;
-            margin-top: 10rpx;
+            padding-left: 170rpx;
             navigator {
                 display: inline;
             }
         }
     }
+}
+
+:deep(.u-textarea__field) {
+    font-size: 24rpx;
 }
 
 .button-position {
