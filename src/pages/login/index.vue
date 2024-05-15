@@ -66,9 +66,9 @@
                                 ></view>
                             </view>
                         </block>
-                        <tigButton  class="btn2-css3" :loading="loginLoading" @click="mobileLogin" :disabled="isloginDisabled"> 确 认 </tigButton>
+                        <tigButton class="btn2-css3" :loading="loginLoading" @click="mobileLogin" :disabled="isloginDisabled"> 确 认 </tigButton>
                         <view class="rule-text">
-                            <tigCheckbox  v-model:checked="is_checked" :checkedSize="0.8" checked-color="#ee0a24"></tigCheckbox>
+                            <tigCheckbox v-model:checked="is_checked" :checkedSize="0.8" checked-color="#ee0a24"></tigCheckbox>
                             <view class="rule-xieyi">
                                 <text>登录即为同意</text>
                                 <text class="red" @chick="showAgreement">《商城用户服务协议》</text>
@@ -110,7 +110,6 @@ import Verify from "@/components/verifition/Verify.vue";
 import tigCheckbox from "@/components/tigCheckbox/index.vue";
 import { reactive, ref, computed } from "vue";
 import { sendMobileCode, userSignin } from "@/api/login/login";
-import { getUser } from "@/api/user/user";
 import { useUserStore } from "@/store/user";
 
 const userStore = useUserStore();
@@ -193,16 +192,19 @@ const signin = async () => {
             duration: 1500,
             icon: "none"
         });
-
+        const backUrl = uni.getStorageSync("URL");
         setTimeout(() => {
-            if (pages[0].route === "pages/login/index") {
+            if (backUrl) {
+                uni.reLaunch({
+                    url: backUrl
+                });
+            } else {
                 uni.reLaunch({
                     url: "/pages/index/index"
                 });
-            } else {
-                uni.navigateBack();
             }
-        }, 1000);
+        }, 1500);
+        
     } catch (error: any) {
         if (error.errcode == 1002 && verify.value) {
             verify.value.show();
@@ -221,8 +223,6 @@ const signin = async () => {
         loginLoading.value = false;
     }
 };
-
-
 
 const okCallback = (e: any) => {
     verifyToken.value = e.verifyToken;
