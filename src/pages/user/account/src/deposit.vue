@@ -1,6 +1,6 @@
 <template>
-    <view class="recharge-box" v-if="filterState.length > 0">
-        <view class="recharge-wrap">
+    <view class="recharge-box">
+        <view class="recharge-wrap" v-if="filterState.length > 0">
             <block v-for="(item, index) in filterState" :key="index">
                 <view v-if="item.recharge_id!=0" class="recharge-item" :class="{ selected : item.selected}" @click="selectCard(index)">
                     <view class="recharge-amount">
