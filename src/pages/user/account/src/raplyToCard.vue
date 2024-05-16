@@ -194,6 +194,14 @@ onShow(() => {
 });
 
 const onSubmit = async () => {
+    if (selectedData.value.id.length === 0) {
+        uni.showToast({
+            title: "请选择需要提现的账号",
+            icon: "none",
+            duration: 1000
+        });
+        return;
+    }
     formRef.value
         .validate()
         .then(async (valid: boolean) => {
