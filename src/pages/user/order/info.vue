@@ -26,6 +26,21 @@
                 </view>
                 <view class="expressage-card card-space" v-if="orderInfo.order_id && orderInfo.order_status === 2">
                     <view class=""> 快递公司 </view>
+                    <view class="shippingInfo-box" v-if="shippingInfo.length > 0">
+                        <view class="shippingInfo-box-content" :class="{ dim: !showMore, 'more-height': showMore }">
+                            <up-steps :current="0" dot activeColor="#39bf3e" direction="column">
+                                <up-steps-item v-for="(item, index) in shippingInfo" :key="index" :title="item.StatusDescription" :desc="item.Date">
+                                </up-steps-item>
+                            </up-steps>
+                        </view>
+                        <view class="shippingInfo-btn" @click="showMore = !showMore"
+                            >{{ showMore ? "收起" : "展开"
+                            }}<uni-icons class="btn-icon" :class="{ rotate: showMore }" type="down" size="18" color="#999"></uni-icons
+                        ></view>
+                    </view>
+                    <view class="emptyText" v-else>
+                        {{ emptyText }}
+                    </view>
                 </view>
                 <view class="pay-card card-space">
                     <view class="pay-card-item">
@@ -98,16 +113,35 @@
                     </view>
                 </view>
             </view>
-            <saveBottomBox height="90" backgroundColor="#fff" v-if="orderInfo.available_actions.cancel_order || orderInfo.available_actions.to_pay || orderInfo.available_actions.confirm_receipt || orderInfo.available_actions.to_aftersales">
+            <saveBottomBox
+                height="90"
+                backgroundColor="#fff"
+                v-if="
+                    orderInfo.available_actions.cancel_order ||
+                    orderInfo.available_actions.to_pay ||
+                    orderInfo.available_actions.confirm_receipt ||
+                    orderInfo.available_actions.to_aftersales
+                "
+            >
                 <view class="order-info-btn">
                     <view class="order-info-btn-box">
-                        <tigButton class="btn" :plain="true" v-if="orderInfo.available_actions.cancel_order" @click="handleCancelOrder(orderInfo.order_id)"> 取消订单 </tigButton>
-                        <tigButton class="btn" :plain="true" v-if="orderInfo.available_actions.to_pay" @click="handlePay(orderInfo.order_id)"> 去付款 </tigButton>
-                        <tigButton class="btn" :plain="true" v-if="orderInfo.available_actions.confirm_receipt" @click="handleConfirmReceipt(orderInfo.order_id)">
+                        <tigButton class="btn" :plain="true" v-if="orderInfo.available_actions.cancel_order" @click="handleCancelOrder(orderInfo.order_id)">
+                            取消订单
+                        </tigButton>
+                        <tigButton class="btn" :plain="true" v-if="orderInfo.available_actions.to_pay" @click="handlePay(orderInfo.order_id)">
+                            去付款
+                        </tigButton>
+                        <tigButton
+                            class="btn"
+                            :plain="true"
+                            v-if="orderInfo.available_actions.confirm_receipt"
+                            @click="handleConfirmReceipt(orderInfo.order_id)"
+                        >
                             确认已收货
                         </tigButton>
-                        <tigButton class="btn" :plain="true" v-if="orderInfo.available_actions.to_aftersales" @click="handleAfterSale(null)"> 整单售后 </tigButton>
-
+                        <tigButton class="btn" :plain="true" v-if="orderInfo.available_actions.to_aftersales" @click="handleAfterSale(null)">
+                            整单售后
+                        </tigButton>
                     </view>
                 </view>
             </saveBottomBox>
@@ -119,7 +153,7 @@
 import navbar from "@/components/navbar/index.vue";
 import saveBottomBox from "@/components/saveBottomBox/index.vue";
 import { onLoad } from "@dcloudio/uni-app";
-import { getOrder, cancelOrder, confirmReceipt } from "@/api/user/order";
+import { getOrder, cancelOrder, confirmReceipt, getShippingInfo } from "@/api/user/order";
 import type { OrderInfoResponseItem } from "@/types/user/order";
 import { ref } from "vue";
 
@@ -145,12 +179,14 @@ const oStatusInfo = ref<IoStatusInfo>({
 });
 
 const orderInfo = ref<OrderInfoResponseItem>({} as OrderInfoResponseItem);
+const showMore = ref(false);
 
 const id = ref<null | number>();
 onLoad((option: any) => {
     if (option && option.id) {
         id.value = option.id;
         __getOrder();
+        __getShippingInfo();
     }
 });
 
@@ -161,6 +197,23 @@ const __getOrder = async () => {
     try {
         const result = await getOrder({ id: id.value });
         orderInfo.value = result.item;
+    } catch (error) {
+        console.error(error);
+    } finally {
+        uni.hideLoading();
+    }
+};
+
+const shippingInfo = ref<any>([]);
+const emptyText = ref<string>("");
+const __getShippingInfo = async () => {
+    try {
+        const result = await getShippingInfo({ id: id.value });
+        if (typeof result.list === "string") {
+            emptyText.value = result.list;
+        } else {
+            shippingInfo.value = result.list;
+        }
     } catch (error) {
         console.error(error);
     } finally {
@@ -219,20 +272,20 @@ const handleConfirmReceipt = (id: number) => {
 const handleAfterSale = (item_id: null | number) => {
     if (item_id) {
         uni.navigateTo({
-            url:`/pages/user/afterSale/edit?item_id=${item_id}&order_id=${orderInfo.value.order_id}`
-        })
+            url: `/pages/user/afterSale/edit?item_id=${item_id}&order_id=${orderInfo.value.order_id}`
+        });
     } else {
         uni.navigateTo({
-            url:`/pages/user/afterSale/edit?order_id=${orderInfo.value.order_id}`
-        })
+            url: `/pages/user/afterSale/edit?order_id=${orderInfo.value.order_id}`
+        });
     }
 };
 
 const handleAfterSaleDetail = (id: number) => {
     uni.navigateTo({
-        url:`/pages/user/afterSale/info?id=${id}`
-    })
-}
+        url: `/pages/user/afterSale/info?id=${id}`
+    });
+};
 </script>
 
 <style lang="scss" scoped>
@@ -371,7 +424,46 @@ const handleAfterSaleDetail = (id: number) => {
         display: flex;
         align-items: center;
         padding-right: 15rpx;
-
     }
+}
+
+.shippingInfo-box {
+    padding: 20rpx;
+    .shippingInfo-box-content {
+        height: 400rpx;
+        overflow: hidden;
+        position: relative;
+
+        &.dim::after {
+            width: 100%;
+            height: 200rpx;
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0rpx;
+            background-image: linear-gradient(-180deg, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 80%);
+        }
+
+        &.more-height {
+            height: auto;
+        }
+    }
+
+    .shippingInfo-btn {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+
+        .btn-icon {
+            &.rotate {
+                transition: all 0.3s;
+                transform: rotate(180deg);
+            }
+        }
+    }
+}
+
+.emptyText {
+    padding-top: 15rpx;
 }
 </style>

@@ -228,6 +228,7 @@ const handlePay = (id: number) => {
 };
 
 const handleOrederDetail = (id: number) => {
+    console.log('handleOrederDetail')
     uni.navigateTo({
         url: `/pages/user/order/info?id=${id}`
     });

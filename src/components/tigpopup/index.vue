@@ -1,6 +1,6 @@
 <template>
     <view>
-        <uni-popup ref="popup" type="bottom" :safe-area="true" style="z-index: 2000" @change="getPopupStatus">
+        <uni-popup ref="popup" type="bottom" :safe-area="false" style="z-index: 2000" @change="getPopupStatus">
             <view
                 class="popup-container"
                 :class="{

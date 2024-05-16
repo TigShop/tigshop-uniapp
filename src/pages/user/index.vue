@@ -64,19 +64,46 @@
                         </view>
                         <view class="wrap">
                             <view class="li" @click="goPages('/pages/user/order/list?type=await_pay')">
-                                <text class="iconfont icon-daifukuan"></text>
-                                <view class="txt">待付款</view>
-                                <text class="counts" v-if="orderNum.await_pay > 0">{{ orderNum.await_pay }}</text>
+                                <uni-badge v-if="orderNum.await_pay > 0" class="badgecolor" :text="orderNum.await_pay" absolute="rightTop" size="small">
+                                    <text class="iconfont icon-daifukuan"></text>
+                                    <view class="txt">待付款</view>
+                                </uni-badge>
+                                <block v-else>
+                                    <text class="iconfont icon-daifukuan"></text>
+                                    <view class="txt">待付款</view>
+                                </block>
                             </view>
                             <view class="li" @click="goPages('/pages/user/order/list?type=await_shipping')">
-                                <text class="iconfont icon-daishouhuo1"></text>
-                                <view class="txt">待收货</view>
-                                <text class="counts" v-if="orderNum.await_received > 0">{{ orderNum.await_received }}</text>
+                                <uni-badge
+                                    v-if="orderNum.await_received > 0"
+                                    class="badgecolor"
+                                    :text="orderNum.await_received"
+                                    absolute="rightTop"
+                                    size="small"
+                                >
+                                    <text class="iconfont icon-daishouhuo1"></text>
+                                    <view class="txt">待收货</view>
+                                </uni-badge>
+                                <block v-else>
+                                    <text class="iconfont icon-daishouhuo1"></text>
+                                    <view class="txt">待收货</view>
+                                </block>
                             </view>
                             <view class="li" @click="goPages('/pages/user/order/list?type=await_comment')">
-                                <text class="iconfont icon-pingjia"></text>
-                                <view class="txt">待评价</view>
-                                <text class="counts" v-if="orderNum.await_comment > 0">{{ orderNum.await_comment }}</text>
+                                <uni-badge
+                                    v-if="orderNum.await_comment > 0"
+                                    class="badgecolor"
+                                    :text="orderNum.await_comment"
+                                    absolute="rightTop"
+                                    size="small"
+                                >
+                                    <text class="iconfont icon-pingjia"></text>
+                                    <view class="txt">待评价</view>
+                                </uni-badge>
+                                <block v-else>
+                                    <text class="iconfont icon-pingjia"></text>
+                                    <view class="txt">待评价</view>
+                                </block>
                             </view>
                             <view class="li" @click="goPages('/pages/user/afterSale/list')">
                                 <text class="iconfont icon-shouhou1"></text>
@@ -184,7 +211,6 @@ import { useUserStore } from "@/store/user";
 import { usetabbarStore } from "@/store/tabbar";
 import { getGuessLike } from "@/api/common";
 import type { GuessLikeProductList } from "@/types/common";
-import { hasToken } from "@/utils";
 import { ref } from "vue";
 import { onShow, onReachBottom, onPageScroll } from "@dcloudio/uni-app";
 import { getUser } from "@/api/user/user";
@@ -281,7 +307,7 @@ onReachBottom(() => {
     }
 });
 </script>
-<style>
+<style scoped lang="scss">
 page {
     background: linear-gradient(90deg, #f9f5fc, #f3f5fe) !important;
 }
@@ -799,5 +825,11 @@ page {
 .recommend_wrapper .title .text .desc {
     display: inline-block;
     padding-left: 20rpx;
+}
+
+.badgecolor {
+    :deep(.uni-badge--error) {
+        background-color: $tig-color-primary;
+    }
 }
 </style>

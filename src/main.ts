@@ -1,7 +1,7 @@
 import { createSSRApp } from "vue";
 import App from "./App.vue";
 import pinia from "@/store/index";
-import "./font/iconfont.css";
+import "./static/font/iconfont.css";
 import "./static/css/style.css"; /**app.wxss**/
 
 import "@/utils/permission"

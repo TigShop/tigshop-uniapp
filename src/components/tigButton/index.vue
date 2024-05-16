@@ -1,5 +1,5 @@
 <template>
-    <button class="btn-base" :loading="loading" :plain="plain" :disabled="disabled" :class="{ round: round, disabled: disabled, plain: plain, plainMainColor: plainMainColor }">
+    <button @click="handleClick" class="btn-base" :loading="loading" :plain="plain" :disabled="disabled" :class="{ round: round, disabled: disabled, plain: plain, plainMainColor: plainMainColor }">
         <slot></slot>
     </button>
 </template>
@@ -31,6 +31,11 @@ const props = defineProps({
         default: false
     }
 });
+// 兼容小程序
+const emit = defineEmits(['click']);
+const handleClick = () => {
+    emit('click');
+}
 </script>
 
 <style lang="scss" scoped>

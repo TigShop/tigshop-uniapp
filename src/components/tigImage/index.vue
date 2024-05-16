@@ -27,7 +27,7 @@ watch(
             // #endif
 
             // #ifdef MP-WEIXIN
-            return emit("update:src", "/static/images/common/empty-img-bg3.png");
+            return emit("update:src", "static/images/common/empty-img-bg3.png");
             // #endif
         }
         if (newVal.includes("/src")) {
@@ -48,7 +48,7 @@ const handleError = (e: Event) => {
     // #endif
 
     // #ifdef MP-WEIXIN
-    emit("update:src", "/static/images/common/empty-img-bg3.png");
+    emit("update:src", "static/images/common/empty-img-bg3.png");
     // #endif
 };
 </script>
