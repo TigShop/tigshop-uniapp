@@ -154,18 +154,19 @@ const toPage = (item:any) => {
 
 .outsale {
     position: absolute;
-    top: 80rpx;
-    left: 50%;
-    margin-left: -90rpx;
-    width: 180rpx;
-    height: 180rpx;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     line-height: 180rpx;
     background: rgba(0, 0, 0, 0.4);
     font-size: 38rpx;
     color: #ffffff;
     letter-spacing: 0;
-    text-align: center;
     border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
  .pricenum {

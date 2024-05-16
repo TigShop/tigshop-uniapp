@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { getMobileNav } from "@/api/tabbar";
+import { urlFormat } from "@/utils/format";
 export const usetabbarStore = defineStore("tabbar", {
     state: () => ({
         tabbarList: [] as any[],
@@ -39,14 +40,32 @@ export const usetabbarStore = defineStore("tabbar", {
                 }
             ];
             this.tabbarList = defaultTabbarList;
-            // try {
-            //     const result = await getMobileNav();
-            //     console.log(result)
-            //     this.tabbarList = result.item.data.nav_list;
-            // } catch (error) {
-            //     console.error(error);
-            //     this.tabbarList = defaultTabbarList;
-            // }
+            this.setTabBarItem();
+            try {
+                const result = await getMobileNav();
+                // console.log(result);
+                // this.tabbarList = result.item.data.nav_list.map((item: any) => {
+                //     return {
+                //         pagePath: urlFormat(item.pic_thumb),
+                //         image: item.pic_thumb,
+                //         activeImage: item.pic_active_thumb,
+                //         text: item.pic_title
+                //     };
+                // });
+            } catch (error) {
+                console.error(error);
+                this.tabbarList = defaultTabbarList;
+            }
+        },
+        setTabBarItem() {
+            this.tabbarList.forEach((item, index) => {
+                uni.setTabBarItem({
+                    index,
+                    text: item.text,
+                    iconPath: item.image,
+                    selectedIconPath: item.activeImage
+                });
+            });
         }
     }
 });

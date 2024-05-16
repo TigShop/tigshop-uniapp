@@ -656,23 +656,6 @@ page {
     text-align: center;
 }
 
-/*uni 兼容*/
-uni-checkbox .uni-checkbox-input {
-    width: 30rpx !important;
-    height: 30rpx !important;
-    border-radius: 100%;
-}
-uni-checkbox .uni-checkbox-input.uni-checkbox-input-checked {
-    background: #ff0000;
-    border: 1px solid #e93b3d !important;
-}
-uni-checkbox .uni-checkbox-input.uni-checkbox-input-checked::before {
-    color: #fff;
-    font-size: 26rpx;
-}
-uni-checkbox:not([disabled]) .uni-checkbox-input:hover {
-    border: 1px solid #e93b3d !important;
-}
 
 /* 底部安全适配 */
 .safe-padding {

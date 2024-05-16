@@ -3,7 +3,7 @@
         <view class="tabbar">
             <view class="tabbar-item" v-for="(item, index) in tabbarStore.tabbarList" :key="index" @click="handleTabbar(item, index)">
                 <view class="tabbar-icon">
-                    <image class="tabbar-icon-img" :src="configStore.currentActiveValue === index ? item.activeImage : item.image" />
+                    <image class="tabbar-icon-img" :src="configStore.currentActiveValue === index ? imageFormat(item.activeImage) : imageFormat(item.image)" />
                 </view>
                 <view class="tabbar-text" :class="{ active: configStore.currentActiveValue === index }">{{ item.text }}</view>
             </view>
@@ -16,6 +16,7 @@ import { computed, ref, watch } from "vue";
 import { useConfigStore } from "@/store/config";
 import { usetabbarStore } from "@/store/tabbar";
 import { onShow } from "@dcloudio/uni-app";
+import { imageFormat } from "@/utils/format";
 const configStore = useConfigStore();
 const tabbarStore = usetabbarStore();
 const tabbarHeight = computed(() => {

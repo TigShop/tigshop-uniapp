@@ -1,5 +1,5 @@
 <template>
-    <view style="height: 100%">
+    <view class="safe-padding">
         <navbar :parameter="parameter"></navbar>
         <view class="cart-box shoppingCart">
             <view class="top-text" v-if="cartList.length > 0">
