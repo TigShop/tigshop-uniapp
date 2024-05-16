@@ -22,7 +22,7 @@
                         <view class="name">
                             {{ productInfo.product_name }}
                         </view>
-                        
+
                     </view>
                 </view>
                 <view class="popup-close" @click="closeDrawer">
@@ -63,7 +63,7 @@
                 <view class="add_cart" v-else>
                     <productBuy :id="product_id" :skuId="skuId" :disabled="productStock == 0" :number="productNumber" @callback="addCart">
                         <view class="btn exBtn" v-if="productStock == 0">已抢完</view>
-                        <view class="btn" v-else>加入购物车</view>
+                        <view class="btn cart" v-else>加入购物车</view>
                     </productBuy>
 
                     <productBuy
@@ -74,7 +74,7 @@
                         :number="productNumber"
                         :isQuick="true"
                     >
-                        <view class="btn redbtn" @click="closeDrawer">立即购买</view>
+                        <view class="btn redbtn buy-right" @click="closeDrawer">立即购买</view>
                     </productBuy>
                 </view>
             </view>
@@ -159,10 +159,10 @@ const updateSelectedValue = async () => {
                 skuValue[index] = value.attr_name + ':' + value.attr_value;
                 let result = skuList.value.find((item:any) => item.sku_value == skuValue.join('|'));
                 value.sku_stock = result ? result.sku_stock : 0;
-                
+
             });
         });
-        
+
         const selectedItem:any = skuList.value.find((item:any) => item.sku_value == checkedValue.value.join('|'));
         let skuStr = checkedValue.value.map((item:any) => item.split(":")[1]).join(" ");
         skuId.value = selectedItem.sku_id || 0;
@@ -332,29 +332,32 @@ const loadPrice = async (skuId:any) => {
 }
 .footer{
     position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+    bottom: 20rpx;
+    left: 1vw;
     height: 80rpx;
     z-index: 999;
     .add_cart{
         width:100%;
+        display: flex;
         .btn{
-            width:50vw;
+            width:49vw;
+
             height:80rpx;
             line-height: 80rpx;
             text-align: center;
-            font-size: 24rpx;
-            background-color:$tig-color-yellow;
             color:#fff;
             font-size:30rpx;
             font-weight:500;
+
         }
-        .exBtn{
-            width: 100vw;
+        .cart {
+            background: #e1f4e3;
+            border-radius: 100rpx 0 0 100rpx;
+            color: $tig-color-primary;
         }
-        .redbtn{
-            background-color: $tig-color-error;
+        .buy-right {
+            background: $tig-color-primary;
+            border-radius: 0 100rpx 100rpx 0;
         }
     }
 }

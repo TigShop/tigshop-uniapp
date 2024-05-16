@@ -87,12 +87,13 @@ onReachBottom(() => {
 </script>
 <style lang="scss" scoped>
 .top-card {
-    background: url("/static/images/user/background.png");
+    // background: url("/static/images/user/background.png");
+    background: $tig-color-primary;
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
-    border-radius: 5px;
-    margin: 10px;
+    border-radius: 10rpx;
+    margin: 20rpx;
     color: #fff;
     box-sizing: border-box;
     display: flex;
@@ -103,7 +104,7 @@ onReachBottom(() => {
     .amount-row,
     .button-row {
         text-align: center;
-        margin: 20rpx 10px 0;
+        margin: 20rpx 20rpx 0;
     }
 
     .balance-row {
@@ -119,7 +120,7 @@ onReachBottom(() => {
         display: flex;
         margin-top: 60rpx;
         justify-content: space-evenly;
-        gap: 10px;
+        gap: 20rpx;
         height: 60rpx;
 
         .round-button {
@@ -127,15 +128,15 @@ onReachBottom(() => {
             line-height: 60rpx;
             border-radius: 46rpx;
             flex: 1;
-            border: 1px solid white;
+            border: 2rpx solid white;
             color: white;
             outline: none;
-            cursor: pointer;
             font-size: 24rpx;
-            background-color: #fa0;
+            background-color: $tig-color-primary;
             &.active {
                 background-color: #fff;
-                color: #fa0;
+                color: $tig-color-primary;
+                font-weight: 700;
             }
         }
     }
@@ -147,7 +148,7 @@ onReachBottom(() => {
     gap: 100rpx;
     margin: 20rpx 30rpx;
     .tab {
-        padding: 10px;
+        padding: 20rpx;
         width: 100%;
         font-size: 28rpx;
         border-bottom: none;
@@ -156,13 +157,13 @@ onReachBottom(() => {
     }
     & .active-tab {
         position: relative;
-        color: #fa0;
+        color: $tig-color-primary;
         &::before {
             content: '';
             position: absolute;
             width: 30%;
-            height: 2px;
-            background-color: #fa0;
+            height: 4rpx;
+            background-color: $tig-color-primary;
             left: 50%;
             transform: translateX(-50%);
             bottom: 0;

@@ -121,7 +121,7 @@
                             </view>
                         </view>
                         <view class="wrap">
-                            <view class="li" @click="goPages('/pages/user_account_detail/index')">
+                            <view class="li" @click="goPages('/pages/user/account/index')">
                                 <text class="num">{{ Number(member.total_balance) >= 0 ? member.total_balance : 0 }}</text>
                                 <view class="txt">余额</view>
                             </view>

@@ -45,24 +45,39 @@
 
                 <view class="coupon-container-content">
                     <block v-if="tabsActive === '可用优惠券'">
-                        <view class="coupon-list">
-                            <view class="bonus-box">
-                                <view :class="'bonus-bd enable_select'" v-for="(item, idx) in couponListData!.enable_coupons" :key="idx">
-                                    <view class="bonus-left">
-                                        <view class="bonus-amount price">
-                                            {{ item.coupon_type === 2 ? `${item.coupon_discount} 折` : priceFormat(Number(item.coupon_money)) }}
-                                        </view>
-                                        <view class="bonus-desc">{{ item.coupon_name }}</view>
-                                    </view>
+                        <view class='coupon-box'>
+                            <view v-for="(item, idx) in couponListData!.enable_coupons" class="coupon-item">
+                                <view class="left">
+                                    <view class="col-1">
+                                        <view v-if="item.is_global" class="tag">全场券</view>
+                                        <view v-if="Number(item.min_order_amount)==0" class="tag">无门槛</view>
 
-                                    <view class="bonus-right">
-                                        <view class="bonus-name">{{ item.is_global ? "[全场券]" : "" }} </view>
-                                        <view class="bonus-time">截止时间 {{ item.end_date }}</view>
                                     </view>
-                                    <view class="coupon-btn">
+                                    <view class="col-1">
+                                        <view class="title">{{ item.coupon_name }}</view>
+                                    </view>
+                                    <view v-if="item.coupon_desc" class="col-2">
+                                        {{ item.coupon_desc }}
+                                    </view>
+                                    <view class="col-3">
+                                        有效期：{{ item.end_date }}
+                                    </view>
+                                </view>
+                                <view class="right">
+                                    <view class="right-1">
+                                        <block v-if="item.coupon_type === 2">
+                                            <view class="zhekou"> {{ item.coupon_discount }}</view>
+                                            <view class="zhe">折</view>
+                                        </block>
+                                        <block v-else >
+                                            <FormatPrice :fontStyle="{fontSize:'48rpx',lineHeight:1}" :currencyStyle="{selfAlign:'end',fontSize:'24rpx'}" :priceData="item.coupon_money"></FormatPrice>
+                                        </block>
+                                    </view>
+                                    <view class="right-2">
                                         <tigCheckbox v-model:checked="item.selected" @change="handleCheck(item)"></tigCheckbox>
                                     </view>
                                 </view>
+                                <view class="dotted-line"></view>
                             </view>
                         </view>
                         <block v-if="couponListData!.enable_coupons.length === 0">
@@ -70,24 +85,39 @@
                         </block>
                     </block>
                     <block v-if="tabsActive === '不可用优惠券'">
-                        <view class="coupon-list">
-                            <view class="bonus-box">
-                                <view :class="'bonus-bd disabled'" v-for="(item, idx) in couponListData!.disable_coupons" :key="idx">
-                                    <view class="bonus-left">
-                                        <view class="bonus-amount price">
-                                            {{ item.coupon_type === 2 ? `${item.coupon_discount} 折` : priceFormat(Number(item.coupon_money)) }}
-                                        </view>
-                                        <view class="bonus-desc">{{ item.coupon_name }}</view>
-                                    </view>
+                        <view class='coupon-box'>
+                            <view v-for="(item, idx) in couponListData!.disable_coupons" class="coupon-item grayScaleDiv">
+                                <view class="left">
+                                    <view class="col-1">
+                                        <view v-if="item.is_global" class="tag">全场券</view>
+                                        <view v-if="Number(item.min_order_amount)==0" class="tag">无门槛</view>
 
-                                    <view class="bonus-right">
-                                        <view class="bonus-name">{{ item.is_global ? "[全场券]" : "" }} </view>
-                                        <view class="bonus-time">截止时间 {{ item.end_date }}</view>
                                     </view>
-                                    <view class="coupon-btn">
+                                    <view class="col-1">
+                                        <view class="title">{{ item.coupon_name }}</view>
+                                    </view>
+                                    <view v-if="item.coupon_desc" class="col-2">
+                                        {{ item.coupon_desc }}
+                                    </view>
+                                    <view class="col-3">
+                                        有效期：{{ item.end_date }}
+                                    </view>
+                                </view>
+                                <view class="right">
+                                    <view class="right-1">
+                                        <block v-if="item.coupon_type === 2">
+                                            <view class="zhekou"> {{ item.coupon_discount }}</view>
+                                            <view class="zhe">折</view>
+                                        </block>
+                                        <block v-else >
+                                            <FormatPrice :fontStyle="{fontSize:'48rpx',lineHeight:1}" :currencyStyle="{selfAlign:'end',fontSize:'24rpx'}" :priceData="item.coupon_money"></FormatPrice>
+                                        </block>
+                                    </view>
+                                    <view class="right-2">
                                         <tigCheckbox :disabled="true" v-model:checked="item.selected"></tigCheckbox>
                                     </view>
                                 </view>
+                                <view class="dotted-line"></view>
                             </view>
                         </view>
                         <block v-if="couponListData!.disable_coupons.length === 0">
@@ -564,5 +594,152 @@ const handleToBalance = () =>{
     justify-content: center;
     width: 100%;
     height: 300rpx;
+}
+
+.coupon-box {
+    display: flex;
+    flex-direction: column;
+    gap: 20rpx;
+    padding: 30rpx;
+
+
+    .coupon-item {
+        box-shadow: 0px 0px 5px #f5f5f5;
+        border-radius: 10rpx;
+        box-sizing: border-box;
+        background-color: #FFFFFF;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        justify-content: space-between;
+
+        .left {
+            padding: 30rpx;
+            display: flex;
+            flex-direction: column;
+            width: 60%;
+
+
+            .col-1 {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+                width: 100%;
+                margin-bottom: 10rpx;
+
+                .tag {
+                    background-color: $tig-color-primary;
+                    color: white;
+                    font-size: 18rpx;
+                    border-radius: 5rpx;
+                    padding: 2rpx 6rpx;
+                    min-width: 70rpx;
+                }
+
+                .title {
+                    font-weight: bold;
+                    font-size: 28rpx;
+                    overflow: hidden; /* 隐藏超出 div 元素的内容 */
+                    white-space: nowrap; /* 防止文本在 div 內换行 */
+                    text-overflow: ellipsis; /* 当内容超出 div 元素时显示省略号 */
+                }
+            }
+
+            .col-2 {
+                font-size: 24rpx;
+                color: #333;
+                margin-bottom: 20rpx;
+            }
+
+            .col-3 {
+                font-size: 22rpx;
+            }
+        }
+
+        .right {
+            padding: 30rpx;
+            display: flex;
+            flex-direction: column;
+            width: 40%;
+            gap: 16rpx;
+            justify-content: center;
+
+            .right-1 {
+                color: $tig-color-primary;
+                display: flex;
+                flex-direction: row;
+                font-weight: bold;
+                justify-content: center;
+                align-items: flex-end;
+
+                .zhekou{
+                    font-size: 48rpx;
+                    line-height: 1; /* 添加这行 */
+                }
+                .zhe{
+                    margin-left: 8rpx;
+                    font-size: 24rpx;
+                    self-align: end; /* 添加这行 */
+                }
+
+            }
+            .right-2{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                .coupon-btn-con{
+                    font-size: 22rpx;
+                    padding: 10rpx 25rpx;
+                    border-radius: 40rpx;
+
+                    color: #fff;
+                    background-image: -webkit-linear-gradient(left, #609dde 20%, #6781da);
+                    &:active {
+                        opacity: 0.7;
+                    }
+                    &.disabled {
+                        background-image: -webkit-linear-gradient(left, #aaa 20%, #aaa);
+                    }
+                }
+            }
+        }
+
+        .dotted-line {
+            position: absolute;
+            top: 20rpx;
+            bottom: 20rpx;
+            left: 60%;
+            border-left: 1px dashed #ddd; /* 设置为虚线 */
+            transform: translateX(-50%);
+        }
+    }
+
+    .coupon-item::before {
+        content: "";
+        position: absolute;
+        top: 0; /* 将圆形定位到元素顶部的60%位置 */
+        left: 60%; /* 将圆形定位到元素左侧的50%位置 */
+        transform: translate(-50%, -50%); /* 保证圆形正好在这个位置上 */
+        width: 30rpx; /* 圆形的宽度，可以根据需要调整 */
+        height: 30rpx; /* 圆形的高度，可以根据需要调整 */
+        background-color: #f5f5f5; /* 圆形的颜色，可以根据需要调整 */
+        border-radius: 50%; /* 使元素成为完美的圆形 */
+    }
+
+    .coupon-item::after {
+        content: "";
+        position: absolute;
+        bottom: -30rpx; /* 将圆形定位到元素底部的40%位置 */
+        left: 60%; /* 将圆形定位到元素左侧的50%位置 */
+        transform: translate(-50%, -50%); /* 保证圆形正好在这个位置上 */
+        width: 30rpx; /* 圆形的宽度，可以根据需要调整 */
+        height: 30rpx; /* 圆形的高度，可以根据需要调整 */
+        background-color: #f5f5f5; /* 圆形的颜色，可以根据需要调整 */
+        border-radius: 50%; /* 使元素成为完美的圆形 */
+
+    }
+}
+.grayScaleDiv {
+    filter: grayscale(100%); /* 全部转为灰度 */
 }
 </style>

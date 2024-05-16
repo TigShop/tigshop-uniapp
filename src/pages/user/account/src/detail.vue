@@ -92,7 +92,7 @@ onReachBottom(() => {
         }
         .real_total {
             font-size: 32rpx;
-            color: #fa0;
+            color: $tig-color-primary;
             font-weight: bold;
             position: absolute;
             right: 40rpx;
