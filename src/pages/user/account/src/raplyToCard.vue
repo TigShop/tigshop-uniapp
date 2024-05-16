@@ -174,7 +174,7 @@ const accountPlaceholder = computed(() => {
 
 const dataList = computed(() => {
     switch (formState.value.account_data.account_type) {
-        case 1:
+        case 1: 
             return yhkList.value;
         case 2:
             return zfbList.value;
