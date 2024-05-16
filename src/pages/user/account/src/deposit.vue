@@ -152,7 +152,7 @@ onLoad(() => {
             }
             &:last-child .recharge-amount {
                 border-bottom: 1rpx solid #fef7ec;
-                margin: 0 20rpx 10rpx 20rpx;
+                margin: 0 20rpx 4rpx 20rpx;
             }
             .recharge-amount {
                 font-weight:500;
@@ -185,7 +185,7 @@ onLoad(() => {
     }
 }
 :deep(.uni-easyinput__content-input) {
-    height: 48rpx;
+    height: 40rpx;
 }
 :deep(.uniui-clear) {
     display: none;
