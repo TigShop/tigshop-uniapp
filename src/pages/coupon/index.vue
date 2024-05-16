@@ -34,7 +34,7 @@
                                 </view>
                                 <view class="right-2">
                                     <tigButton v-if="!item.is_receive" plainMainColor @click="handleReceiveCoupon(item.coupon_id)"> 马上领</tigButton>
-                                    <tigButton :disabled="true" plainMainColor> 已领取</tigButton>
+                                    <tigButton v-else :disabled="true" plainMainColor> 已领取</tigButton>
                                 </view>
                             </view>
                             <view class="dotted-line"></view>
