@@ -144,9 +144,8 @@ onReachBottom(() => {
     display: flex;
     justify-content: center;
     flex-direction: row;
-    gap: 120rpx;
-    margin: 20rpx;
-
+    gap: 100rpx;
+    margin: 20rpx 30rpx;
     .tab {
         padding: 10px;
         width: 100%;
@@ -155,10 +154,19 @@ onReachBottom(() => {
         color: black;
         text-align: center;
     }
-}
-
-.custom-tabs .active-tab {
-    border-bottom: 2px solid #fa0;
-    color: #fa0;
+    & .active-tab {
+        position: relative;
+        color: #fa0;
+        &::before {
+            content: '';
+            position: absolute;
+            width: 30%;
+            height: 2px;
+            background-color: #fa0;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 0;
+        }
+    }
 }
 </style>
