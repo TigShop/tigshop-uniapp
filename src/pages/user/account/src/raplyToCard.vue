@@ -59,6 +59,9 @@ const actionClick = async (value: number) => {
     if (value === activeTab.value) return;
     activeTab.value = value;
     formState.value.account_data.account_type = value;
+    yhkList.value = [];
+    zfbList.value = [];
+    wxList.value = [];
     resetForm();
     __getAccountNoList(value);
 };
