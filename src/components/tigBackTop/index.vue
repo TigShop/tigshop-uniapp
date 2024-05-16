@@ -2,7 +2,7 @@
     <view class="tig-back-top" :style="styleFormat.bottom + styleFormat.right + styleFormat.width + styleFormat.height">
         <view class="tig-back-top-content" @click="handleBackTop">
             <slot>
-                <image class="tig-back-top-content-img" src="/src/static/images/common/scroll-to-top.png" mode="widthFix"></image>
+                <image class="tig-back-top-content-img" src="/static/images/common/scroll-to-top.png" mode="widthFix"></image>
             </slot>
         </view>
     </view>

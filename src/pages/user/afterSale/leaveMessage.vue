@@ -29,7 +29,7 @@
             </uni-forms>
         </view>
         <view class="leave-message-btn">
-            <tigButton :size="36"  @click="handleSubmit">提交</tigButton>
+            <tigButton :size="36" @click="handleSubmit">提交</tigButton>
         </view>
     </view>
 </template>
@@ -40,9 +40,15 @@ import { imageFormat } from "@/utils/format";
 import indexConfig from "@/config/index.config";
 import { aftersalesFeedback } from "@/api/user/afterSale";
 import { onLoad } from "@dcloudio/uni-app";
+interface ReturnPic {
+    pic_name: string;
+    pic_thumb: string;
+    pic_url: string;
+}
+
 const form = reactive({
     log_info: "",
-    return_pic: [] as string[],
+    return_pic: [] as ReturnPic[],
     id: 0
 });
 const rules = {
@@ -82,7 +88,7 @@ const handlePicDelete = (e: any) => {
 const uploadFile = (filePath: any) => {
     let name, extname, url;
     uni.uploadFile({
-        url: indexConfig.baseUrl + indexConfig.requestUrlPrefix + "user/upload_img", //仅为示例，非真实的接口地址
+        url: indexConfig.baseUrl + indexConfig.requestUrlPrefix + "user/upload_img",
         filePath,
         header: {
             Authorization: uni.getStorageSync("token")
@@ -92,13 +98,17 @@ const uploadFile = (filePath: any) => {
             const { data } = JSON.parse(uploadFileRes.data);
             name = data.pic_name;
             extname = data.pic_url.split(".")[1];
-            url = imageFormat(data.pic_thumb);
+            url = data.pic_thumb;
             fileLists.value.push({
                 name,
                 extname,
                 url
             });
-            console.log("fileLists", fileLists.value);
+            form.return_pic.push({
+                pic_name: data.pic_name,
+                pic_thumb: data.pic_thumb,
+                pic_url: data.pic_url
+            });
             uni.showToast({
                 title: "图片上传成功"
             });
@@ -118,7 +128,6 @@ const handleSubmit = () => {
     formRef.value
         .validate()
         .then(() => {
-            form.return_pic = fileLists.value.map((item) => item.url);
             __aftersalesFeedback();
         })
         .catch((err: any) => {
@@ -129,7 +138,7 @@ const handleSubmit = () => {
 const __aftersalesFeedback = async () => {
     try {
         const result = await aftersalesFeedback(form);
-        
+
         uni.redirectTo({
             url: "/pages/user/afterSale/negotiate",
             success: () => {
@@ -185,5 +194,8 @@ page {
 
 :deep(.uni-forms-item__error) {
     top: 75%;
+}
+:deep(.uni-progress-bar) {
+    display: none;
 }
 </style>

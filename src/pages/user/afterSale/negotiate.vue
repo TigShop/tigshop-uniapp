@@ -7,12 +7,10 @@
                     <view class="negotiate-title-time">{{ item.add_time }}</view>
                 </view>
                 <view class="negotiate-item-content">
-                    <!-- <view class="negotiate-content-reason"> 拒绝退款申请，需买家修改退款申请 </view> -->
                     <view class="negotiate-content-text"> {{ item.log_info }}</view>
                     <view class="negotiate-pics" v-if="item.return_pic && item.return_pic.length > 0">
                         <view class="pics-item" v-for="(sunItem, index) in item.return_pic" :key="index">
-                            <tigImage v-model:src="item.return_pic[index]"></tigImage>
-                            <!-- <tigImage v-model:src="sunItem.pic_thumb"></tigImage> -->
+                            <tigImage v-model:src="item.return_pic[index].pic_thumb"></tigImage>
                         </view>
                     </view>
                 </view>

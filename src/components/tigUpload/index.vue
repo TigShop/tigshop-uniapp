@@ -34,7 +34,7 @@ const handleChoose = () => {
             console.log(res.tempFilePaths)
             res.tempFilePaths.map((file: string) => {
                 uni.uploadFile({
-                    url: indexConfig.baseUrl + indexConfig.requestUrlPrefix + props.requestUrl, //仅为示例，非真实的接口地址
+                    url: indexConfig.baseUrl + indexConfig.requestUrlPrefix + props.requestUrl,
                     filePath: file,
                     header: {
                         Authorization: uni.getStorageSync("token")

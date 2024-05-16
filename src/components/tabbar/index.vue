@@ -38,9 +38,10 @@ const props = defineProps({
 });
 
 onShow(() => {
-    const page = getCurrentPages()[0].route;
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1].route;
     const index = tabbarStore.tabbarList.findIndex((item) => {
-        return item.pagePath.includes(page);
+        return item.pagePath.includes(currentPage);
     });
     if (index !== -1 && index !== configStore.currentActiveValue) {
         configStore.setCurrentActiveValue(index);

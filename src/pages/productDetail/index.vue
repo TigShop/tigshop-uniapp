@@ -86,7 +86,7 @@
                 </view>
             </view>
         </view>
-        <view class="bottom-bar-box">
+        <view class="bottom-bar-box" v-if="attrList.spe">
             <view class="bottom-bar flex align-center">
                 <view class="icon-box">
                     <view class="label">
@@ -99,7 +99,7 @@
                     </view>
                     <view class="label" @click="toPage('/pages/cart/index')">
                         <view>
-                            <uni-badge class="uni-badge-left-margin" :text="cartCount" absolute="rightTop" size="small">
+                            <uni-badge class="uni-badge-left-margin badgecolor" :text="cartCount" absolute="rightTop" size="small">
                                 <uni-icons type="cart" size="22" color="#9b9c9f"></uni-icons>
                             </uni-badge>
                         </view>
@@ -148,7 +148,7 @@
             </view>
         </tigpopup>
         <tigpopup v-model:show="showCoupon" title="优惠券" paddingBottom="0" height="60vh" backgroundColor="#f5f5f5">
-            <CouponList  :productId="product_id"></CouponList>
+            <CouponList :productId="Number(product_id)"></CouponList>
         </tigpopup>
         <selectRegion v-model:show="showRegion" @sendRegionNames="getRegionText"></selectRegion>
         <tigBackTop :class="{ show: scrollTop > 100 }"></tigBackTop>
@@ -320,9 +320,13 @@ const getCouponList = async () => {
         console.error(error.message);
     }
 };
-
 </script>
 <style lang="scss" scoped>
+.badgecolor {
+    :deep(.uni-badge--error) {
+        background-color: $tig-color-primary;
+    }
+}
 .icon-image {
     width: 35rpx;
     height: 35rpx;
@@ -475,11 +479,12 @@ const getCouponList = async () => {
             font-size: 24rpx;
         }
         .cart {
-            background: $tig-color-yellow;
+            background: #e1f4e3;
             border-radius: 100rpx 0 0 100rpx;
+            color: $tig-color-primary;
         }
         .buy {
-            background: $tig-color-error;
+            background: $tig-color-primary;
             border-radius: 0 100rpx 100rpx 0;
         }
     }
@@ -661,22 +666,20 @@ const getCouponList = async () => {
     color: #aaa;
 }
 
+.coupon-btn-con {
+    font-size: 22rpx;
+    padding: 10rpx 25rpx;
+    border-radius: 40rpx;
 
-    .coupon-btn-con {
-        font-size: 22rpx;
-        padding: 10rpx 25rpx;
-        border-radius: 40rpx;
-
-        color: #fff;
-        background-image: -webkit-linear-gradient(left, #609dde 20%, #6781da);
-        &:active {
-            opacity: 0.7;
-        }
-        &.disabled {
-            background-image: -webkit-linear-gradient(left, #aaa 20%, #aaa);
-        }
+    color: #fff;
+    background-image: -webkit-linear-gradient(left, #609dde 20%, #6781da);
+    &:active {
+        opacity: 0.7;
     }
-
+    &.disabled {
+        background-image: -webkit-linear-gradient(left, #aaa 20%, #aaa);
+    }
+}
 
 .balance-title {
     display: flex;

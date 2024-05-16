@@ -90,7 +90,7 @@ onReachBottom(() => {
 </script>
 <style lang="scss" scoped>
 .top-card {
-    background: url("/src/static/images/user/background2.png");
+    background: url("/static/images/user/background2.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;

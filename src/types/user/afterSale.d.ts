@@ -218,7 +218,12 @@ export interface NegotiateItem {
     refund_type: number;
     refund_desc: string;
     user_name: string;
-    return_pic: null | string[];
+    return_pic: null | ReturnPic[];
+}
+interface ReturnPic {
+    pic_name: string;
+    pic_thumb: string;
+    pic_url: string;
 }
 
 // 售后申请列表
