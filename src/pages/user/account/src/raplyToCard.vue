@@ -194,6 +194,14 @@ onShow(() => {
 });
 
 const onSubmit = async () => {
+    if (selectedData.value.id.length === 0) {
+        uni.showToast({
+            title: "请选择需要提现的账号",
+            icon: "none",
+            duration: 1000
+        });
+        return;
+    }
     formRef.value
         .validate()
         .then(async (valid: boolean) => {
@@ -230,7 +238,7 @@ onLoad(() => {
     display: flex;
     justify-content: center;
     flex-direction: row;
-    gap: 120rpx;
+    gap: 100rpx;
     margin: 20rpx;
     .tab {
         padding: 10px;
@@ -241,8 +249,18 @@ onLoad(() => {
         text-align: center;
     }
     & .active-tab {
-        border-bottom: 2px solid #fa0;
+        position: relative;
         color: #fa0;
+        &::before {
+            content: '';
+            position: absolute;
+            width: 30%;
+            height: 2px;
+            background-color: #fa0;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 0;
+        }
     }
 }
 
