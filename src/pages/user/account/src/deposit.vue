@@ -12,7 +12,7 @@
                 </view>
                 <view v-else class="recharge-item" :class="{ selected : item.selected}" @click="selectCard(index)">
                     <view class="recharge-amount">
-                        <uni-easyinput primaryColor="rgb(192, 196, 204)" v-model="pay.amount" :inputBorder="false" placeholder="" :clear-icon="false" />
+                        <uni-easyinput primaryColor="#fcc282" :styles="{borderColor:'#fef7ec',color:'#d7ac53'}" :focus="inputFocus" type="number" v-model="pay.amount" :clear-icon="false" />
                     </view>
                     <view class="recharge-give">自定义金额</view>
                 </view>
@@ -54,7 +54,9 @@ const __getDepositList = async () => {
     }
 };
 
+const inputFocus = ref(false);
 const selectCard = (index: number) => {
+    index === 5 ? inputFocus.value = true : inputFocus.value = false;
     filterState.value.forEach((item, idx) => {
         item.selected = idx === index;
     });
