@@ -33,13 +33,16 @@
             </up-form>
         </view>
     </view>
-    <view class="button-position">
-        <button class="base-button recharge-btn" hover-class="base-button-hover" @click="onSubmit">提交申请</button>
-        <button hover-class="base-button-hover" class="base-button cancel-btn" @click="backDetail">返回列表</button>
-    </view>
+    <saveBottomBox :height="110" backgroundColor="#fff">
+        <view class="btn-box">
+            <tigButton plain style="width: 50%; height: 70rpx" @click="backDetail"> 返回列表 </tigButton>
+            <tigButton style="width: 50%; height: 70rpx" @click="onSubmit"> 提交申请 </tigButton>
+        </view>
+    </saveBottomBox>
 </template>
 
 <script lang="ts" setup>
+import saveBottomBox from "@/components/saveBottomBox/index.vue";
 import { ref, shallowRef, computed, nextTick } from "vue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import { getAccountNoList, updateWithdrawApply } from "@/api/user/account";
@@ -250,13 +253,13 @@ onLoad(() => {
     }
     & .active-tab {
         position: relative;
-        color: #fa0;
+        color: $tig-color-primary;
         &::before {
             content: '';
             position: absolute;
             width: 30%;
             height: 2px;
-            background-color: #fa0;
+            background-color: $tig-color-primary;
             left: 50%;
             transform: translateX(-50%);
             bottom: 0;
@@ -286,23 +289,12 @@ onLoad(() => {
     font-size: 24rpx;
 }
 
-.button-position {
+.btn-box {
+    padding: 15rpx;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 20rpx;
-    .base-button {
-        flex: 1;
-        color: #5d3324;
-        &::after {
-            border: 0;
-        }
-    }
-    .recharge-btn {
-        background: linear-gradient(90deg, #fee2b7, #fdc383);
-    }
-    .cancel-btn {
-        background: #eaeaea;
-    }
+    justify-content: center;
+    height: 100%;
+    font-size: 28rpx;
 }
 </style>

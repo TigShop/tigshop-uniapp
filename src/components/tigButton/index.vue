@@ -58,6 +58,9 @@ const props = defineProps({
     &.button-hover {
         opacity: 0.7;
     }
+    &:last-child {
+        margin-right: 0;
+    }
 
     .uni-button[loading]:before {
         height: v-bind("props.size + 'rpx'");

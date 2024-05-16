@@ -35,16 +35,18 @@
                 </view>
             </uni-forms>
         </view>
-        <view class="button-position">
-            <button class="base-button" hover-class="base-button-hover" @click="onSubmit">保存修改</button>
-            <button class="base-button logout-button" hover-class="base-button-hover" @click="onLogout">退出登录</button>
-        </view>
-
+        <saveBottomBox :height="110" backgroundColor="#fff">
+            <view class="btn-box">
+                <tigButton plain style="width: 50%; height: 70rpx" @click="onLogout"> 退出登录 </tigButton>
+                <tigButton style="width: 50%; height: 70rpx" @click="onSubmit"> 保存修改 </tigButton>
+            </view>
+        </saveBottomBox>
     </view>
 </template>
 
 <script lang="ts" setup>
 import navbar from "@/components/navbar/index.vue";
+import saveBottomBox from "@/components/saveBottomBox/index.vue";
 import { nextTick, reactive, ref } from "vue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import { getProfile, updateProfile } from "@/api/user/profile";
@@ -204,13 +206,13 @@ const __getProfile = async () => {
 }
 
 .profile-edit-main {
-    padding: 30rpx;
+    padding: 20rpx;
 
     .profile-edit-content {
         background-color: #fff;
         border-radius: 15rpx;
         padding: 20rpx;
-        margin-bottom: 30rpx;
+        margin-bottom: 20rpx;
 
         .el-input-id {
             height: 100%;
@@ -219,29 +221,16 @@ const __getProfile = async () => {
             display: flex;
             align-items: center;
             justify-content: flex-end;
-
         }
     }
 }
 
-.button-position {
-    position: fixed;
-    bottom: 30rpx;
-    left: 0;
-    right: 0;
-    padding: 0 30rpx;
-    padding-bottom: env(safe-area-inset-bottom) !important;
-}
-
-.logout-button {
-    background: #fff;
-    color: #333;
-    border-radius: 50rpx;
-    border-color: #fff;
-    margin-top: 20rpx;
-}
-
-:deep(uni-button:after) {
-    border: 0;
+.btn-box {
+    padding: 15rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 28rpx;
 }
 </style>

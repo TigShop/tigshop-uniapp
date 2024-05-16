@@ -27,14 +27,17 @@
                 </view>
             </uni-forms>
         </view>
-        <view class="button-position">
-            <button class="base-button card-edit-btn" hover-class="base-button-hover" @click="onSubmit">保存修改</button>
-        </view>
+        <saveBottomBox :height="110" backgroundColor="#fff">
+            <view class="btn-box">
+                <tigButton style="width: 100%; height: 70rpx" @click="onSubmit"> 保存修改 </tigButton>
+            </view>
+        </saveBottomBox>
     </view>
 </template>
 
 <script setup lang="ts">
 import navbar from "@/components/navbar/index.vue";
+import saveBottomBox from "@/components/saveBottomBox/index.vue";
 import { ref, shallowRef, computed, nextTick } from "vue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import { getAccount, updateAccount } from "@/api/user/account";
@@ -275,5 +278,14 @@ onLoad((option: any) => {
     &::after {
         border: 0;
     }
+}
+
+.btn-box {
+    padding: 15rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 28rpx;
 }
 </style>

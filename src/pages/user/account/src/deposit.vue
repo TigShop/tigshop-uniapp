@@ -12,20 +12,24 @@
                 </view>
                 <view v-else class="recharge-item" :class="{ selected : item.selected}" @click="selectCard(index)">
                     <view class="recharge-amount">
-                        <uni-easyinput primaryColor="#fcc282" :styles="{borderColor:'#fef7ec',color:'#d7ac53'}" :focus="inputFocus" type="number" v-model="pay.amount" :clear-icon="false" />
+                        <!-- <uni-easyinput primaryColor="#fcc282" :styles="{borderColor:'#fef7ec',color:'#d7ac53'}" :focus="inputFocus" type="number" v-model="pay.amount" :clear-icon="false" /> -->
+                        <uni-easyinput :focus="inputFocus" type="number" v-model="pay.amount" :clear-icon="false" />
                     </view>
                     <view class="recharge-give">自定义金额</view>
                 </view>
             </block>
         </view>
-        <view class="button-position">
-            <button hover-class="base-button-hover" class="base-button recharge-btn" @click="onSubmit">提交申请</button>
-            <button hover-class="base-button-hover" class="base-button cancel-btn" @click="backDetail">取消充值</button>
-        </view>
+        <saveBottomBox :height="110" backgroundColor="#fff">
+            <view class="btn-box">
+                <tigButton plain style="width: 50%; height: 70rpx" @click="backDetail"> 取消充值 </tigButton>
+                <tigButton style="width: 50%; height: 70rpx" @click="onSubmit"> 提交申请 </tigButton>
+            </view>
+        </saveBottomBox>
     </view>
 </template>
 
 <script lang="ts" setup>
+import saveBottomBox from "@/components/saveBottomBox/index.vue";
 import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 import { getDepositList, updateRechargeOrder } from "@/api/user/account";
@@ -137,21 +141,20 @@ onLoad(() => {
         align-content:flex-start;
         .recharge-item {
             width:31.3%;
-            border:2rpx solid #fef7ec;
+            border:2rpx solid #eee;
             padding:30rpx 0;
             text-align:center;
             font-size:28rpx;
             border-radius:10rpx;
-            color:#d7ac53;
+            color:$tig-color-primary;
             margin:1%;
             &.selected {
-                border:2rpx solid #fcc282;
+                border:2rpx solid $tig-color-primary;
             }
             &:last-child {
                 background: #fff;
             }
             &:last-child .recharge-amount {
-                border-bottom: 1rpx solid #fef7ec;
                 margin: 0 20rpx 4rpx 20rpx;
             }
             .recharge-amount {
@@ -165,29 +168,26 @@ onLoad(() => {
         }
     }
 }
-.button-position {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20rpx;
-    .base-button {
-        flex: 1;
-        color: #5d3324;
-        &::after {
-            border: 0;
-        }
-    }
-    .recharge-btn {
-        background: linear-gradient(90deg,#fee2b7,#fdc383);
-    }
-    .cancel-btn {
-        background: #eaeaea;
-    }
-}
+
 :deep(.uni-easyinput__content-input) {
     height: 40rpx;
 }
 :deep(.uniui-clear) {
     display: none;
+}
+:deep(.is-input-border) {
+    color: $tig-color-primary !important;
+}
+:deep(.is-input-border.is-focused) {
+    border-color: $tig-color-primary !important;
+}
+
+.btn-box {
+    padding: 15rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 28rpx;
 }
 </style>
