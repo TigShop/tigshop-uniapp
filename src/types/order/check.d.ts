@@ -79,6 +79,8 @@ export interface CouponList {
 export interface DisableCoupon {
     id: number;
     coupon_name: string;
+    min_order_amount: string;
+    coupon_desc: string;
     coupon_type: number;
     coupon_money: string;
     is_global: number;
@@ -94,6 +96,8 @@ export interface DisableCoupon {
 export interface EnableCoupon {
     id: number;
     coupon_name: string;
+    coupon_desc: string;
+    min_order_amount: string;
     coupon_type: number;
     coupon_money: number | string;
     is_global: number;

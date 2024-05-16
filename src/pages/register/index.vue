@@ -7,18 +7,37 @@
         <view class="profile-edit-content">
             <uni-forms ref="formRef" :modelValue="formState" :rules="formRules" label-align="right">
                 <uni-forms-item label="" name="username">
-                    <view class=" input">
-                        <uni-easyinput :inputBorder="false" v-model="formState.username" class="uni-input item-input" placeholder="请输入用户名" primaryColor="rgb(192, 196, 204)" ></uni-easyinput>
+                    <view class="input">
+                        <uni-easyinput
+                            :inputBorder="false"
+                            v-model="formState.username"
+                            class="uni-input item-input"
+                            placeholder="请输入用户名"
+                            primaryColor="rgb(192, 196, 204)"
+                        ></uni-easyinput>
                     </view>
                 </uni-forms-item>
                 <uni-forms-item label="" name="mobile">
-                    <view class=" input">
-                        <uni-easyinput :inputBorder="false" v-model="formState.mobile" class="uni-input item-input" placeholder="请输入手机号" primaryColor="rgb(192, 196, 204)" ></uni-easyinput>
+                    <view class="input">
+                        <uni-easyinput
+                            :inputBorder="false"
+                            v-model="formState.mobile"
+                            class="uni-input item-input"
+                            placeholder="请输入手机号"
+                            primaryColor="rgb(192, 196, 204)"
+                        ></uni-easyinput>
                     </view>
                 </uni-forms-item>
                 <uni-forms-item label="" name="mobile_code">
-                    <view class="item-one ">
-                        <uni-easyinput :inputBorder="false" v-model="formState.mobile_code" class="uni-input item-input input" focus placeholder="手机短信验证码" primaryColor="rgb(192, 196, 204)"  />
+                    <view class="item-one">
+                        <uni-easyinput
+                            :inputBorder="false"
+                            v-model="formState.mobile_code"
+                            class="uni-input item-input input"
+                            focus
+                            placeholder="手机短信验证码"
+                            primaryColor="rgb(192, 196, 204)"
+                        />
                         <VerificationCode
                             v-model:isChecked="is_checked"
                             v-model:mobile="formState.mobile"
@@ -29,13 +48,25 @@
                     </view>
                 </uni-forms-item>
                 <uni-forms-item label="" name="password">
-                    <view class=" input">
-                        <uni-easyinput :inputBorder="false" v-model="formState.password" class="uni-input item-input" placeholder="请输入密码" primaryColor="rgb(192, 196, 204)" ></uni-easyinput>
+                    <view class="input">
+                        <uni-easyinput
+                            :inputBorder="false"
+                            v-model="formState.password"
+                            class="uni-input item-input"
+                            placeholder="请输入密码"
+                            primaryColor="rgb(192, 196, 204)"
+                        ></uni-easyinput>
                     </view>
                 </uni-forms-item>
                 <uni-forms-item label="" name="confirmPassword">
-                    <view class="  input">
-                        <uni-easyinput :inputBorder="false" v-model="formState.confirmPassword" class="uni-input item-input" placeholder="请再次输入密码" primaryColor="rgb(192, 196, 204)" ></uni-easyinput>
+                    <view class="input">
+                        <uni-easyinput
+                            :inputBorder="false"
+                            v-model="formState.confirmPassword"
+                            class="uni-input item-input"
+                            placeholder="请再次输入密码"
+                            primaryColor="rgb(192, 196, 204)"
+                        ></uni-easyinput>
                     </view>
                 </uni-forms-item>
                 <uni-forms-item label="" name="">
@@ -52,15 +83,13 @@
             </uni-forms>
             <view class="form-con">
                 <tigButton :disabled="isRegisterDisabled" :loading="loginLoading" class="btn2-css3" @click="onRegister"> 注 册</tigButton>
-<!--                <tigButton  :loading="loginLoading" class="btn2-css3" @click="onRegister"> 注 册</tigButton>-->
             </view>
         </view>
-
     </view>
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref,shallowRef,nextTick } from "vue";
+import { computed, reactive, ref, shallowRef, nextTick } from "vue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import navbar from "@/components/navbar/index.vue";
 import { useUserStore } from "@/store/user";
@@ -76,7 +105,6 @@ const parameter = reactive({
     return: "1",
     title: "注册"
 });
-
 
 const is_checked = ref(false);
 const verifyToken = ref("");
@@ -94,15 +122,15 @@ const formState = ref({
 });
 const validateUsername = (rule: any, value: any, data: any, callback: any) => {
     if (!value) {
-         callback("用户名不能为空");
+        callback("用户名不能为空");
     } else if (value.length > 20 || value.length < 4) {
-         callback("用户名应为4-20位字符");
+        callback("用户名应为4-20位字符");
     } else if (/^\d+$/.test(value)) {
-         callback("用户名不能全为数字");
+        callback("用户名不能全为数字");
     } else if (!/^[\u4E00-\u9FA5a-zA-Z0-9_]+$/.test(value)) {
-         callback("用户名格式错误,请输入正确的用户名");
+        callback("用户名格式错误,请输入正确的用户名");
     } else {
-        callback()
+        callback();
     }
 };
 const validateMobile = (rule: any, value: any, data: any, callback: any) => {
@@ -143,7 +171,7 @@ const validatePassword = (rule: any, value: any, data: any, callback: any) => {
         callback();
     }
 };
-const validatePassword2= (rule: any, value: any, data: any, callback: any) => {
+const validatePassword2 = (rule: any, value: any, data: any, callback: any) => {
     if (!value) {
         return callback("请再次输入密码");
     } else if (value != formState.value.password) {
@@ -152,7 +180,7 @@ const validatePassword2= (rule: any, value: any, data: any, callback: any) => {
         callback();
     }
 };
-const formRules ={
+const formRules = {
     username: {
         rules: [
             { required: true, errorMessage: "请输入用户名" },
@@ -192,7 +220,7 @@ const formRules ={
                 validateFunction: validatePassword2
             }
         ]
-    },
+    }
 };
 const formRef = shallowRef();
 const onRegister = async () => {
@@ -228,6 +256,11 @@ const onRegister = async () => {
         });
 };
 onShow(() => {
+    if (uni.getStorageSync("token" || userStore.token)) {
+        uni.reLaunch({
+            url: "/pages/index/index"
+        });
+    }
     nextTick(() => {
         formRef.value.setRules(formRules);
     });
@@ -260,8 +293,6 @@ page {
             font-weight: bold;
             color: #333333;
         }
-
-
     }
 
     .profile-edit-content {
@@ -281,7 +312,6 @@ page {
         .input {
             padding-bottom: 10rpx;
             border-bottom: 1px solid #dfdfdf;
-
         }
 
         .btn {
@@ -292,14 +322,12 @@ page {
             align-items: center;
 
             .lf-input {
-
                 display: flex;
                 gap: 20rpx;
             }
         }
     }
 }
-
 
 :deep(.is-input-border) {
     border: none; /* 首先清除所有边框 */

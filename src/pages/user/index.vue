@@ -262,9 +262,6 @@ const __getGuessLike = async () => {
 };
 
 onShow(() => {
-    const res = hasToken();
-    if (res) return res();
-
     // 不加延迟会报错
     setTimeout(() => {
         __getUser();

@@ -87,7 +87,7 @@ onReachBottom(() => {
 </script>
 <style lang="scss" scoped>
 .top-card {
-    // background: url("/src/static/images/user/background.png");
+    // background: url("/static/images/user/background.png");
     background: $tig-color-primary;
     background-size: 100% 100%;
     background-repeat: no-repeat;
