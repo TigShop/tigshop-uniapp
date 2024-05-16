@@ -198,15 +198,19 @@ const onSubmit = async () => {
         .validate()
         .then(async (valid: boolean) => {
             if (valid) {
-                const result = await updateWithdrawApply({ ...formState.value });
-                uni.showToast({
-                    title: result.message,
-                    icon: "success",
-                    duration: 1000
-                });
-                setTimeout(() => {
-                    backDetail();
-                }, 1500);
+                try {
+                    const result = await updateWithdrawApply({ ...formState.value });
+                    uni.showToast({
+                        title: result.message,
+                        icon: "success",
+                        duration: 1000
+                    });
+                    setTimeout(() => {
+                        backDetail();
+                    }, 1500);
+                } catch (error) {
+                    console.log(error);
+                }
             }
         })
         .catch(() => {});
