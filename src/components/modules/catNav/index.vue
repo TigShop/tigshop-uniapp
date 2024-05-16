@@ -23,13 +23,13 @@
                     'rpx' +
                     ';background-image: url(' +
                     imageFormat(module.nav_background_pic.pic_url) +
-                    ');background-position: center center;background-size: 100% auto;' +
+                    ');background-position: center bottom;background-size: 100% auto;' +
                     (catColor != '' ? 'background:' + catColor : '')
                 "
             >
                 <view class="catNav-item" :style="'padding-top:' + (configStore.navHeight - 110) + 'rpx;'">
                     <view class="item-content">
-                        <div class="flex">
+                        <div :class="{ flex: scrollTop > 120 }">
                             <img class="catnav-logo" :style="logoFormat.logo_height" :src="imageFormat(logoFormat.logo_pic?.pic_url || '')" />
 
                             <view class="default-search" @click="handleSkip" :style="searchFormat['padding-right'] + searchFormat['padding-left']">
@@ -125,11 +125,13 @@ const changeCatNav = (e: any) => {
         showCatNav.value = 1;
     }
     current_cat_nav_id.value = id;
+    console.log('current_cat_nav_id', current_cat_nav_id.value)
+    console.log(current_cat_nav_id.value === 0)
     emit("change-cat-nav", {
         id,
         category_id,
         show_cat_nav: showCatNav.value,
-        cat_color: catColor.value,
+        cat_color: catColor.value
     });
 };
 </script>

@@ -155,7 +155,6 @@ const props = defineProps({
         default: 0
     }
 });
-console.log("product", props.module);
 const { frame } = props.module;
 const frameFormat = computed(() => {
     return formatFrame(frame ?? {});

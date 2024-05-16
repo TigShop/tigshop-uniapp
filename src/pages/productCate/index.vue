@@ -41,8 +41,7 @@
                                                 class="item acea-row row-column row-middle"
                                             >
                                                 <view class="picture">
-                                                    <!-- <image lazy-load :src="imageFormat(hot.category_pic || '')" mode="aspectFill"></image> -->
-                                                    <tigImage v-model:src="hot.category_pic"  mode="aspectFill"></tigImage>
+                                                    <tigImage v-model:src="hot.category_pic" mode="aspectFill"></tigImage>
                                                 </view>
                                                 <view class="name line1">{{ hot.category_name }}</view>
                                             </navigator>
@@ -90,7 +89,7 @@
 <script lang="ts" setup>
 import navbar from "@/components/navbar/index.vue";
 import { ref } from "vue";
-import { onLoad, onShow } from "@dcloudio/uni-app";
+import { onHide, onLoad, onShow } from "@dcloudio/uni-app";
 import { useConfigStore } from "@/store/config";
 import { usetabbarStore } from "@/store/tabbar";
 
@@ -135,6 +134,12 @@ const getAllCategory = async () => {
     try {
         const result = await getCategoryAll();
         productList.value = result.category_tree || [];
+
+        if (cat_id.value > 0) {
+            childCat.value = result.category_tree.find((item) => {
+                return item.category_id === cat_id.value;
+            })?.children!;
+        }
     } catch (err) {
         console.error(err);
     }
@@ -158,6 +163,15 @@ const getHotCatList = async () => {
 
 onShow(() => {
     uni.hideTabBar();
+    const id = uni.getStorageSync("category_id");
+    if (id) {
+        cat_id.value = id;
+        getAllCategory();
+    }
+});
+onHide(() => {
+    uni.$off("send_cat_id");
+    uni.removeStorageSync("category_id");
 });
 </script>
 <style scoped>

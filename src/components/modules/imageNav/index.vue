@@ -39,8 +39,8 @@
             </block>
             <block v-else>
                 <div class="imagenav-main">
-                    <div class="imagenav-main-item" v-for="(item, index) in module.pic_list" :key="index">
-                        <navigator class="item-img-a" :url="''">
+                    <div class="imagenav-main-item" v-for="(item, index) in module.pic_list" :key="index" @click="handleToPage(item.pic_link)">
+                        <view class="item-img-a">
                             <img
                                 :class="{ 'img-height': module.nav_style === 2 }"
                                 v-if="module.nav_style === 2 || module.nav_style === 1"
@@ -48,10 +48,10 @@
                                 :src="imageFormat(item.pic_url)"
                                 alt=""
                             />
-                        </navigator>
-                        <navigator class="item-text-a" :url="''">
+                        </view>
+                        <view class="item-text-a">
                             <div v-if="module.nav_style === 3 || module.nav_style === 1" class="imagenav-item-text">{{ item.pic_title }}</div>
-                        </navigator>
+                        </view>
                     </div>
                 </div>
             </block>
@@ -62,7 +62,7 @@
 <script lang="ts" setup>
 import { ref, computed, watchEffect } from "vue";
 import { formatFrame } from "@/components/modules";
-import { imageFormat } from "@/utils/format";
+import { imageFormat, urlFormat } from "@/utils/format";
 import Swiper from "@/components/Swiper/index.vue";
 // 在modules加入要使用的模块
 import "swiper/css";
@@ -115,9 +115,23 @@ watchEffect(() => {
 const current = ref(0);
 const currentIndex = ref(0);
 const module_id = ref("");
-
-const monitorCurrent = (e: any) => {
-    current.value = e.detail.current;
+const handleToPage = (data: string | { path: string; [key: string]: any }) => {
+    if (typeof data === "string") {
+        uni.navigateTo({
+            url: data
+        });
+    } else {
+        if (data.path === "category") {
+            uni.setStorageSync("category_id", data.id);
+            uni.switchTab({
+                url: urlFormat(data),
+            });
+        } else {
+            uni.navigateTo({
+                url: urlFormat(data)
+            });
+        }
+    }
 };
 </script>
 <style lang="scss" scoped>

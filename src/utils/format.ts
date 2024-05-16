@@ -30,7 +30,9 @@ export function urlFormat(params: string | { path: string; [key: string]: any })
     } else {
         switch (params.path) {
             case "product":
-                return "/pages/productDetail/index?id=" + params.id + "";
+                return "/pages/productDetail/index?id=" + params.id;
+            case "category":
+                return "/pages/productCate/index";
             case "list":
                 return "/list/?cat=" + params.id;
             case "base":
