@@ -42,7 +42,7 @@
 
                         <scroll-view class="item-cat_nav-con" :scroll-left="navLeft" :scroll-with-animation="true" :scroll-x="true">
                             <view class="cat-nav-list">
-                                <view :class="'nav-item ' + (current_cat_nav_id === 0 ? 'current' : '')" data-id="0">
+                                <view :class="'nav-item ' + (current_cat_nav_id == 0 ? 'current' : '')" data-id="0">
                                     <view class="tit" :style="'color: ' + module.text_color + ';'" @click="changeCatNav" data-id="0" data-cat_id="0">推荐</view>
                                 </view>
                                 <view
@@ -125,8 +125,6 @@ const changeCatNav = (e: any) => {
         showCatNav.value = 1;
     }
     current_cat_nav_id.value = id;
-    console.log('current_cat_nav_id', current_cat_nav_id.value)
-    console.log(current_cat_nav_id.value === 0)
     emit("change-cat-nav", {
         id,
         category_id,

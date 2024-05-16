@@ -1,23 +1,31 @@
 <template>
     <view class="custom-tabs">
-        <view v-for="(tab, index) in tabs" :key="index" :class="{ 'active-tab': activeTab === tab.account_type }"
-            class="tab" @click="actionClick(tab.account_type)">
+        <view
+            v-for="(tab, index) in tabs"
+            :key="index"
+            :class="{ 'active-tab': activeTab === tab.account_type }"
+            class="tab"
+            @click="actionClick(tab.account_type)"
+        >
             <view>{{ tab.title }}</view>
         </view>
     </view>
     <view class="reply-main">
         <view class="reply-content">
-            <up-form ref="formRef" :model="formState" label-width="170rpx">
+            <up-form ref="formRef" :model="formState" label-width="170rpx" errorType="toast">
                 <up-form-item label="提现至">
                     <up-picker :show="show" :columns="dataList" keyName="text" @confirm="confirm" @cancel="cancel"></up-picker>
-                    <up-button @click="show = true" style="justify-content: flex-start;">{{ selectedData.text }}</up-button>
+                    <up-button @click="show = true" style="justify-content: flex-start">{{ selectedData.text }}</up-button>
                 </up-form-item>
-                <view class="tips">当前{{ accountPlaceholder }}账号已不用？<navigator url="/pages/user/account/cardManagement/list" class="font-color">点击这里</navigator>去添加新的{{ accountPlaceholder }}账号。</view>
-                <up-form-item label="提现姓名" prop="account_name">
-                    <up-input v-model="formState.account_data.account_name" :placeholder="'请选择'+accountPlaceholder+'账号'" disabled fontSize="12" />
+                <view class="tips"
+                    >当前{{ accountPlaceholder }}账号已不用？<navigator url="/pages/user/account/cardManagement/list" class="font-color">点击这里</navigator
+                    >去添加新的{{ accountPlaceholder }}账号。</view
+                >
+                <up-form-item label="提现姓名" prop="account_data.account_name">
+                    <up-input v-model="formState.account_data.account_name" :placeholder="'请选择' + accountPlaceholder + '账号'" disabled fontSize="12" />
                 </up-form-item>
-                <up-form-item label="银行详情" prop="bank_name" v-if="formState.account_data.account_type === 1">
-                    <up-textarea  v-model="formState.account_data.bank_name" placeholder="请选择银行卡账号" disabled fontSize="12" />
+                <up-form-item label="银行详情" prop="account_data.bank_name" v-if="formState.account_data.account_type === 1">
+                    <up-textarea v-model="formState.account_data.bank_name" placeholder="请选择银行卡账号" disabled fontSize="12" />
                 </up-form-item>
                 <up-form-item label="提现金额" prop="amount">
                     <up-input type="number" v-model="formState.amount" placeholder="请输入提现金额" clearable fontSize="12" />
@@ -50,30 +58,28 @@ const actionClick = async (value: number) => {
     formState.value.account_data.account_type = value;
     resetForm();
     __getAccountNoList(value);
-}
-const resetForm = () => {  
+};
+const resetForm = () => {
     selectedData.value = {
-        id: '',
-        text: '请选择'
-    }
+        id: "",
+        text: "请选择"
+    };
     formState.value = {
         account_data: {
-            account_no: '',
-            account_name: '',
+            account_no: "",
+            account_name: "",
             account_type: activeTab.value,
-            bank_name: '',
+            bank_name: ""
         },
-        amount: '',
+        amount: ""
     };
-}
+};
 
 const show = ref(false);
-const selectedData = ref(
-    {
-        id: '',
-        text: '请选择'
-    }
-);
+const selectedData = ref({
+    id: "",
+    text: "请选择"
+});
 const cancel = () => {
     show.value = false;
 };
@@ -81,25 +87,21 @@ const confirm = (e: any) => {
     show.value = false;
     selectedData.value.id = e.value[0].id;
     selectedData.value.text = e.value[0].text;
+    console.log(e);
     upAcData(e.value[0].id);
 };
 
 const upAcData = (value: any) => {
-    const list  = formState.value.account_data.account_type === 1 ? yhkList
-                : formState.value.account_data.account_type === 2 ? zfbList
-                : wxList;
-    let selectedItem:any = list.value.find((item:any) => item.account_id === value);
+    const list: any = formState.value.account_data.account_type === 1 ? yhkList : formState.value.account_data.account_type === 2 ? zfbList : wxList;
+    let selectedItem: any = list.value[0].find((item: any) => item.account_id === value);
     formState.value.account_data.account_no = selectedItem?.account_no;
     formState.value.account_data.account_name = selectedItem?.account_name;
     formState.value.account_data.bank_name = selectedItem?.bank_name;
-}
+};
 
 const yhkList = ref<AccountInfo[]>([]);
 const zfbList = ref<AccountInfo[]>([]);
 const wxList = ref<AccountInfo[]>([]);
-const newYhlList = ref([]);
-const newZfbList = ref([]);
-const newWxList = ref([]);
 const __getAccountNoList = async (type: number) => {
     uni.showLoading({
         title: "加载中"
@@ -109,36 +111,30 @@ const __getAccountNoList = async (type: number) => {
             account_type: type
         };
         const result = await getAccountNoList({ ...temp });
+        let arr: any = [];
         if (type == 1) {
-            yhkList.value.length = 0;
-            yhkList.value.push(...result.filter_result);
-            let arr:any = yhkList.value.map((item:any) => ({
+            arr = result.filter_result.map((item: any) => ({
                 id: item.account_id,
-                text: item.account_no
+                text: item.account_no,
+                ...item
             }));
-            let newArr:any = [];
-            newArr.push(arr);
-            newYhlList.value = newArr;
+            yhkList.value.push(arr);
         } else if (type === 2) {
-            zfbList.value.length = 0;
-            zfbList.value.push(...result.filter_result);
-            let arr:any = zfbList.value.map((item:any) => ({
+            arr = result.filter_result.map((item: any) => ({
                 id: item.account_id,
-                text: item.account_no
+                text: item.account_no,
+                ...item
             }));
-            let newArr:any = [];
-            newArr.push(arr);
-            newZfbList.value = newArr;
+
+            zfbList.value.push(arr);
         } else {
-            wxList.value.length = 0;
-            wxList.value.push(...result.filter_result);
-            let arr:any = wxList.value.map((item:any) => ({
+            arr = result.filter_result.map((item: any) => ({
                 id: item.account_id,
-                text: item.account_no
+                text: item.account_no,
+                ...item
             }));
-            let newArr:any = [];
-            newArr.push(arr);
-            newWxList.value = newArr;
+
+            wxList.value.push(arr);
         }
     } catch (error: any) {
         console.log(error.message);
@@ -149,8 +145,12 @@ const __getAccountNoList = async (type: number) => {
 
 const formState = ref<AccountFormState>({
     account_data: {
-        account_type: 1
-    }
+        account_no: "",
+        account_name: "",
+        account_type: 1,
+        bank_name: ""
+    },
+    amount: ""
 });
 
 const accountPlaceholder = computed(() => {
@@ -169,11 +169,11 @@ const accountPlaceholder = computed(() => {
 const dataList = computed(() => {
     switch (formState.value.account_data.account_type) {
         case 1:
-            return newYhlList.value;
+            return yhkList.value;
         case 2:
-            return newZfbList.value;
+            return zfbList.value;
         case 3:
-            return newWxList.value;
+            return wxList.value;
         default:
             return "";
     }
@@ -181,34 +181,11 @@ const dataList = computed(() => {
 
 const rules = {
     amount: {
-        type: 'string',
         required: true,
-        message: '请输入提现金额',
-        trigger: 'change'
-    },
-};
-
-const onSubmit = async () => {
-    try {
-        await formRef.value.validate();
-        const result = await updateWithdrawApply({ ...formState.value });
-        uni.showToast({
-            title: result.message,
-            icon: "success",
-            duration: 1000
-        });
-        setTimeout(() => {
-            backDetail();
-        }, 1500)
-    } catch (error: any) {
-        console.log("表单错误信息：", error);
+        message: "请输入提现金额",
+        trigger: ["blur", "change"]
     }
 };
-
-const emit = defineEmits(["backDetail"]);
-const backDetail = () => {
-    emit('backDetail');
-}
 
 onShow(() => {
     nextTick(() => {
@@ -216,9 +193,33 @@ onShow(() => {
     });
 });
 
+const onSubmit = async () => {
+    formRef.value
+        .validate()
+        .then(async (valid: boolean) => {
+            if (valid) {
+                const result = await updateWithdrawApply({ ...formState.value });
+                uni.showToast({
+                    title: result.message,
+                    icon: "success",
+                    duration: 1000
+                });
+                setTimeout(() => {
+                    backDetail();
+                }, 1500);
+            }
+        })
+        .catch(() => {});
+};
+
+const emit = defineEmits(["backDetail"]);
+const backDetail = () => {
+    emit("backDetail");
+};
+
 onLoad(() => {
     __getAccountNoList(activeTab.value);
-})
+});
 </script>
 <style lang="scss" scoped>
 .custom-tabs {
@@ -276,7 +277,7 @@ onLoad(() => {
         }
     }
     .recharge-btn {
-        background: linear-gradient(90deg,#fee2b7,#fdc383);
+        background: linear-gradient(90deg, #fee2b7, #fdc383);
     }
     .cancel-btn {
         background: #eaeaea;
