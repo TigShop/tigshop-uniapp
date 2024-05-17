@@ -20,4 +20,5 @@ dist
 *.sln
 *.sw?
 vite.config.ts
+.hbuilderx
 src/config/index.config.ts
