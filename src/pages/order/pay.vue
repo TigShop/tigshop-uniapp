@@ -115,7 +115,9 @@ const loadOrderPayInfo = async (id: number) => {
             icon: "none"
         });
         setTimeout(() => {
-            uni.navigateBack();
+            uni.redirectTo({
+                url: "/pages/user/order/index?type=await_pay"
+            });
         }, 1500);
     } finally {
         loading.value = false;
@@ -211,6 +213,11 @@ const handlePay = async () => {
             duration: 1500,
             icon: "none"
         });
+        setTimeout(() => {
+            uni.redirectTo({
+                url: "/pages/user/order/index?type=await_pay"
+            });
+        }, 1500);
     } finally {
         paymentDisabled.value = false;
     }
@@ -322,7 +329,6 @@ onBeforeUnmount(() => {
         top: -5rpx;
     }
 }
-
 
 .other-info {
     background: #fff;

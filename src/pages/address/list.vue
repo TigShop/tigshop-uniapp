@@ -151,15 +151,19 @@ const __selectedAddress = async () => {
         addressList.value = [];
         if (pages.length > 1) {
             const prevRoute = pages[pages.length - 2].route;
-
+            console.log(pages);
             if (prevRoute === "pages/order/check") {
                 uni.navigateBack();
             }
-        } 
+        }
 
         __getAddressList();
-    } catch (errore) {
-        console.error(errore);
+    } catch (error: any) {
+        console.error(error);
+        uni.showToast({
+            title: error.message,
+            icon: "none"
+        });
     } finally {
         uni.hideLoading();
     }
