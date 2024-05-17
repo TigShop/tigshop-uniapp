@@ -40,7 +40,7 @@
                 <view class="cap-store-banner__inner">
                     <view class="cap-store-banner__content">
                         <view class="cap-store-banner__logo">
-                            <image :src="module.store_info.store_logo" mode="widthFix"></image>
+                            <image lazy-load  :src="module.store_info.store_logo" mode="widthFix"></image>
                         </view>
                         <view class="cap-store-banner__right-content">
                             <view class="cap-store-banner__right-content-title--middle">

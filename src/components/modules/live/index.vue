@@ -33,7 +33,7 @@
             <view class="live-list-warp">
                 <view class="live-list">
                     <view class="live-item" @tap.stop.prevent="toLiveRoom" :data-room_id="item.room_id" v-for="(item, index) in module.live_list" :key="index">
-                        <image class="bg_img" :src="item.thumb_img" mode="aspectFill"></image>
+                        <image lazy-load  class="bg_img" :src="item.thumb_img" mode="aspectFill"></image>
 
                         <view class="shadow_bg"></view>
 
@@ -44,14 +44,14 @@
                                 <text v-else-if="item.live_status == '102'">未开始</text>
                                 <text v-else-if="item.live_status == '105'">暂停中</text>
                                 <text v-else>已结束</text>
-                                <image v-if="item.live_status == '101'" src="/static/images/common/live2.gif"></image>
+                                <image lazy-load  v-if="item.live_status == '101'" src="/static/images/common/live2.gif"></image>
                             </view>
                         </view>
 
                         <view class="live-content">
                             <view class="title">{{ item.wechat_live_title }}</view>
                             <view class="name">
-                                <image class="anchor_img" :src="item.anchor_img"></image>
+                                <image lazy-load  class="anchor_img" :src="item.anchor_img"></image>
                                 {{ item.anchor_name }}
                             </view>
                         </view>

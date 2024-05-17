@@ -22,7 +22,8 @@
                                 <div class="image-ad-item">
                                     <div class="item-content" :style="format.img_padding">
                                         <div class="item-img-a" :url="item.pic_link ? item.pic_link.link : ''">
-                                            <image class="item-img" :src="imageFormat(item.pic_url)" mode="widthFix"></image>
+                                            <!-- <image lazy-load  class="item-img" :src="imageFormat(item.pic_url)" mode="widthFix"></image> -->
+                                            <tigImage class="item-img" v-model:src="item.pic_url" mode="widthFix"></tigImage>
                                         </div>
                                     </div>
                                 </div>
@@ -34,11 +35,12 @@
             <block v-else>
                 <div class="image-ad-warp" :style="frameFormat.inner_padding">
                     <div class="image-ad-con">
-                        <template v-if="module.pic_list" v-for="(pic, key) in module.pic_list">
+                        <template v-if="module.pic_list" v-for="(pic, key) in module.pic_list" :key="key">
                             <div class="image-ad-item">
                                 <div class="item-content" :style="format.img_padding">
                                     <div class="item-img-a" :url="pic.pic_link ? pic.pic_link.link : ''">
-                                        <image class="item-img" :src="imageFormat(pic.pic_url)" mode="widthFix"></image>
+                                        <tigImage class="item-img" v-model:src="pic.pic_url" mode="widthFix"></tigImage>
+                                        <!-- <image lazy-load  class="item-img" :src="imageFormat(pic.pic_url)" mode="widthFix"></image> -->
                                     </div>
                                 </div>
                             </div>

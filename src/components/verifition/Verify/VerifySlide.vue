@@ -9,7 +9,7 @@
                         height: setSize.imgHeight
                     }"
                 >
-                    <image v-if="backImgBase" :src="'data:image/png;base64,' + backImgBase" alt="" style="width: 100%; height: 100%; display: block"></image>
+                    <image lazy-load  v-if="backImgBase" :src="'data:image/png;base64,' + backImgBase" alt="" style="width: 100%; height: 100%; display: block"></image>
 
                     <div v-if="backImgBase" class="verify-refresh" @click="refresh" v-show="showRefresh"><i class="iconfont-pc icon-refresh"></i></div>
                     <transition name="tips">
@@ -61,7 +61,7 @@
                                 'background-size': setSize.imgWidth + ' ' + setSize.imgHeight
                             }"
                         >
-                            <image
+                            <image lazy-load 
                                 v-if="blockBackImgBase"
                                 :src="'data:image/png;base64,' + blockBackImgBase"
                                 alt=""

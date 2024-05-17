@@ -4,14 +4,13 @@
             <view class="payment-title">支付方式</view>
             <view class="payment-content" @click="handlePaymentMode">
                 <view class="payment-text">{{ paymentTypeText }}</view>
-                <image class="more-ico" src="/static/images/common/more.png"></image>
+                <image lazy-load class="more-ico" src="/static/images/common/more.png"></image>
             </view>
         </view>
-
-        <popup v-model:show="show" title="选择支付方式">
+        <tigpopup v-model:show="show" title="选择支付方式">
             <view class="payment-popup">
                 <view class="payment-btn">
-                    <block v-for="(item, index) in availablePaymentType" :key="item.type_id">
+                    <block v-for="(item, index) in availablePaymentTypeData" :key="item.type_id">
                         <view
                             class="payment-btn-item"
                             :class="{ active: getActive(index, item.type_id), disabled: item.disabled }"
@@ -25,41 +24,54 @@
                     <view class="payment-desc-title">在线支付</view>
                     <view class="payment-desc-text"> 支持微信即时到账（绝大数银行借记卡及部分银行信用卡） </view>
                 </view>
-
-                <view class="button-position">
-                    <van-button round type="danger" style="width: 100%" @click="handlecConfirm">确定</van-button>
-                </view>
+                <saveBottomBox height="110" backgroundColor="#fff">
+                    <view class="btn-box">
+                        <tigButton style="width: 100%;height: 70rpx;"  @click="handlecConfirm"> 提交</tigButton>
+                    </view>
+                </saveBottomBox>
             </view>
-        </popup>
+        </tigpopup>
     </view>
 </template>
 
 <script setup lang="ts">
-import popup from "@/components/popup/index.vue";
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import type { AvailablePaymentType } from "@/types/order/check";
-import { showFailToast } from "vant";
+import saveBottomBox from '@/components/saveBottomBox/index.vue'
 interface Props {
     availablePaymentType: AvailablePaymentType[];
     payTypeId: number;
 }
 const props = defineProps<Props>();
-const emit = defineEmits(["update:payTypeId"]);
+const emit = defineEmits(["update:payTypeId", "change"]);
+
+const availablePaymentTypeData = ref<AvailablePaymentType[]>([]);
+const paymentTypeText = ref(props.availablePaymentType[0].type_name);
+const handlePaymentMode = () => {
+    availablePaymentTypeData.value = JSON.parse(JSON.stringify(props.availablePaymentType));
+    show.value = true;
+    const index = props.availablePaymentType.findIndex((item) => item.type_id === props.payTypeId);
+    if (index >= 0) {
+        currentIndex.value = index;
+    }
+};
 
 watch(
-    () => props.availablePaymentType,
+    () => availablePaymentTypeData,
     () => {
-        const data: AvailablePaymentType[] = props.availablePaymentType.filter((item) => item.disabled);
+        const data: AvailablePaymentType[] = availablePaymentTypeData.value.filter((item) => item.disabled);
         if (data[0] && data[0].type_id === props.payTypeId) {
             emit("update:payTypeId", 0);
             currentIndex.value = null;
             paymentTypeText.value = data[0].disabled_desc;
-            showFailToast(data[0].disabled_desc);
+            uni.showToast({
+                title: data[0].disabled_desc,
+                duration: 1500,
+                icon: "none"
+            });
         }
     }
 );
-
-const paymentTypeText = ref(props.availablePaymentType[0].type_name);
 
 const show = ref(false);
 const currentIndex = ref<null | number>();
@@ -74,22 +86,32 @@ const handlePaymentType = (index: number, disabled: boolean) => {
     if (disabled) return;
     currentIndex.value = index;
 };
-const handlePaymentMode = () => {
-    show.value = true;
-};
 
 const handlecConfirm = () => {
     if (currentIndex.value !== null && currentIndex.value !== undefined && currentIndex.value >= 0) {
-        paymentTypeText.value = props.availablePaymentType[currentIndex.value].type_name;
-        emit("update:payTypeId", props.availablePaymentType[currentIndex.value].type_id);
+        paymentTypeText.value = availablePaymentTypeData.value[currentIndex.value].type_name;
+        emit("update:payTypeId", availablePaymentTypeData.value[currentIndex.value].type_id);
+        emit("change");
         show.value = false;
     } else {
-        showFailToast("请选择付款方式");
+        uni.showToast({
+            title: "请选择付款方式",
+            duration: 1500,
+            icon: "none"
+        });
     }
 };
 </script>
 
 <style lang="scss" scoped>
+.btn-box {
+    padding: 15rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+}
 .payment {
     border-radius: 18rpx;
     background: #fff;
@@ -130,7 +152,7 @@ const handlecConfirm = () => {
 
             &.active {
                 color: #fff;
-                background-color: #ff3700;
+                background-color: $tig-color-primary;
             }
 
             &.disabled {

@@ -1,5 +1,15 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+
+    "easycom": {
+		"autoscan": true,
+		"custom": {
+			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
+            "^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
+			"^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+	        "^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue"
+		}
+	},
+    "pages": [
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -10,6 +20,10 @@
 		},
 		{
 			"path": "pages/search/index",
+			"style": {}
+		},
+		{
+			"path": "pages/search/result",
 			"style": {}
 		},
 		{
@@ -24,12 +38,36 @@
 			"path": "pages/user/index",
 			"style": {}
 		},
+        {
+            "path": "pages/user/account/index",
+            "style": {}
+        },
+        {
+            "path": "pages/user/account/cardManagement/list",
+            "style": {}
+        },
+        {
+            "path": "pages/user/account/cardManagement/edit",
+            "style": {}
+        },
 		{
 			"path": "pages/login/index",
 			"style": {}
 		},
+        {
+            "path": "pages/register/index",
+            "style": {}
+        },
 		{
 			"path": "pages/productDetail/index",
+			"style": {}
+		},
+		{
+			"path": "pages/productDetail/consult",
+			"style": {}
+		},
+		{
+			"path": "pages/productDetail/comment",
 			"style": {}
 		},
 		{
@@ -37,7 +75,15 @@
 			"style": {}
 		},
 		{
+			"path": "pages/coupon/detail",
+			"style": {}
+		},
+		{
 			"path": "pages/order/check",
+			"style": {}
+		},
+		{
+			"path": "pages/order/pay",
 			"style": {}
 		},
 		{
@@ -47,7 +93,74 @@
 		{
 			"path": "pages/address/editRegion",
 			"style": {}
-		}
+		},
+        {
+            "path": "pages/user/historyProduct/index"
+        },
+        {
+            "path":"pages/user/order/list"
+        },
+        {
+            "path":"pages/user/order/info"
+        },
+        {
+            "path":"pages/user/profile/index"
+        },
+        {
+            "path":"pages/user/collectProduct/index"
+        },
+        {
+            "path":"pages/user/afterSale/edit"
+        },
+        {
+            "path":"pages/seckill/list"
+        },
+        {
+            "path":"pages/user/messageLog/index"
+        },
+        {
+            "path":"pages/user/afterSale/info"
+        },
+        {
+            "path":"pages/user/afterSale/list"
+        },
+        {
+            "path":"pages/user/afterSale/negotiate"
+        },
+        {
+            "path":"pages/user/afterSale/leaveMessage"
+        },
+        {
+            "path":"pages/user/afterSale/shipments"
+        },
+        {
+            "path":"pages/user/comment/list"
+        },
+        {
+            "path":"pages/user/comment/info"
+        },
+        {
+            "path":"pages/user/invoiceManagement/index"
+        },
+        {
+            "path":"pages/user/invoiceManagement/applyInvoice"
+        },
+        {
+            "path":"pages/user/invoiceManagement/invoiceInfo"
+        },
+        {
+            "path":"pages/user/security/phone"
+        },
+        {
+            "path":"pages/user/security/newPhone"
+        },
+        {
+            "path":"pages/user/security/password"
+        },
+        {
+            "path":"pages/user/point/detail"
+        }
+
 	],
 	"requiredPrivateInfos": [
 		"chooseLocation",

@@ -12,10 +12,10 @@
                         <view class="image-ad-item">
                             <view class="item-content" :style="format.img_padding">
                                 <view class="item-content-hotatrea">
-                                    <image class="item-img-bg" :data-auto="true" :alt="item.pic_name" :src="imageFormat(item.pic_url)" mode="widthFix"></image>
+                                    <tigImage class="item-img-bg" v-model:src="item.pic_url" mode="widthFix"></tigImage>
                                     <block v-for="(subItem, index) in item.hotarea" :key="index">
-                                        <navigator
-                                            :url="subItem.link.path"
+                                        <view
+                                            @click="handleToPage(subItem.link)"
                                             class="image-hotarea-link"
                                             :data-width="subItem.width"
                                             :data-height="subItem.height"
@@ -24,7 +24,7 @@
                                             :style="subItem.position"
                                         >
                                             <text class="area_box_con_text">{{ subItem.link.name }}</text>
-                                        </navigator>
+                                        </view>
                                     </block>
                                 </view>
                             </view>
@@ -40,7 +40,7 @@
 import { ref, computed } from "vue";
 import commonTitle from "@/components/modules/commonTitle/index.vue";
 import { formatFrame } from "@/components/modules";
-import { imageFormat } from "@/utils/format";
+import { urlFormat } from "@/utils/format";
 const props = defineProps({
     module: {
         type: Object,
@@ -58,24 +58,11 @@ const format = computed(() => {
 });
 
 const module_id = ref("");
-
-const pic = ref({
-    pic_title: "",
-    pic_org_format: "",
-    pic_data: []
-});
-const picData = ref({
-    wechat_link: "",
-    width: "",
-    height: "",
-    pageX: "",
-    pageY: "",
-    width_format: "",
-    height_format: "",
-    left_format: "",
-    top_format: "",
-    link: ""
-});
+const handleToPage = (data: string | { path: string; [key: string]: any }) => {
+    uni.navigateTo({
+        url: urlFormat(data)
+    });
+}
 </script>
 <style>
 @import "../../../static/css/modules.css";

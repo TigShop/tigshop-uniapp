@@ -45,9 +45,10 @@
                                     <view class="item-content" :style="allFormat.goods_padding">
                                         <view class="item-con">
                                             <view class="item-photo">
-                                                <navigator :url="urlFormat(subItem.url)" class="item-image-a"
-                                                    ><image :src="imageFormat(subItem.pic_thumb)" mode="widthFix"
-                                                /></navigator>
+                                                <navigator :url="urlFormat(subItem.url)" class="item-image-a">
+                                                    <!-- <image lazy-load :src="imageFormat(subItem.pic_thumb)" mode="widthFix" /> -->
+                                                    <tigImage v-model:src="subItem.pic_thumb" mode="widthFix"></tigImage>
+                                                </navigator>
                                             </view>
                                             <view class="item-info">
                                                 <block v-if="module.show_name">
@@ -64,9 +65,7 @@
                                                 </block>
                                                 <view class="item-action" v-if="module?.show_price">
                                                     <view class="item-price">
-                                                        <text class="price_format">
-                                                            {{ priceFormat(Number(subItem.product_price)) }}
-                                                        </text>
+                                                        <FormatPrice :priceData="subItem.product_price"></FormatPrice>
                                                     </view>
                                                     <view class="item-buy"> </view>
                                                 </view>
@@ -87,9 +86,9 @@
                                 <view class="item-content" :style="allFormat.goods_padding">
                                     <view class="item-con">
                                         <view class="item-photo">
-                                            <navigator :url="urlFormat({ path: 'product', id: item.product_id })" class="item-image-a"
-                                                ><image :src="imageFormat(item.pic_thumb)" mode="widthFix"
-                                            /></navigator>
+                                            <navigator :url="urlFormat({ path: 'product', id: item.product_id })" class="item-image-a">
+                                                <tigImage v-model:src="item.pic_thumb" mode="widthFix"></tigImage>
+                                            </navigator>
                                         </view>
                                         <view class="item-info">
                                             <block v-if="module.show_name">
@@ -97,17 +96,12 @@
                                                     <navigator :url="urlFormat({ path: 'product', id: item.product_id })" class="item-name-a">
                                                         {{ item.product_name ?? "商品名称" }}
                                                     </navigator>
-                                                    <block v-if="module.show_brief">
-                                                        <navigator :url="urlFormat({ path: 'product', id: item.product_id })" class="item-brief">
-                                                            {{ item.product_desc ?? "商品描述" }}
-                                                        </navigator>
-                                                    </block>
                                                 </view>
                                             </block>
                                             <block v-if="module.show_price">
                                                 <view class="item-action">
                                                     <view class="item-price">
-                                                        <text>{{ priceFormat(Number(item.product_price)) }}</text>
+                                                        <FormatPrice :priceData="item.product_price"></FormatPrice>
                                                     </view>
                                                     <view class="item-buy">
                                                         <view @click="buy" class="buy-btn">
@@ -140,10 +134,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, watchEffect } from "vue";
+import { ref, computed, onMounted, watchEffect, inject } from "vue";
 import { imageFormat, priceFormat, urlFormat } from "@/utils/format";
 import { formatFrame } from "@/components/modules";
-import type { ProductListData } from "@/types/decorate/mobileProduct";
+import type { ProductList } from "@/types/decorate/mobileProduct";
 import { getProductList } from "@/api/home/home";
 import commonTitle from "@/components/modules/commonTitle/index.vue";
 import Swiper from "@/components/Swiper/index.vue";
@@ -154,6 +148,10 @@ const props = defineProps({
     module: {
         type: Object,
         default: () => ({})
+    },
+    module_index: {
+        type: Number,
+        default: 0
     }
 });
 const { frame } = props.module;
@@ -172,10 +170,11 @@ const allFormat = computed(() => {
     };
 });
 
+const decorate_id: any = inject("decorate_id");
 onMounted(() => {
     _getproductList();
 });
-const productList = ref<ProductListData[]>();
+const productList = ref<ProductList[]>();
 const mockData = [
     {
         product_id: 339,
@@ -218,9 +217,8 @@ const mockData = [
 ];
 const _getproductList = async () => {
     try {
-        // const result = await getProductList({ ...props.module.products });
-        // productList.value = result.product_list;
-        productList.value = mockData;
+        const result = await getProductList({ decorate_id: decorate_id.value, module_index: props.module_index });
+        productList.value = result.item.products.product_list;
     } catch (error) {
     } finally {
     }
@@ -253,8 +251,8 @@ const swiperOption = ref<any>({
 
 const buy = () => {};
 </script>
-<style>
-@import "../../../static/css/modules.css";
+<style lang="scss" scoped>
+/* @import "../../../static/css/modules.css"; */
 /*商品类型*/
 .module-goods_ad .module-ad-content {
     overflow: hidden;
@@ -271,8 +269,6 @@ const buy = () => {};
 .goods-ad-warp .goods-ad-con {
     display: flex;
     flex-wrap: wrap;
-}
-.goods-ad-warp .goods-ad-con .goods-ad-item {
 }
 
 .goods-ad-warp .goods-ad-item .item-photo {
@@ -302,7 +298,7 @@ const buy = () => {};
 .goods-ad-warp .goods-ad-item .item-info .count-down em {
     font-size: 32rpx;
     font-weight: normal;
-    color: #f23030;
+    color: $tig-color-primary;
     padding: 0 4rpx;
 }
 
@@ -350,15 +346,16 @@ const buy = () => {};
     align-items: center;
 }
 .goods-ad-warp .goods-ad-item .item-info .item-price {
-    font-size: 20rpx;
-    color: #f23030;
-    line-height: 60rpx;
-    height: 60rpx;
-}
-.goods-ad-warp .goods-ad-item .item-info .item-price text {
-    font-weight: normal;
     font-size: 36rpx;
+    color: $tig-color-primary;
+
+    & :deep(.util) {
+        font-size: 26rpx;
+        position: relative;
+        top: -2rpx;
+    }
 }
+
 .goods-ad-warp .goods-ad-item .item-info .item-buy {
     justify-content: center;
     height: 60rpx;
@@ -371,15 +368,13 @@ const buy = () => {};
 .goods-ad-warp .goods-ad-item .item-info .item-buy .module_ico {
     width: 48rpx;
     height: 48rpx;
-    color: #f23030;
+    color: $tig-color-primary;
     font-size: 36rpx;
 }
 .goods-ad-warp .goods-ad-item .item-info .item-buy .module_ico::before {
     content: "\e611";
 }
-/*.goods-ad-warp .goods-ad-item .item-info .tag{border-bottom-right-radius:16rpx;border:1rpx solid;padding:2rpx 6rpx;font-size:20rpx;border-top-left-radius:16rpx;font-weight:300;}*/
-/*.goods-ad-warp .goods-ad-item .item-info .market_price b{font-size:130%;}*/
-/*.goods-ad-warp .goods-ad-item .item-info .buy{background:url("../../../static/flow/cart_ico.png") no-repeat scroll 50% center / 30rpx auto;bottom:10rpx;height:60rpx;position:absolute;right:14rpx;width:60rpx;}*/
+
 .ad-style__1 .goods-ad-warp .goods-ad-item .item-info .item-name .item-name-a {
     font-size: 28rpx;
 }
@@ -491,11 +486,7 @@ const buy = () => {};
 .ad-style__7 .goods-ad-warp .goods-ad-con .goods-ad-item {
     width: 33.333%;
 }
-.ad-style__7 .goods-ad-warp .goods-ad-item .item-info {
-}
-.ad-style__7 .goods-ad-warp .goods-ad-item .item-info .item-price text {
-    font-size: 28rpx;
-}
+
 .ad-style__7 .goods-ad-warp .goods-ad-item .item-info .item-buy {
     display: none;
 }
@@ -520,12 +511,6 @@ const buy = () => {};
     opacity: 1;
     background-color: #fff;
 }
-/*.ad-style__7.ad-pic_page_type__2 .goods-ad-warp .swiper-pagination-con{position:absolute;bottom:30rpx;display:flex;justify-content:center;align-items:center;width:100%}
-.ad-style__7.ad-pic_page_type__2 .goods-ad-warp .swiper-pagination{margin:0 6rpx;background:#333;width:12rpx;height:12rpx;display:inline-block;border-radius:100%;background:#000;opacity:.2}
-.ad-style__7.ad-pic_page_type__2 .goods-ad-warp .swiper-pagination.active{opacity:1}
-.ad-style__7.ad-pic_page_type__3 .goods-ad-warp .swiper-pagination-con{text-align:center;right:0;position:absolute;width:110rpx;bottom:20rpx}
-.ad-style__7.ad-pic_page_type__3 .goods-ad-warp .swiper-pagination{position:absolute;text-align:center;z-index:10;bottom:0;left:0;width:100%}
-.ad-style__7.ad-pic_page_type__3 .goods-ad-warp .swiper-pagination{text-align:right;background:#000;opacity:.3;border-radius:200rpx;padding:2rpx 10rpx;display:inline-block;width:auto;color:#fff;font-size:24rpx}*/
 .ad-buy_btn_style__0 .goods-ad-warp .goods-ad-item .item-info .item-buy {
     display: none;
 }
@@ -546,14 +531,14 @@ const buy = () => {};
     font-size: 40rpx;
 }
 .ad-buy_btn_style__5 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view {
-    color: #f23030;
+    color: $tig-color-primary;
     height: 44rpx;
     line-height: 44rpx;
     padding: 0 16rpx;
     display: inline-block;
     position: relative;
     border-radius: 4rpx;
-    border: 0 solid #f23030;
+    border: 0 solid $tig-color-primary;
 }
 .ad-buy_btn_style__5 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view:before {
     content: "";
@@ -573,7 +558,7 @@ const buy = () => {};
     border-radius: 4rpx;
 }
 .ad-buy_btn_style__6 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view {
-    background: #f23030;
+    background: $tig-color-primary;
     color: #fff;
     height: 44rpx;
     line-height: 44rpx;
@@ -583,14 +568,14 @@ const buy = () => {};
     border-radius: 44rpx;
 }
 .ad-buy_btn_style__7 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view {
-    color: #f23030;
+    color: $tig-color-primary;
     height: 44rpx;
     line-height: 44rpx;
     padding: 0 16rpx;
     display: inline-block;
     position: relative;
     border-radius: 4rpx;
-    border: 0 solid #f23030;
+    border: 0 solid $tig-color-primary;
 }
 .ad-buy_btn_style__7 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view:before {
     content: "";
@@ -610,7 +595,7 @@ const buy = () => {};
     border-radius: 4rpx;
 }
 .ad-buy_btn_style__8 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view {
-    background: #f23030;
+    background: $tig-color-primary;
     color: #fff;
     height: 44rpx;
     line-height: 44rpx;

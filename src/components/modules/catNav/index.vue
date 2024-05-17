@@ -1,7 +1,15 @@
 <template>
     <view class="module-ad-con module-cat_nav">
-        <view class="catNav-warp-blank" v-if="scrollTop > 120" :style="'padding-top:' + (navH - 110) + 'rpx;'"></view>
-        <view :class="'catNav-warp ' + (scrollTop > 120 ? 'fixed' : '')">
+        <view
+            class="catNav-warp-blank"
+            v-if="module.is_ganged === 1 && scrollTop > 120"
+            :style="'padding-top:' + (configStore.navHeight - 110) + 'rpx;'"
+        ></view>
+        <view v-if="scrollTop > 120 && configStore.previewId > 0" style="padding: 58rpx"></view>
+        <view
+            class="catNav-warp"
+            :class="{ fixed: module.is_ganged === 1 && scrollTop > 120, 'fixed-top': module.is_ganged === 1 && scrollTop > 120 && configStore.previewId > 0 }"
+        >
             <view
                 class="catNav-con"
                 :style="
@@ -15,14 +23,14 @@
                     'rpx' +
                     ';background-image: url(' +
                     imageFormat(module.nav_background_pic.pic_url) +
-                    ');background-position: center center;background-size: 100% auto;' +
+                    ');background-position: center bottom;background-size: 100% auto;' +
                     (catColor != '' ? 'background:' + catColor : '')
                 "
             >
-                <view class="catNav-item" :style="'padding-top:' + (navH - 110) + 'rpx;'">
+                <view class="catNav-item" :style="'padding-top:' + (configStore.navHeight - 110) + 'rpx;'">
                     <view class="item-content">
-                        <div class="flex">
-                            <img class="catnav-logo" :style="logoFormat.logo_height" :src="imageFormat(logoFormat.logo_pic?.pic_url || '')" />
+                        <div :class="{ flex: scrollTop > 120 }">
+                            <image class="catnav-logo" mode="heightFix" :style="logoFormat.logo_height" :src="imageFormat(logoFormat.logo_pic?.pic_url || '')" />
 
                             <view class="default-search" @click="handleSkip" :style="searchFormat['padding-right'] + searchFormat['padding-left']">
                                 <view class="default-search-config catnav-search" :style="searchFormat['item_background_color'] + searchFormat['item_radius']">
@@ -34,27 +42,22 @@
 
                         <scroll-view class="item-cat_nav-con" :scroll-left="navLeft" :scroll-with-animation="true" :scroll-x="true">
                             <view class="cat-nav-list">
-                                <block v-if="navList.length === 0">
-                                <!-- <block v-if="true"> -->
-                                    <view class="catnav-skeleton">
-                                        <skeleton v-for="i in 5" :key="i" animated bg="#e4e4e4" width="50px" height="20px"></skeleton>
-                                    </view>
-                                </block>
-                                <block v-else>
-                                    <view
-                                        :class="'nav-item ' + (current_cat_nav_id == nav.mobile_cat_nav_id ? 'current' : '')"
-                                        @click="changeCatNav"
-                                        :data-id="nav.mobile_cat_nav_id"
-                                        :data-category_id="nav.category_id"
-                                        :data-index="index"
-                                        :data-cat_color="nav.cat_color"
-                                        :data-allData="nav"
-                                        v-for="(nav, index) in navList"
-                                        :key="index"
-                                    >
-                                        <view class="tit" :style="'color: ' + module.text_color + ';'">{{ nav.category_name }}</view>
-                                    </view>
-                                </block>
+                                <view :class="'nav-item ' + (current_cat_nav_id == 0 ? 'current' : '')" data-id="0">
+                                    <view class="tit" :style="'color: ' + module.text_color + ';'" @click="changeCatNav" data-id="0" data-cat_id="0">推荐</view>
+                                </view>
+                                <view
+                                    :class="'nav-item ' + (current_cat_nav_id == nav.mobile_cat_nav_id ? 'current' : '')"
+                                    @click="changeCatNav"
+                                    :data-id="nav.mobile_cat_nav_id"
+                                    :data-category_id="nav.category_id"
+                                    :data-index="index"
+                                    :data-cat_color="nav.cat_color"
+                                    :data-allData="nav"
+                                    v-for="(nav, index) in module.nav_list"
+                                    :key="index"
+                                >
+                                    <view class="tit" :style="'color: ' + module.text_color + ';'">{{ nav.category_name }}</view>
+                                </view>
                             </view>
                         </scroll-view>
                     </view>
@@ -65,11 +68,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, computed } from "vue";
 import { useConfigStore } from "@/store/config";
-import { getMobileCatNavList } from "@/api/home/home";
 import { imageFormat } from "@/utils/format";
-import skeleton from "@/components/skeleton/index.vue";
 
 const props = defineProps({
     module: {
@@ -104,7 +105,6 @@ const configStore = useConfigStore();
 
 const current_cat_nav_id = ref(0);
 const catColor = ref("");
-const navH = configStore.navHeight;
 const navLeft = ref(0);
 const showCatNav = ref(0);
 
@@ -115,7 +115,7 @@ const handleSkip = () => {
 };
 
 const changeCatNav = (e: any) => {
-    const { id, category_id, cat_color, index, allData } = e.currentTarget.dataset;
+    const { id, category_id, cat_color, index } = e.currentTarget.dataset;
     let nav_left = e.currentTarget.offsetLeft - 10;
     nav_left = nav_left - nav_left / (index + 1) + 10;
     catColor.value = cat_color ?? "";
@@ -129,28 +129,9 @@ const changeCatNav = (e: any) => {
         id,
         category_id,
         show_cat_nav: showCatNav.value,
-        cat_color: catColor.value,
-        brand_info: allData.brand_info,
-        img_url: allData.img_url,
-        child_cat_info: allData.child_cat_info
+        cat_color: catColor.value
     });
 };
-
-const navList = ref<any>([]);
-const getCatnNavList = async () => {
-    try {
-        const result = await getMobileCatNavList({ is_show: 1 });
-        navList.value = result.filter_result;
-        navList.value.splice(0, 0, { mobile_cat_nav_id: 0, category_name: "推荐" });
-        // console.log("getCatnNavList", result);
-    } catch (error) {
-        console.error(error);
-    }
-};
-
-onMounted(() => {
-    getCatnNavList();
-});
 </script>
 <style lang="scss" scoped>
 @import "../../../static/css/modules.css";
@@ -232,6 +213,10 @@ onMounted(() => {
         display: flex;
         align-items: center;
     }
+
+    &.fixed-top {
+        top: 116rpx;
+    }
 }
 .catNav-warp-blank {
     height: 360rpx;
@@ -247,6 +232,7 @@ onMounted(() => {
     margin-left: 10px;
     margin-top: 5px;
     margin-bottom: 10px;
+    
 }
 .default-search {
     padding: 0 10px;

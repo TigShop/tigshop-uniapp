@@ -1,148 +1,148 @@
 <template>
-    <view style="height: 100%">
-        <navbar :parameter="parameter"></navbar>
-        <!-- <view class="page-loading" v-if="!loaded"><view class="ico"></view></view> -->
-        <view class="cart-box shoppingCart">
-            <view class="top-text" v-if="cartList">
-                <view class="fl">
-                    已选商品
-                    <text class="num font-color">{{ total.total_count }}</text>
-                    件
-                </view>
-                <view class="fr administrate acea-row row-center-wrapper" @click="cartManageFun">
-                    <text class="manage-btn">{{ !cartManage ? "管理" : "完成" }}</text>
-                </view>
-            </view>
-            <view class="cart_list_wrap" v-if="cartList">
-                <block v-for="(item, index) in cartList" :key="index">
-                    <view class="cart_table" id="">
-                        <view class="cart_store_title noborder">
-                            <van-checkbox v-model="item.is_checked" @click="onCheckAllItem(index)" checked-color="#ee0a24"></van-checkbox>
-                            <view target="_blank" class="store_label">{{ item.store_title }}</view>
-                        </view>
-                        <view class="goods-list-cart">
-                            <block v-for="(goods, index) in item.carts" :key="goods.product_id">
-                                <view class="cart_item">
-                                    <van-swipe-cell>
-                                        <view class="cart_list_con">
-                                            <van-checkbox
-                                                class="check-item"
-                                                v-model="goods.is_checked"
-                                                @click="onChangeCheck"
-                                                checked-color="#ee0a24"
-                                            ></van-checkbox>
-                                            <navigator target="_blank" :url="'/pages/goods_details/index?id=' + goods.cart_id" class="photo">
-                                                <image :src="goods.pic_thumb" />
-                                                <view class="image_mask_sold_out" v-if="goods.storage == 0">
-                                                    <image src="/static/images/common/bg_soldout.png"></image>
-                                                </view>
-                                                <!-- <view
-                                                        class="cart-notice-row"
-                                                        v-if="goods.storage == 0"
-                                                        >无货</view
-                                                    >
-                                                    <view
-                                                        class="cart-notice-row"
-                                                        v-else-if="
-                                                            goods.storage == goods.goods_number
-                                                        "
-                                                        >仅剩 {{ goods.storage }}</view
-                                                    >
-
-                                                    <view
-                                                        class="inventory"
-                                                        v-if="goods.storage == goods.goods_number"
-                                                        >仅剩{{ goods.storage }}件</view
-                                                    > -->
-                                            </navigator>
-                                            <view class="cart-row">
-                                                <navigator target="_blank" :url="'/pages/goods_details/index?id=' + goods.product_id" class="name">
-                                                    {{ goods.product_name }}
-                                                </navigator>
-                                                <view class="extra_info" v-if="goods.goods_attr">
-                                                    <text v-if="goods.goods_attr" class="desc">{{ goods.goods_attr }}</text>
-                                                </view>
-                                                <view class="cart-price">
-                                                    <view class="price-one price">
-                                                        <text>{{ configStore.config.dollar_sign }}</text>
-                                                        {{ goods.price }}
-                                                    </view>
-                                                    <view class="cart-num-box">
-                                                        <van-stepper v-model="goods.quantity" @change="updateCartItem(goods.cart_id, goods.quantity)" integer />
-                                                    </view>
-                                                </view>
-                                            </view>
-                                        </view>
-                                        <template #right>
-                                            <view class="cart-move-box">
-                                                <view class="btn-collect" @click="handleCollect(goods.cart_id)">
-                                                    <text>移入收藏</text>
-                                                </view>
-                                                <view class="btn-del" @click="handleDel(goods.cart_id)"><text>删除</text></view>
-                                            </view>
-                                        </template>
-                                    </van-swipe-cell>
-                                </view>
-                            </block>
-                        </view>
+    <view class="safe-padding">
+        <saveContentbox :specialNum="100" :has_tabbar="true">
+            <navbar :parameter="parameter"></navbar>
+            <view class="cart-box shoppingCart">
+                <view class="top-text" v-if="cartList.length > 0">
+                    <view class="fl">
+                        已选商品
+                        <text class="select-num">{{ total.checked_count }}</text>
+                        件
                     </view>
-                </block>
-            </view>
-            <view class="checkOutBar" :style="{ bottom: configStore.tabbarHeight }">
-                <view class="bar-check">
-                    <view class="checkbox-pad">
-                        <van-checkbox v-model="allChecked" @click="onCheckAll" checked-color="#ee0a24">全选</van-checkbox>
+                    <view class="fr administrate acea-row row-center-wrapper" @click="cartManageFun">
+                        <text class="manage-btn">{{ !cartManage ? "管理" : "完成" }}</text>
                     </view>
                 </view>
-                <view class="edit-cart-action" v-if="cartManage">
-                    <view class="l_a_tool lt_delete" @click="checkClearCart" id="del-all">清空购物车</view>
-                    <view id="del-checked" class="l_a_tool lt_disable" @click.stop.prevent="delCartItem">删除勾选商品</view>
-                </view>
-                <view class="cart-total-box" v-if="!cartManage">
-                    <view class="cart-total">
-                        <view @click.stop.prevent="handleCheckout" :class="'btn-checkout ' + (total.total_count == 0 ? 'unable_btn' : '')">去结算</view>
-                        <view class="item-total">
-                            <view class="item-total-amount">
-                                <text class="txt">合计：</text>
-                                <text class="dol">{{ configStore.config.dollar_sign }}</text>
-                                <text class="item-amount">{{ total.product_amount }}</text>
+                <view class="cart_list_wrap" v-if="cartList.length > 0">
+                    <block v-for="(item, index) in cartList" :key="index">
+                        <view class="cart_table" id="">
+                            <view class="cart_store_title noborder">
+                                <tigCheckbox v-model:checked="item.is_checked" @change="onCheckAllItem(index)"></tigCheckbox>
+                                <view class="store_label">{{ item.store_title ? item.store_title : "自营" }}</view>
                             </view>
-                            <view class="item-total-desc">{{ total.discounts ? "组合优惠：" + total.discounts + " " : "" }}(不含运费)</view>
+                            <view class="goods-list-cart">
+                                <uni-swipe-action>
+                                    <block v-for="(goods, index) in item.carts" :key="goods.product_id">
+                                        <view class="cart_item">
+                                            <uni-swipe-action-item :threshold="0" autoClose>
+                                                <view class="cart_list_con" :class="{ cart_item_disabled: goods.is_disabled }">
+                                                    <tigCheckbox
+                                                        class="check-item"
+                                                        v-model:checked="goods.is_checked"
+                                                        @change="onChangeCheck"
+                                                        :disabled="goods.is_disabled"
+                                                    ></tigCheckbox>
+                                                    <navigator :url="'/pages/productDetail/index?id=' + goods.cart_id" class="photo">
+                                                        <view class="photo-img">
+                                                            <tigImage v-model:src="goods.pic_thumb"></tigImage>
+                                                            <view class="cart-notice-row" v-if="goods.stock === 0">已售罄</view>
+                                                            <view class="cart-notice-row" v-if="goods.product_status === 0">已下架</view>
+                                                        </view>
+                                                    </navigator>
+                                                    <view class="cart-row">
+                                                        <navigator target="_blank" :url="'/pages/productDetail/index?id=' + goods.product_id">
+                                                            <view class="name">
+                                                                {{ goods.product_name }}
+                                                            </view>
+                                                        </navigator>
+                                                        <view class="extra_info" v-if="goods.goods_attr">
+                                                            <text v-if="goods.goods_attr" class="desc">{{ goods.goods_attr }}</text>
+                                                        </view>
+                                                        <view class="cart-price">
+                                                            <view class="price-one">
+                                                                <FormatPrice :priceData="goods.price"></FormatPrice>
+                                                            </view>
+                                                            <view class="cart-num-box">
+                                                                <uni-number-box
+                                                                    :disabled="goods.is_disabled"
+                                                                    v-model="goods.quantity"
+                                                                    :min="1"
+                                                                    @change="updateCartItem(goods.cart_id, goods.quantity)"
+                                                                />
+                                                            </view>
+                                                        </view>
+                                                    </view>
+                                                </view>
+                                                <template #right>
+                                                    <view class="cart-move-box">
+                                                        <view class="btn-collect" @click="handleCollect(goods.product_id, goods.cart_id)">
+                                                            <text>移入收藏</text>
+                                                        </view>
+                                                        <view class="btn-del" @click="handleDel(goods.cart_id)"><text>删除</text></view>
+                                                    </view>
+                                                </template>
+                                            </uni-swipe-action-item>
+                                        </view>
+                                    </block>
+                                </uni-swipe-action>
+                            </view>
+                        </view>
+                    </block>
+                </view>
+                <view v-if="cartList.length > 0" class="checkOutBar" :style="{ bottom: tabbarStore.tabbarHeightNum + configStore.saveBottom + 'rpx' }">
+                    <view class="bar-check">
+                        <view class="checkbox-pad">
+                            <tigCheckbox v-model:checked="allChecked" @change="onCheckAll"></tigCheckbox>
+                        </view>
+                    </view>
+                    <view class="edit-cart-action" v-if="cartManage">
+                        <view class="l_a_tool lt_delete" @click="checkClearCart">清空购物车</view>
+                        <view class="l_a_tool" :class="{ lt_disable: cartIds.length === 0 }" @click="delCartItem">删除勾选商品</view>
+                    </view>
+                    <view class="cart-total-box" v-if="!cartManage">
+                        <view class="cart-total">
+                            <view @click="handleCheckout" :class="'btn-checkout ' + (total.checked_count == 0 ? 'unable_btn' : '')">去结算</view>
+                            <view class="item-total">
+                                <view class="item-total-amount">
+                                    <text class="txt">合计：</text>
+                                    <FormatPrice :priceData="total.product_amount"></FormatPrice>
+                                </view>
+                                <view class="item-total-desc">{{ total.discounts ? "组合优惠：" + total.discounts + " " : "" }}(不含运费)</view>
+                            </view>
                         </view>
                     </view>
                 </view>
-            </view>
-            <view class="noCart" v-if="!cartList && loaded">
-                <view class="pictrue"><image src="/static/images/cart_empty.png"></image></view>
-                <view class="noCart_text">购物车内还没商品哦，去逛逛吧~</view>
-            </view>
+                <view class="noCart" v-if="cartList.length === 0">
+                    <view class="pictrue"><image lazy-load src="/static/images/cart_empty.png"></image></view>
+                    <view class="noCart_text">购物车内还没商品哦，去逛逛吧~</view>
+                </view>
 
-            <view class="recommend_wrapper">
-                <view class="title" v-if="loaded">
-                    <view class="text">
-                        <view class="name">猜你喜欢</view>
-                        <view class="desc">您还可以逛一逛</view>
+                <view class="recommend_wrapper">
+                    <view class="title" v-if="guessLike.length > 0">
+                        <view class="text">
+                            <view class="name">猜你喜欢</view>
+                            <view class="desc">您还可以逛一逛</view>
+                        </view>
+                    </view>
+                    <view class="recommend">
+                        <masonry :commodityList="guessLike" @callback="getCartList"></masonry>
+                    </view>
+                    <view class="loading-box" v-if="page > 1">
+                        <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
+                        <view v-else>没有更多了~</view>
                     </view>
                 </view>
-                <view class="recommend">
-                    <masonry :commodityList="guessLike"></masonry>
-                </view>
             </view>
-            <view style="height: 100rpx"></view>
-        </view>
-        <tabbar :currentActive="2"></tabbar>
+        </saveContentbox>
+
+        <tabbar></tabbar>
     </view>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, getCurrentInstance, computed } from "vue";
 import navbar from "@/components/navbar/index.vue";
 import masonry from "@/components/masonry/masonry.vue";
-import { onLoad, onPullDownRefresh, onShow } from "@dcloudio/uni-app";
+import tigCheckbox from "@/components/tigCheckbox/index.vue";
+import { onLoad, onShow, onReachBottom } from "@dcloudio/uni-app";
+import { usetabbarStore } from "@/store/tabbar";
 import { useConfigStore } from "@/store/config";
 import { getCart, updateCartItemData, updateCartCheck, clearCart, removeCartItemData } from "@/api/cart/cart";
-import type { updateCartCheckitem, Total } from "@/types/cart/cart";
-import { showConfirmDialog } from "vant";
+import { updateCollectProduct } from "@/api/product/product";
+import { getGuessLike } from "@/api/common";
+import type { GuessLikeProductList } from "@/types/common";
+import type { updateCartCheckitem } from "@/types/cart/cart";
+const tabbarStore = usetabbarStore();
 const configStore = useConfigStore();
 const parameter = ref({
     navbar: "1",
@@ -154,13 +154,14 @@ const cartList = ref<any>([]);
 const total = ref<any>({});
 const loaded = ref(false);
 const cartManage = ref(false);
-const guessLike = ref<any>([]);
 
 const allChecked = ref(false);
 const onCheckAll = () => {
     cartList.value.forEach((item: any) => {
         item.carts.forEach((product: any) => {
-            product.is_checked = allChecked.value;
+            if (!product.is_disabled) {
+                product.is_checked = allChecked.value;
+            }
         });
     });
     updateCheckbox();
@@ -169,21 +170,23 @@ const onCheckAll = () => {
 const onCheckAllItem = (index: number) => {
     const item = cartList.value[index];
     item.carts.forEach((product: any) => {
-        product.is_checked = item.is_checked;
+        if (!product.is_disabled) {
+            product.is_checked = item.is_checked;
+        }
     });
-
     updateCheckbox();
     updateCheckData();
 };
 
 const onChangeCheck = () => {
-    // debugger
     updateCheckbox();
     updateCheckData();
 };
+
 const updateCheckbox = () => {
     cartList.value.forEach((item: any) => {
-        item.is_checked = item.carts.every((product: any) => product.is_checked === true && !product.is_disabled);
+        const validItem = item.carts.filter((product: any) => !product.is_disabled);
+        item.is_checked = validItem.every((product: any) => product.is_checked === true);
     });
     allChecked.value = cartList.value.every((item: any) => item.is_checked === true);
 };
@@ -198,16 +201,21 @@ const updateCheckData = async () => {
         });
     });
 
-    const result = await updateCartCheck({ data: checkData });
-    if (result.errcode === 0) {
+    try {
+        const result = await updateCartCheck({ data: checkData });
         getCartList();
+    } catch (error) {
+        console.error(error);
     }
 };
 
-onPullDownRefresh(() => {});
 onLoad(() => {
+    __getGuessLike();
+});
+onShow(() => {
     getCartList();
 });
+const Instance = getCurrentInstance();
 const getCartList = async () => {
     uni.showLoading({
         title: "请求加载中..."
@@ -215,25 +223,59 @@ const getCartList = async () => {
     try {
         const result = await getCart();
 
-        if (result.errcode === 0) {
-            const { cart_list } = result;
-            total.value = result.total;
-            cartList.value = cart_list;
-            updateCheckbox();
-        }
+        const { cart_list } = result;
+        total.value = result.total;
+        cartList.value = cart_list;
+        updateCheckbox();
     } catch (error) {
         console.error(error);
     }
     uni.hideLoading();
-    loaded.value = true;
+};
+
+const guessLike = ref<GuessLikeProductList[]>([]);
+const page = ref(0);
+const __getGuessLike = async () => {
+    if (page.value > 1) {
+        loaded.value = true;
+    }
+    try {
+        const result = await getGuessLike({ page: page.value });
+        guessLike.value = [...guessLike.value, ...result.product_list];
+    } catch (error) {
+        console.error(error);
+    } finally {
+        loaded.value = false;
+    }
+};
+
+onReachBottom(() => {
+    // 接口限制了30条
+    if (page.value < 5) {
+        page.value++;
+        __getGuessLike();
+    }
+});
+
+let delayTimer: number | null = null; // 延时定时器
+const startDelayTimer = (cart_id: number, quantity: number) => {
+    if (delayTimer) {
+        clearTimeout(delayTimer);
+    }
+    delayTimer = setTimeout(() => {
+        __updateCartItemData(cart_id, quantity);
+    }, 300);
 };
 const updateCartItem = async (cart_id: number, quantity: number) => {
+    startDelayTimer(cart_id, quantity);
+};
+
+const __updateCartItemData = async (cart_id: number, quantity: number) => {
     try {
         const result = await updateCartItemData({ cart_id, data: { quantity } });
-        if (result.errcode === 0) {
-            getCartList();
-        }
-    } catch (error) {
+
+        getCartList();
+    } catch (error: any) {
         console.error(error);
     }
 };
@@ -242,56 +284,91 @@ const cartManageFun = () => {
     cartManage.value = !cartManage.value;
 };
 const checkClearCart = () => {
-    showConfirmDialog({
+    uni.showModal({
         title: "提示",
-        message: "确认要清空购物车吗？"
-    })
-        .then(async () => {
-            // return
-            const result = await clearCart();
-            if (result.errcode === 0) {
+        content: "确认要清空购物车吗？",
+        success: async (res) => {
+            if (res.confirm) {
+                const result = await clearCart();
                 getCartList();
             }
-        })
-        .catch(() => {});
+        }
+    });
 };
+
+const cartIds = computed(() => {
+    const carti_ds: number[] = [];
+    cartList.value.forEach((item: any) => {
+        item.carts.forEach((product: any) => {
+            if (product.is_checked) carti_ds.push(product.cart_id);
+        });
+    });
+    return carti_ds || [];
+});
 const delCartItem = () => {
-    showConfirmDialog({
+    console.log(cartIds.value);
+    if (cartIds.value.length == 0) return uni.$u.toast("请选择要删除的商品");
+    uni.showModal({
         title: "提示",
-        message: "确认要删除指定的商品吗？"
-    })
-        .then(async () => {
-            const cartIds: number[] = [];
-            cartList.value.forEach((item: any) => {
-                item.carts.forEach((product: any) => {
-                    if (product.is_checked) cartIds.push(product.cart_id);
-                });
-            });
-            const result = await removeCartItemData({ cart_ids: cartIds });
-            if (result.errcode === 0) {
-                getCartList();
+        content: "确认要删除指定的商品吗？",
+        success: async (res) => {
+            if (res.confirm) {
+                try {
+                    const result = await removeCartItemData({ cart_ids: cartIds.value });
+
+                    getCartList();
+                } catch (error) {
+                    console.error(error);
+                }
             }
-        })
-        .catch(() => {});
+        }
+    });
 };
 const handleCheckout = () => {
-    if (total.value.total_count == 0) return;
+    if (total.value.checked_count == 0) return;
     uni.navigateTo({
         url: "/pages/order/check"
     });
 };
-const handleCollect = (cartId: number) => {
-    console.log("收藏", cartId);
+const handleCollect = async (product_id: number, cart_id: number) => {
+    try {
+        const result = await updateCollectProduct({
+            product_id
+        });
+    } catch (error) {
+        console.error(error);
+    } finally {
+        const result = await removeCartItemData({ cart_ids: [cart_id] });
+        getCartList();
+    }
 };
+
 const handleDel = (cartId: number) => {
-    console.log("删除", cartId);
+    uni.showModal({
+        title: "提示",
+        content: "确认要删除该的商品吗？",
+        success: async (res) => {
+            if (res.confirm) {
+                try {
+                    const result = await removeCartItemData({ cart_ids: [cartId] });
+
+                    getCartList();
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        }
+    });
 };
 
 onShow(() => {
     uni.hideTabBar();
 });
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
+.select-num {
+    color: $tig-color-primary;
+}
 .shoppingCart .labelNav {
     height: 76rpx;
     padding: 0 30rpx;
@@ -581,23 +658,21 @@ onShow(() => {
     padding: 0 8rpx;
     vertical-align: middle;
 }
-.cart_list_wrap .cart_store_title .check-item {
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 84rpx;
-}
+
 .cart_list_wrap .cart_store_title .store_label {
     display: inline-block;
     font-weight: bold;
     color: #333;
     font-size: 28rpx;
-    padding-left: 10rpx;
+    padding-left: 15rpx;
 }
 
 .goods-list-cart .cart_item {
     overflow: hidden;
+
+    // &.cart_item_disabled {
+    //     opacity: 0.5;
+    // }
 }
 .goods-list-cart .cart_item .cart_list_con {
     display: flex;
@@ -605,6 +680,9 @@ onShow(() => {
     padding: 24rpx 20rpx 10rpx 80rpx;
     position: relative;
     z-index: 1;
+    &.cart_item_disabled {
+        opacity: 0.5;
+    }
 }
 .goods-list-cart .cart_item .check-item {
     display: block;
@@ -624,12 +702,22 @@ onShow(() => {
     height: 150rpx;
     width: 150rpx;
     margin-bottom: 20rpx;
-}
-.goods-list-cart .cart_item .photo image {
-    width: 150rpx;
-    height: 150rpx;
+    margin-left: 10rpx;
     box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.04);
+
+    .photo-img {
+        width: 150rpx;
+        height: 150rpx;
+        box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.04);
+        position: relative;
+    }
+    .cart-notice-row {
+        position: absolute;
+        width: 150rpx;
+        bottom: 0;
+    }
 }
+
 .goods-list-cart .cart_item .cart-row {
     margin-bottom: 20rpx;
     padding-left: 18rpx;
@@ -647,6 +735,7 @@ onShow(() => {
     -moz-line-clamp: 2;
     -webkit-box-orient: vertical;
     -moz-box-orient: vertical;
+    font-weight: bold;
 }
 .goods-list-cart .cart_item .cart-row .extra_info {
     font-size: 22rpx;
@@ -658,7 +747,6 @@ onShow(() => {
     right: 0;
     top: 0;
     border-radius: 8rpx;
-    background-color: #f7f7f7;
     overflow: hidden;
     width: 214rpx;
 }
@@ -715,9 +803,14 @@ onShow(() => {
 .goods-list-cart .cart_item .price-one {
     font-size: 32rpx;
     line-height: 56rpx;
-}
-.goods-list-cart .cart_item .price-one .price text {
-    font-size: 20rpx;
+    color: $tig-color-primary;
+
+    :deep(.util) {
+        font-weight: normal;
+        font-size: 22rpx;
+        position: relative;
+        top: 4rpx;
+    }
 }
 
 .goods-list-cart .cart_item .cart_promotion {
@@ -827,7 +920,6 @@ onShow(() => {
 }
 
 .checkOutBar {
-    margin-bottom: var(--window-bottom);
     width: 100%;
     height: 100rpx;
     background-color: #fff;
@@ -865,7 +957,7 @@ onShow(() => {
     width: 100%;
 }
 .cart-total-box .btn-checkout {
-    background: #e4393c;
+    background: $tig-color-primary;
     color: #fff;
     display: block;
     float: right;
@@ -892,18 +984,17 @@ onShow(() => {
     padding-top: 10rpx;
     height: 40rpx;
     text-align: right;
-}
-.cart-total-box .item-total .item-total-amount .txt {
-    color: #666;
-}
-.cart-total-box .item-total .item-total-amount .dol {
-    font-size: 20rpx;
-    padding-right: 8rpx;
-    color: #e93b3d;
-}
-.cart-total-box .item-total .item-total-amount .item-amount {
+    color: $tig-color-primary;
     font-size: 32rpx;
-    color: #e93b3d;
+    .txt {
+        font-weight: normal;
+        color: #666;
+    }
+
+    :deep(.util) {
+        font-weight: normal;
+        font-size: 22rpx;
+    }
 }
 .cart-total-box .item-total .item-total-desc {
     padding-top: 12rpx;
@@ -922,7 +1013,7 @@ onShow(() => {
     display: inline-block;
     text-align: center;
     color: #fff;
-    background: #e4393c;
+    background: $tig-color-primary;
     font-size: 24rpx;
     height: 60rpx;
     line-height: 60rpx;
@@ -930,6 +1021,10 @@ onShow(() => {
     margin-top: 20rpx;
     margin-right: 20rpx;
     padding: 0 30rpx;
+
+    &.lt_disable {
+        opacity: 0.5;
+    }
 }
 .edit-cart-action .l_a_tool.lt_delete {
     background: #eee;

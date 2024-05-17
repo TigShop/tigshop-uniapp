@@ -1,57 +1,64 @@
 <template>
-    <view>
+    <view class="safe-padding">
         <navbar :parameter="parameter"></navbar>
         <view class="address-list">
-            <van-radio-group v-model="isChecked">
-                <block v-for="item in addressList" :key="item.address_id">
-                    <van-swipe-cell>
+            <radio-group @change="getCurrentAddress">
+                <uni-swipe-action>
+                    <block v-for="item in addressList" :key="item.address_id">
                         <view class="address-item">
-                            <view class="address-item-content">
-                                <view class="address-item-left flex-center">
-                                    <van-radio :name="item.address_id" checked-color="#ee0a24" @click="getCurrentAddress(item.address_id)"></van-radio>
-                                </view>
-                                <view class="address-item-middle">
-                                    <view class="user-info">
-                                        <view class="name">{{ item.consignee }}</view>
-
-                                        <view class="phone">{{ item.mobile }}</view>
+                            <uni-swipe-action-item :threshold="0" autoClose>
+                                <view class="address-item-content">
+                                    <view class="address-item-left flex-center">
+                                        <radio
+                                            :value="item.address_id.toString()"
+                                            :activeBackgroundColor="checkedColor"
+                                            :checked="item.is_selected === 1"
+                                            style="margin-right: 20rpx; transform: scale(0.9)"
+                                        ></radio>
                                     </view>
-                                    <view class="address">{{ item.region_name }} {{ item.address }}</view>
+                                    <view class="address-item-middle">
+                                        <view class="user-info">
+                                            <view class="name">{{ item.consignee }}</view>
+
+                                            <view class="phone">{{ item.mobile }}</view>
+                                        </view>
+                                        <view class="address">{{ item.region_name }} {{ item.address }}</view>
+                                    </view>
+                                    <view class="address-item-right flex-center" @click="handleEdit(item.address_id)">
+                                        <view class="iconfont icon-bianji"> </view>
+                                    </view>
                                 </view>
-                                <view class="address-item-right flex-center" @click="handleEdit(item.address_id)">
-                                    <view class="iconfont icon-bianji"> </view>
-                                </view>
-                            </view>
+                                <template #right>
+                                    <view class="address-del" @click="handleDel(item.address_id)"> 删除 </view>
+                                </template>
+                            </uni-swipe-action-item>
                         </view>
-                        <template #right>
-                            <view class="address-del" @click="handleDel(item.address_id)"> 删除 </view>
-                        </template>
-                    </van-swipe-cell>
-                </block>
-            </van-radio-group>
+                    </block>
+                </uni-swipe-action>
+            </radio-group>
         </view>
         <view class="loading-box" v-if="filterParams.page > 1">
-            <van-loading v-if="loaded" size="36rpx" type="spinner" />
+            <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
             <view v-else>没有更多了~</view>
         </view>
         <view style="height: 90rpx"></view>
-        <view class="bottom">
-            <view class="addressBnt" @click="handleAdd">
-                <text class="iconfont icon-dizhi"></text>
-                添加新地址
+        <saveBottomBox :height="90" backgroundColor="#fff">
+            <view class="btn-box">
+                <tigButton style="width: 100%; font-size: 28rpx" @click="handleAdd"> <text class="iconfont icon-dizhi"></text> 添加新地址 </tigButton>
             </view>
-        </view>
+        </saveBottomBox>
     </view>
 </template>
 
 <script lang="ts" setup>
 import navbar from "@/components/navbar/index.vue";
+import saveBottomBox from "@/components/saveBottomBox/index.vue";
 import { getAddressList, delAddress, selectedAddress } from "@/api/user/address";
-import { reactive, ref } from "vue";
+import { reactive, ref, computed } from "vue";
 import { onLoad, onReachBottom, onShow, onUnload } from "@dcloudio/uni-app";
 import type { AddressFilterResult } from "@/types/user/address";
-import { showConfirmDialog } from "vant";
-const pages = getCurrentPages();
+import { useThemeStore } from "@/store/theme";
+
 const parameter = reactive({
     navbar: "1",
     return: "1",
@@ -64,7 +71,12 @@ const filterParams = reactive({
 });
 const total = ref(0);
 const loaded = ref(false);
-const isChecked = ref<number>();
+
+const themeStore = useThemeStore();
+const checkedColor = computed(() => {
+    return themeStore.themeStyle["--general"] || "#ee0a24";
+});
+
 const __getAddressList = async () => {
     if (filterParams.page > 1) {
         loaded.value = true;
@@ -73,9 +85,6 @@ const __getAddressList = async () => {
         const result = await getAddressList({ ...filterParams });
         total.value = result.total;
         addressList.value = [...addressList.value, ...result.filter_result];
-        if (addressList.value.length > 0) {
-            isChecked.value = addressList.value.find((item) => item.is_selected === 1)?.address_id;
-        }
     } catch (error) {
         console.error(error);
     } finally {
@@ -87,13 +96,15 @@ onLoad(() => {
 });
 
 const handleDel = (id: number) => {
-    showConfirmDialog({
-        title: "确定删除吗？"
-    })
-        .then(async () => {
-            __delAddress(id);
-        })
-        .catch(() => {});
+    uni.showModal({
+        title: "提示",
+        content: "确定删除吗？",
+        success: async (res) => {
+            if (res.confirm) {
+                __delAddress(id);
+            }
+        }
+    });
 };
 const __delAddress = async (id: number) => {
     try {
@@ -104,6 +115,8 @@ const __delAddress = async (id: number) => {
                 icon: "none"
             });
         }
+        filterParams.page = 1;
+        addressList.value = [];
         __getAddressList();
     } catch (error) {
         console.error(error);
@@ -121,8 +134,9 @@ const handleAdd = () => {
     });
 };
 
-const getCurrentAddress = (id: number) => {
-    isChecked.value = id;
+const isCheckedId = ref();
+const getCurrentAddress = (e: any) => {
+    isCheckedId.value = e.detail.value;
     __selectedAddress();
 };
 
@@ -130,12 +144,20 @@ const __selectedAddress = async () => {
     uni.showLoading({
         title: "切换中"
     });
+    const pages = getCurrentPages();
     try {
-        const result = await selectedAddress({ id: isChecked.value });
-        console.log('pages', pages[0])
-        if(pages[0].route === 'pages/order/check'){
-            uni.navigateBack()
-        }
+        const result = await selectedAddress({ id: isCheckedId.value });
+        filterParams.page = 1;
+        addressList.value = [];
+        if (pages.length > 1) {
+            const prevRoute = pages[pages.length - 2].route;
+
+            if (prevRoute === "pages/order/check") {
+                uni.navigateBack();
+            }
+        } 
+
+        __getAddressList();
     } catch (errore) {
         console.error(errore);
     } finally {
@@ -145,6 +167,8 @@ const __selectedAddress = async () => {
 
 onShow(() => {
     uni.$on("refreshData", () => {
+        filterParams.page = 1;
+        addressList.value = [];
         __getAddressList();
     });
 });
@@ -162,18 +186,25 @@ onReachBottom(() => {
 </script>
 
 <style lang="scss" scoped>
+.btn-box {
+    padding: 15rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 28rpx;
+}
 .address-list {
     padding: 20rpx;
 
     .address-item {
         border-radius: 10rpx;
         background-color: #fff;
-        padding: 20rpx;
         margin-bottom: 20rpx;
 
         .address-item-content {
             display: flex;
-
+            padding: 20rpx;
             .flex-center {
                 display: flex;
                 justify-content: center;
@@ -216,7 +247,7 @@ onReachBottom(() => {
     }
     .address-del {
         height: 100%;
-        background-color: #ee0a24;
+        background-color: $tig-color-primary;
         width: 100rpx;
         color: #fff;
         display: flex;
@@ -224,33 +255,5 @@ onReachBottom(() => {
         justify-content: center;
         font-size: 22rpx;
     }
-}
-
-.bottom {
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 106rpx;
-    padding: 0 20rpx;
-    padding-bottom: env(safe-area-inset-bottom) !important;
-
-    .addressBnt {
-        background-color: #ee0a24;
-        width: 100%;
-        height: 76rpx;
-        border-radius: 50rpx;
-        text-align: center;
-        line-height: 76rpx;
-        font-size: 30rpx;
-        color: #fff;
-    }
-}
-
-.loading-box {
-    display: flex;
-    justify-content: center;
-    padding-bottom: 30rpx;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <view style="height: 100%">
+    <view>
         <view :class="'navbar ' + parameter.class" :style="'height:' + navH + 'rpx'">
             <view class="navbarH" :style="'height:' + navH + 'rpx;'">
                 <view class="navbarCon acea-row row-center-wrapper" v-if="parameter.navbar == 0">
@@ -7,7 +7,7 @@
                         <text class="iconfont icon-xiazai5"></text>
                         搜索商品
                     </view>
-                    <view class="logo"><image class="logo-image" :src="logoUrl"></image></view>
+                    <view class="logo"><image lazy-load  class="logo-image" :src="logoUrl"></image></view>
                 </view>
                 <view class="navbarCon acea-row row-center-wrapper" v-if="parameter.navbar == 1">
                     <view :class="'name ' + (parameter.color == true ? 'on' : '') + ' line1'" v-if="parameter.class != 'sea1rch'">{{ parameter.title }}</view>
@@ -47,7 +47,9 @@ const props = defineProps({
         default: () => ({
             class: "0",
             showHome: false,
-            searchKeywords: ""
+            searchKeywords: "",
+            return: '0',
+            returnUrl: ''
         })
     },
     logoUrl: {
@@ -97,6 +99,11 @@ const ready = () => {
 };
 
 const returnFun = () => {
+    if(props.parameter.returnUrl){
+        return uni.redirectTo({
+            url: props.parameter.returnUrl
+        });
+    }
     uni.navigateBack();
 };
 
@@ -163,6 +170,13 @@ onMounted(() => {
 }
 .navbar.qiandao {
     background: linear-gradient(90deg, #e65560, #e25063);
+}
+.navbar.seckill {
+    /* background: linear-gradient(to right,#ef3390,#ef3647); */
+    background: linear-gradient(to right, #FF8853 0%, #F52828 100%);
+}
+.navbar.seckill .navbarH .navbarCon .name{
+    color: #fff !important;
 }
 
 .navbar.red {

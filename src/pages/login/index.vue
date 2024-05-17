@@ -2,60 +2,118 @@
     <view style="height: 100%">
         <navbar :parameter="parameter"></navbar>
 
-        <view class="wechat-login-warp" v-if="loginType == 'mobile'">
+        <view class="wechat-login-warp">
             <view class="plr-40">
-                <view class="h1_tit">手机登录</view>
+                <view class="h1_tit">{{ loginType === "mobile" ? "手机登录" : "账号登录" }}</view>
                 <view class="form-box">
                     <view class="form">
-                        <view class="item">
-                            <input type="text" @input="mobileInput" placeholder="请输入手机号" placeholder-class="placeholder" class="text mobile-text" />
-                        </view>
-                        <view class="item mobile_code_text">
-                            <view style="width: 68%;margin-right: 10rpx;">
+                        <block v-if="loginType === 'mobile'">
+                            <view class="item">
                                 <input
-                                    @input="mobileCodeInput"
                                     type="text"
-                                    placeholder="手机短信验证码"
+                                    @input="mobileInput"
+                                    :value="mobile"
+                                    placeholder="请输入手机号"
                                     placeholder-class="placeholder"
-                                    value=""
-                                    name="mobile_code"
-                                    class="text"
+                                    class="text mobile-text"
                                 />
                             </view>
-                            <verificationCode
-                                v-model:mobile="mobile"
-                                v-model:mobileCode="mobileCode"
-                                :requestApi="sendMobileCode"
-                                @mobileErrorCallback="mobileErrorCallback"
-                            ></verificationCode>
-                        </view>
-                        <button @click.stop="mobileLogin" class="btn2-css3 submit_btn">确 认</button>
+                            <view class="item mobile_code_text">
+                                <view style="width: 68%; margin-right: 10rpx">
+                                    <input
+                                        @input="mobileCodeInput"
+                                        type="text"
+                                        placeholder="手机短信验证码"
+                                        placeholder-class="placeholder"
+                                        :value="mobileCode"
+                                        name="mobile_code"
+                                        class="text"
+                                    />
+                                </view>
+                                <verificationCode
+                                    v-model:mobile="mobile"
+                                    v-model:isChecked="is_checked"
+                                    v-model:verify-token-data="verifyToken"
+                                    :requestApi="sendMobileCode"
+                                    @mobileErrorCallback="mobileErrorCallback"
+                                ></verificationCode>
+                            </view>
+                        </block>
+
+                        <block v-if="loginType === 'password'">
+                            <view class="item">
+                                <input
+                                    type="text"
+                                    @input="usernameInput"
+                                    placeholder="用户名/邮箱/手机号"
+                                    placeholder-class="placeholder"
+                                    class="text username-text"
+                                    :value="username"
+                                />
+                            </view>
+                            <view class="item">
+                                <input
+                                    :type="passwordType"
+                                    @input="passwordInput"
+                                    placeholder="请输入密码"
+                                    placeholder-class="placeholder"
+                                    class="text password-text"
+                                    :value="password"
+                                />
+                                <view
+                                    @click="passwordTypeChange"
+                                    :class="'password_show_hide iconfont ' + (passwordType == 'text' ? 'icon-xianshi' : 'icon-yincang')"
+                                ></view>
+                            </view>
+                        </block>
+                        <tigButton class="btn2-css3" :loading="loginLoading" @click="mobileLogin" :disabled="isloginDisabled"> 确 认 </tigButton>
                         <view class="rule-text">
-                            <van-checkbox v-model="is_checked" checked-color="#ee0a24"></van-checkbox>
+                            <tigCheckbox v-model:checked="is_checked"></tigCheckbox>
                             <view class="rule-xieyi">
                                 <text>登录即为同意</text>
-                                <text class="red" @chick="showXieYi">《商城用户服务协议》</text>
-                                <text class="red" @chick="showXieYi">《商城用户隐私协议》</text>
+                                <text class="red" @chick="showAgreement">《商城用户服务协议》</text>
                             </view>
                         </view>
-                        <view class="p_to_reg">
-                            <!-- <text catchtap='userLoginBtn' class="fl">账号密码登录</text> -->
-                            <text @chick="userReg" class="fr">新用户注册</text>
-                        </view>
+                        <view class="register"> 没有账号？<navigator open-type="redirect" url="/pages/register/index" class="red">立即注册</navigator> </view>
                     </view>
                 </view>
             </view>
         </view>
+
+        <view class="btns-box">
+            <view class="quick-login">
+                <view class="login-dtit">
+                    <text class="tit">其他登录方式</text>
+                    <text class="line1 line"></text>
+                    <text class="line2 line"></text>
+                </view>
+                <view class="quick-type-box">
+                    <view class="quick-type" @click="handleLoginType" v-if="loginType === 'password'">
+                        <view class="go-link icon-mobile"></view>
+                        <view class="text">手机号登录</view>
+                    </view>
+                    <view class="quick-type" @click="handleLoginType" v-if="loginType === 'mobile'">
+                        <view class="go-link icon-userlogin"></view>
+                        <view class="text">账号登入</view>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <Verify ref="verify" mode="pop" captchaType="blockPuzzle" :imgSize="{ width: '310px', height: '155px' }" @okCallback="okCallback"></Verify>
     </view>
 </template>
 
 <script lang="ts" setup>
 import verificationCode from "./src/verificationCode.vue";
 import navbar from "@/components/navbar/index.vue";
-import { reactive, ref } from "vue";
-import { sendMobileCode } from "@/api/login/login";
-import { showToast } from "vant";
-import { onLoad } from "@dcloudio/uni-app";
+import Verify from "@/components/verifition/Verify.vue";
+import tigCheckbox from "@/components/tigCheckbox/index.vue";
+import { reactive, ref, computed } from "vue";
+import { sendMobileCode, userSignin } from "@/api/login/login";
+import { useUserStore } from "@/store/user";
+import { onShow } from "@dcloudio/uni-app";
+
+const userStore = useUserStore();
 
 const parameter = reactive({
     navbar: "1",
@@ -64,35 +122,134 @@ const parameter = reactive({
 });
 
 const loginType = ref("mobile");
-const userInfo = ref({});
-const sendMobileCodeText = ref("获取验证码");
 const mobile = ref("");
 const mobileCode = ref("");
-const mobileCodeSended = ref(false);
 const username = ref("");
 const password = ref("");
-const backUrl = ref("");
 const is_checked = ref(false);
+const verifyToken = ref("");
+const loginLoading = ref(false);
+const verify = ref();
+
+const isloginDisabled = computed(() => {
+    if (loginType.value === "password") {
+        return !username.value || !password.value;
+    } else {
+        return !mobile.value || !mobileCode.value || !verifyToken.value;
+    }
+});
 
 const mobileInput = (e: any) => {
-    // console.log("mobileInput", e.detail.value);
     mobile.value = e.detail.value;
 };
 const mobileCodeInput = (e: any) => {
-    // console.log("mobileCodeInput", e.detail.value);
     mobileCode.value = e.detail.value;
 };
 const mobileErrorCallback = (msg: string) => {
-    showToast(msg);
+    uni.showToast({
+        title: msg,
+        duration: 1500,
+        icon: "none"
+    });
 };
-const handleMobileCode = () => {};
 const mobileLogin = () => {
-    uni.navigateBack(); // 返回上一页
+    if (!is_checked.value) {
+        return uni.showToast({
+            title: "请先同意用户协议",
+            duration: 1500,
+            icon: "none"
+        });
+    }
+
+    signin();
 };
-const checkAgreeRule = () => {};
-const showXieYi = () => {};
-const userReg = () => {};
-onLoad((options) => {});
+
+const handleLoginType = () => {
+    loginType.value = loginType.value === "mobile" ? "password" : "mobile";
+    username.value = "";
+    password.value = "";
+    mobile.value = "";
+    mobileCode.value = "";
+    verifyToken.value = "";
+    is_checked.value = false;
+};
+
+const pages = getCurrentPages();
+
+const signin = async () => {
+    try {
+        loginLoading.value = true;
+        const result = await userSignin({
+            login_type: loginType.value,
+            username: username.value,
+            password: password.value,
+            mobile: mobile.value,
+            mobile_code: mobileCode.value,
+            verify_token: verifyToken.value
+        });
+        userStore.setToken(result.token);
+        uni.showToast({
+            title: "登入成功",
+            duration: 1500,
+            icon: "none"
+        });
+        const backUrl = uni.getStorageSync("URL");
+        setTimeout(() => {
+            if (backUrl) {
+                uni.reLaunch({
+                    url: backUrl
+                });
+            } else {
+                uni.reLaunch({
+                    url: "/pages/index/index"
+                });
+            }
+        }, 1500);
+    } catch (error: any) {
+        if (error.errcode == 1002 && verify.value) {
+            verify.value.show();
+        } else if (error.errcode > 0) {
+            uni.showToast({
+                title: error.message,
+                duration: 1500
+            });
+            mobile.value = "";
+            mobileCode.value = "";
+            verifyToken.value = "";
+            username.value = "";
+            password.value = "";
+        }
+    } finally {
+        loginLoading.value = false;
+    }
+};
+
+const okCallback = (e: any) => {
+    verifyToken.value = e.verifyToken;
+    signin();
+};
+const passwordType = ref("password");
+const passwordTypeChange = () => {
+    passwordType.value = passwordType.value === "password" ? "text" : "password";
+};
+const usernameInput = (e: any) => {
+    username.value = e.detail.value;
+};
+const passwordInput = (e: any) => {
+    password.value = e.detail.value;
+};
+
+const showAgreement = () => {
+    console.log("协议");
+};
+
+onShow(() => {
+    if (uni.getStorageSync("token" || userStore.token)) {
+        uni.reLaunch({
+            url: "/pages/index/index"
+        });
+    }
+});
 </script>
 <style lang="scss" scoped>
 page {
@@ -252,15 +409,6 @@ page {
     font-weight: normal;
 }
 
-.p_to_reg {
-    text-align: center;
-    margin: 70rpx 0 30rpx 0;
-    margin-bottom: 40rpx;
-    color: #888;
-    overflow: hidden;
-    line-height: 48rpx;
-    font-size: 28rpx;
-}
 .password_show_hide {
     position: absolute;
     color: #666;
@@ -318,11 +466,12 @@ page {
 }
 
 .rule-text {
-    font-size: 23rpx;
+    font-size: 26rpx;
     color: #999;
-    margin-top: 20rpx;
+    margin-top: 30rpx;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 .rule-xieyi {
     display: flex;
@@ -395,19 +544,20 @@ page {
     background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAYAAACJm/9dAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6N0ZDMTJBRkQ1NzY2MTFFREExN0JDOEI5MDg3NjNEOTgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6N0ZDMTJBRkU1NzY2MTFFREExN0JDOEI5MDg3NjNEOTgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo3RkMxMkFGQjU3NjYxMUVEQTE3QkM4QjkwODc2M0Q5OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo3RkMxMkFGQzU3NjYxMUVEQTE3QkM4QjkwODc2M0Q5OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/ProMtv4AABWASURBVHja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");
 }
 
-/*复选框样式*/
-checkbox .wx-checkbox-input {
-    width: 24rpx;
-    height: 24rpx;
-    border-radius: 50%;
+.register {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30rpx;
 }
-/*复选框选中样式*/
-checkbox .wx-checkbox-input.wx-checkbox-input-checked {
-    border-color: #18d6ff;
-    background-color: #18d6ff;
+
+.my-toast {
+    padding: 20rpx;
 }
-/*复选框选中之后对号的样式*/
-checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
-    color: #fff;
+
+:deep(.uni-checkbox-wrapper) {
+    transform: scale(0.9);
+    margin: 0;
+    padding: 0;
 }
 </style>

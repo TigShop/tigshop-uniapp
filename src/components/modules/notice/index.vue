@@ -6,7 +6,8 @@
                     <view class="item-content">
                         <view class="item-notice-con" :style="itemFormat.item_background_color + itemFormat.item_height + itemFormat.item_radius">
                             <view class="item-notice-ico">
-                                <image :src="module?.ico_pic?.pic_url" mode="widthFix"></image>
+                                <!-- <image lazy-load  :src="module?.ico_pic?.pic_url" mode="widthFix"></image> -->
+                                <tigImage v-model:src="module.ico_pic.pic_url" mode="widthFix"></tigImage>
                             </view>
                             <view class="item-notice-list">
                                 <view class="item-notice-input" :style="itemFormat.text_color">{{ module?.text }}</view>

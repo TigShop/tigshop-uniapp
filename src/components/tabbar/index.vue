@@ -1,40 +1,107 @@
 <template>
-    <van-config-provider :theme-vars="themeVars" :style="{ 'padding-top': configStore.tabbarHeight }">
-        <van-tabbar z-index="1999" :fixed="true" v-model="currentActiveValue" :active-color="'#ea3c2d'">
-            <van-tabbar-item v-for="(item, index) in options" :key="index" @click="handleSwitchTab(item.pagePath)">
-                <span>{{ item.text }}</span>
-                <template #icon="props">
-                    <img :src="currentActiveValue === index ? item.activeImage : item.image" />
-                </template>
-            </van-tabbar-item>
-        </van-tabbar>
-    </van-config-provider>
+    <view class="tabbar-container" :style="{'padding-bottom': configStore.saveBottom + 'rpx'}">
+        <view class="tabbar">
+            <view class="tabbar-item" v-for="(item, index) in tabbarStore.tabbarList" :key="index" @click="handleTabbar(item, index)">
+                <view class="tabbar-icon">
+                    <!-- <image class="tabbar-icon-img" :src="configStore.currentActiveValue === index ? imageFormat(item.activeImage) : imageFormat(item.image)" /> -->
+                    <image class="tabbar-icon-img" :src="configStore.currentActiveValue === index ? item.activeImage : item.image" />
+                </view>
+                <view class="tabbar-text" :class="{ active: configStore.currentActiveValue === index }">{{ item.text }}</view>
+            </view>
+        </view>
+    </view>
 </template>
 
-<script lang="ts" setup>
-import { computed, ref } from "vue";
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
 import { useConfigStore } from "@/store/config";
-import type { ConfigProviderThemeVars } from "vant";
+import { usetabbarStore } from "@/store/tabbar";
+import { onShow } from "@dcloudio/uni-app";
+import { imageFormat } from "@/utils/format";
 const configStore = useConfigStore();
-const themeVars: ConfigProviderThemeVars = {
-    tabbarHeight: configStore.tabbarHeight
-};
+const tabbarStore = usetabbarStore();
+const tabbarHeight = computed(() => {
+    return tabbarStore.tabbarHeight ? tabbarStore.tabbarHeight : "90rpx";
+});
+
 const props = defineProps({
-    currentActive: {
-        type: Number,
-        default: 0
+    backgroundColor: {
+        type: String,
+        default: "#fff"
+    },
+    color: {
+        type: String,
+        default: "#000"
+    },
+    activeColor: {
+        type: String,
+        default: "#ea3c2d"
     }
 });
 
-const currentActiveValue = computed({
-    get: () => props.currentActive,
-    set: (val) => {}
+onShow(() => {
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1].route;
+    const index = tabbarStore.tabbarList.findIndex((item) => {
+        return item.pagePath.includes(currentPage);
+    });
+    if (index !== -1 && index !== configStore.currentActiveValue) {
+        configStore.setCurrentActiveValue(index);
+    }
 });
-
-const options = configStore.tabbarListData;
-const handleSwitchTab = (path: string) => {
-    uni.switchTab({ url: path });
+const handleTabbar = (item: any, index: number) => {
+    configStore.setCurrentActiveValue(index);
+    item.pagePath && uni.switchTab({ url: item.pagePath });
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.tabbar-container {
+    background-color: v-bind("props.backgroundColor");
+    z-index: 9999;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    box-sizing: border-box;
+
+    .tabbar {
+        display: flex;
+        align-items: center;
+        box-sizing: border-box;
+
+        height: v-bind("tabbarHeight");
+        padding: 5rpx 0;
+        .tabbar-item {
+            color: v-bind("props.color");
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            padding: 10rpx 0;
+            .tabbar-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                .tabbar-icon-img {
+                    height: 42rpx;
+                    width: 42rpx;
+                }
+            }
+
+            .tabbar-text {
+                padding-top: 5rpx;
+                font-size: 24rpx;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                &.active {
+                    color: v-bind("props.activeColor");
+                }
+            }
+        }
+    }
+}
+</style>

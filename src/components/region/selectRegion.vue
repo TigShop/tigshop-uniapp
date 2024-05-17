@@ -1,7 +1,6 @@
 <template>
-    <van-popup v-model:show="show" closeable :style="{ height: height }" round position="bottom">
+    <tigpopup v-model:show="show" title="选择地区" :height="height" position="bottom">
         <view class="select-region-main">
-            <view class="title">选择地区</view>
             <view class="content">
                 <view class="region-menu">
                     <view class="region-menu-item" :class="{ active: showIndex === index }" @click="showIndex = index" v-for="(item, index) in regionNames">
@@ -21,7 +20,7 @@
                 </block>
             </view>
         </view>
-    </van-popup>
+    </tigpopup>
 </template>
 
 <script lang="ts" setup>
@@ -35,14 +34,14 @@ const props = defineProps({
     },
     height: {
         type: String,
-        default: "60%"
+        default: "60vh"
     },
     modelValue: {
         type: Array,
         default: () => []
     }
 });
-const emit = defineEmits(["update:show", "update:modelValue","sendRegionNames"]);
+const emit = defineEmits(["update:show", "update:modelValue", "sendRegionNames"]);
 const show = computed({
     get: () => props.show,
     set: () => {
@@ -77,7 +76,7 @@ const onSelect = async (index: number, regionId: any) => {
     if (regionList.value.length == index + 1) {
         emit("update:modelValue", props.modelValue);
         emit("update:show", false);
-        emit("sendRegionNames", regionNames.value)
+        emit("sendRegionNames", regionNames.value);
     } else {
         showIndex.value = index + 1;
     }
@@ -101,8 +100,6 @@ const regionNames = computed(() => {
     });
     return res;
 });
-
-
 </script>
 
 <style lang="scss" scoped>

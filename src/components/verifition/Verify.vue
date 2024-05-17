@@ -1,5 +1,5 @@
 <template>
-    <van-dialog  :width="parseInt(imgSize.width) + 30 + 'px'" v-model:show="visible" title="请完成安全验证" :show-confirm-button="false" show-cancel-button>
+    <tigpopup v-model:show="visible" title="请完成安全验证" paddingBottom="0" height="37vh" :width="parseInt(imgSize.width) + 30 + 'px'" position="center">
         <VerifySlide
             :is="componentType"
             :captchaType="captchaType"
@@ -16,7 +16,7 @@
             @close="closeBox"
             @success="success"
         ></VerifySlide>
-    </van-dialog>
+    </tigpopup>
 </template>
 <script lang="ts" setup>
 /**
@@ -100,4 +100,3 @@ defineExpose({
     show
 });
 </script>
-

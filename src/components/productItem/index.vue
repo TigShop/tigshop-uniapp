@@ -1,37 +1,29 @@
 <template>
-    <view :class="'item-li list-' + masonryListClass">
+    <view :class="'item-li list-' + masonryListClass" @click="toPage(item)">
         <view class="photo">
-            <navigator :url="'/pages/goods_details/index?id=' + item.product_id + '&is_exchange=' + item.is_exchange">
-                <image :src="imageFormat(item.pic_thumb)" mode="widthFix"></image>
+                <tigImage v-model:src="item.pic_thumb" mode="widthFix"></tigImage>
 
                 <view v-if="item.product_stock == 0" class="outsale">售罄</view>
-            </navigator>
         </view>
         <view class="info">
             <view class="detail">
-                <navigator :url="'/pages/goods_details/index?id=' + item.product_id + '&is_exchange=' + item.is_exchange" class="name">{{
-                    item.product_name
-                }}</navigator>
-                <navigator :url="'/pages/goods_details/index?id=' + item.product_id + '&is_exchange=' + item.is_exchange" class="brief" v-if="item.brief">{{
-                    item.brief
-                }}</navigator>
+                {{item.product_name}}
+                {{item.brief}}
             </view>
             <view class="action">
-                <view class="price">
-                    <text>{{ configStore.config.dollar_sign }}</text>
-                    {{ item.product_price ?? 0 }}
+                <view class="pricenum">
+                    <FormatPrice :priceData="item.product_price"></FormatPrice>
                 </view>
-                <view @click.stop="buy" class="buy_btn"><image src="/static/images/common/cart.png" role="img"></image></view>
+                <productBuy :id="item.product_id" :disabled="item.product_stock == 0" @callback="getCallback">
+                    <view class="buy_btn"><image lazy-load src="/static/images/common/cart.png"></image></view>
+                </productBuy>
             </view>
         </view>
     </view>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
-import { useConfigStore } from "@/store/config";
-import { imageFormat } from "@/utils/format";
-const configStore = useConfigStore();
+import productBuy from '@/components/productBuy/index.vue'
 const props = defineProps({
     item: {
         type: Object,
@@ -42,9 +34,16 @@ const props = defineProps({
         default: ""
     }
 });
-const buy = (e: any) => {};
+const emit = defineEmits(["callback"]);
+const getCallback = () => {
+    emit("callback");
+}
+const toPage = (item:any) => {
+    let id = item.product_id
+    uni.navigateTo({ url:'/pages/productDetail/index?id=' + id })
+}
 </script>
-<style>
+<style lang="scss" scoped>
 .item-li {
     width: 100%;
     margin-bottom: 15rpx;
@@ -67,6 +66,20 @@ const buy = (e: any) => {};
 .item-li .info .detail {
     margin: 0 20rpx 10rpx;
     display: block;
+    line-height: 40rpx;
+    height: 80rpx;
+    overflow: hidden;
+    font-size: 26rpx;
+    display: block;
+    font-weight: bold;
+    color: #2a3145;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    display: -moz-box;
+    -webkit-line-clamp: 2;
+    -moz-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
 }
 
 .item-li .info .detail .name {
@@ -84,25 +97,10 @@ const buy = (e: any) => {};
     -webkit-box-orient: vertical;
     -moz-box-orient: vertical;
 }
-.item-li .info .detail .brief {
-    line-height: 40rpx;
-    height: 40rpx;
-    font-size: 22rpx;
-    overflow: hidden;
-    display: block;
-    color: #aaa;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    display: -moz-box;
-    -webkit-line-clamp: 1;
-    -moz-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    -moz-box-orient: vertical;
-}
 .item-li .info .action {
-    vertical-align: middle;
-    height: 70rpx;
     padding: 0 16rpx 10rpx;
+    display: flex;
+    justify-content: space-between;
 }
 
 .item-li .info .price {
@@ -116,7 +114,6 @@ const buy = (e: any) => {};
 
 .item-li .buy_btn {
     display: inline-block;
-    float: right;
     font-size: 24rpx;
     margin-right: 20rpx;
     margin-top: 6rpx;
@@ -139,17 +136,31 @@ const buy = (e: any) => {};
 
 .outsale {
     position: absolute;
-    top: 80rpx;
-    left: 50%;
-    margin-left: -90rpx;
-    width: 180rpx;
-    height: 180rpx;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     line-height: 180rpx;
     background: rgba(0, 0, 0, 0.4);
     font-size: 38rpx;
     color: #ffffff;
     letter-spacing: 0;
-    text-align: center;
     border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+ .pricenum {
+    font-size: 32rpx;
+    line-height: 56rpx;
+    color: $tig-color-primary;
+    min-width: 200rpx;
+    :deep(.util) {
+        font-weight: normal;
+        font-size: 22rpx;
+        position: relative;
+        top: 4rpx;
+    }
 }
 </style>

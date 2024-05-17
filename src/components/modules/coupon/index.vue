@@ -21,12 +21,17 @@
                     </view>
                 </view>
                 <view class="coupon-con">
-                    <block v-for="item in couponList" :key="item.coupon_id"> 
+                    <block v-for="item in couponList" :key="item.coupon_id">
                         <view class="coupon-item" :style="couponFormat.item_padding" @click="handleCoupon(item.coupon_id)">
                             <view class="item-coupon-con">
                                 <view class="coupon-money">
-                                    <view class="coupon-money-c">{{ item.coupon_money }}</view>
-                                    <view class="coupon-money-d">元</view>
+                                    <block v-if="item.coupon_type === 2">
+                                        <view class="zhekou"> {{ item.coupon_discount }}</view>
+                                        <view class="zhe">折</view>
+                                    </block>
+                                    <block v-else >
+                                        <FormatPrice :fontStyle="{fontSize:'48rpx',lineHeight:1}" :currencyStyle="{selfAlign:'end',fontSize:'24rpx'}" :priceData="item.coupon_money"></FormatPrice>
+                                    </block>
                                 </view>
                                 <view class="coupon-name">
                                     <view class="coupon-name-text">{{ item.coupon_name }}</view>
@@ -73,9 +78,8 @@ const couponList = ref<CouponList[]>();
 const __getHomeCoupon = async () => {
     try {
         const result = await getHomeCoupon();
-        if (result.errcode === 0) {
-            couponList.value = result.coupon_list;
-        }
+
+        couponList.value = result.coupon_list;
     } catch (error) {
         console.error(error);
     }
@@ -87,7 +91,7 @@ onMounted(() => {
 
 const handleCoupon = (id: number) => {
     uni.navigateTo({
-        url: `/pages/bonus_detail/index?id=${id}`
+        url: `/pages/coupon/detail?id=${id}`
     });
 };
 </script>
@@ -99,6 +103,7 @@ const handleCoupon = (id: number) => {
     flex-wrap: nowrap;
     width: 100%;
     overflow-x: scroll;
+
     -webkit-overflow-scrolling: touch;
 }
 .coupon-ad-warp .coupon-title {
@@ -160,13 +165,20 @@ const handleCoupon = (id: number) => {
     margin-right: 22rpx;
 }
 .coupon-ad-warp .coupon-con .coupon-item .item-coupon-con .coupon-money {
-    font-size: 52rpx;
     display: flex;
     flex-wrap: nowrap;
-    line-height: 60rpx;
-    align-items: center;
+    align-items: flex-end;
     font-weight: bold;
     height: 60rpx;
+    .zhekou{
+        font-size: 52rpx;
+        line-height: 1; /* 添加这行 */
+    }
+    .zhe{
+        margin-left: 8rpx;
+        font-size: 24rpx;
+        self-align: end; /* 添加这行 */
+    }
 }
 .coupon-ad-warp .coupon-con .coupon-item .item-coupon-con .coupon-money .coupon-money-c {
     display: -webkit-box;
@@ -255,12 +267,16 @@ const handleCoupon = (id: number) => {
 
     .coupon-title-text {
         display: flex;
+        margin-left: 20rpx;
+
 
         .coupon-maintitle {
             color: #2a3145;
             font-size: 30rpx;
             margin-right: 10rpx;
             font-weight: bold;
+            line-height: 1; /* 添加这行 */
+
         }
 
         .coupon-title-con {
@@ -269,6 +285,7 @@ const handleCoupon = (id: number) => {
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
+            self-align: end; /* 添加这行 */
         }
     }
 }

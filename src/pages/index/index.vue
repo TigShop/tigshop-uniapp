@@ -1,40 +1,48 @@
 <template>
-    <view style="height: 100%">
-        <navbar :parameter="parameter" :logoUrl="logoUrl || ''" v-if="showCatNav == 0"></navbar>
-        <view>
-            <view class="index_empty" v-if="loading">
-                <image src="/static/images/common/index_empty.png" mode="widthFix"></image>
+    <view>
+        <saveContentbox :has_tabbar="true">
+            <view class="preview-box" v-if="configStore.previewId > 0">
+                <view class="container">预览：&emsp;<text>移动端</text></view>
             </view>
-            <view class="index" v-else>
-                <view class="decorate-page-window">
-                    <modules :modules="modulesData" :scrollTop="scrollTop" @load-goods-list="loadGoodsList"></modules>
+            <view v-if="configStore.previewId > 0" style="padding: 58rpx"></view>
+            <navbar :parameter="parameter" :logoUrl="logoUrl || ''" v-if="showCatNav == 0"></navbar>
+            <view>
+                <view class="index_empty" v-if="loading">
+                    <image lazy-load src="/static/images/common/index_empty.png" mode="widthFix"></image>
                 </view>
+                <view class="index" v-else>
+                    <view class="decorate-page-window">
+                        <modules :modules="modulesData" :scrollTop="scrollTop" @load-goods-list="loadGoodsList"></modules>
+                    </view>
+                </view>
+                <!-- 加载商品模块 -->
+                <view class="goods-container" v-if="categoryId > 0">
+                    <masonry :commodityList="commodityList"></masonry>
+                </view>
+                <view class="bottomLoading" v-if="bottomLoading && categoryId > 0"
+                    ><image lazy-load class="loading" src="/static/images/common/loading.gif"></image
+                ></view>
+                <view v-if="loadend && categoryId > 0" class="noMore">没有更多了~</view>
             </view>
-            <!-- 加载商品模块 -->
-            <view class="goods-container" v-if="categoryId > 0">
-                <masonry :commodityList="commodityList"></masonry>
-            </view>
-            <view class="bottomLoading" v-if="bottomLoading && categoryId > 0"><image class="loading" src="/static/images/common/loading.gif"></image></view>
-            <view v-if="loadend && categoryId > 0" class="noMore">没有更多了~</view>
-        </view>
-        <tabbar :currentActive="0"></tabbar>
-        <van-back-top right="6vw" bottom="6vh">
-            <block #default>
-                <image src="/src/static//images//common/scroll-to-top.png" mode="widthFix"></image>
-            </block>
-        </van-back-top>
+        </saveContentbox>
+        <tabbar></tabbar>
+        <tigBackTop :class="{ show: scrollTop > 100 }"></tigBackTop>
     </view>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, provide } from "vue";
 import { onLoad, onReachBottom, onPageScroll, onHide, onShow, onPullDownRefresh } from "@dcloudio/uni-app";
 import { getIndex } from "@/api/home/home";
 import modules from "@/components/modules/index.vue";
 import navbar from "@/components/navbar/index.vue";
 import masonry from "@/components/masonry/masonry.vue";
+import tigBackTop from "@/components/tigBackTop/index.vue";
 import { getCateProduct } from "@/api/home/home";
 import type { GetProductFilterResult } from "@/types/home/home";
+import { useConfigStore } from "@/store/config";
+const configStore = useConfigStore();
+
 const showCatNav = ref(0);
 const parameter = ref({
     navbar: "1",
@@ -68,13 +76,11 @@ const getProductList = async () => {
     bottomLoading.value = true;
     try {
         const result = await getCateProduct({ category_id: categoryId.value, page: page.value });
-        if (result.errcode === 0) {
-            if (result.filter_result.length > 0) {
-                commodityList.value = [...commodityList.value, ...result.filter_result];
-                loadend.value = false;
-            } else {
-                loadend.value = true;
-            }
+        if (result.filter_result.length > 0) {
+            commodityList.value = [...commodityList.value, ...result.filter_result];
+            loadend.value = false;
+        } else {
+            loadend.value = true;
         }
     } catch (error) {
         console.error(error);
@@ -83,24 +89,29 @@ const getProductList = async () => {
     }
 };
 
+const decorate_id = ref(0);
 const getIndexData = async () => {
     loading.value = true;
     try {
         const res = await getIndex();
-        if (res.errcode === 0) {
-            modulesData.value = res.module_list;
-        }
+        modulesData.value = res.module_list;
+        decorate_id.value = res.decorate_id;
         showCatNav.value = 1;
         uni.stopPullDownRefresh();
-        console.log("modulesData.value=>", modulesData.value);
     } catch (error) {
-        console.error(error);
+        console.log(error);
     } finally {
         loading.value = false;
     }
 };
+provide("decorate_id", decorate_id);
 
-onLoad(() => {
+onLoad((options: any) => {
+    const getWindowInfo = uni.getWindowInfo();
+    console.log("getWindowInfo", getWindowInfo);
+    if (options && options.preview_id) {
+        configStore.previewId = options.preview_id;
+    }
     getIndexData();
 });
 onPullDownRefresh(() => {
@@ -121,12 +132,33 @@ onHide(() => {
 });
 </script>
 <style lang="scss" scoped>
-page {
-    background-color: #f6f6f6 !important;
+.preview-box {
+    padding: 40rpx;
+    background-color: #fff;
+    border-bottom: 1px solid #ebeef5;
+    position: fixed;
+    width: 100%;
+    z-index: 999;
+    left: 0;
+    top: 0;
+}
+.preview-box text {
+    position: relative;
+    display: inline-block;
+    font-size: 28rpx;
+}
+.preview-box text::after {
+    content: "";
+    position: absolute;
+    top: 50rpx;
+    left: 0;
+    width: 100%;
+    height: 4rpx;
+    background-color: #155bd4;
 }
 
-:deep(.van-back-top) {
-    background-color: #fff;
+page {
+    background-color: #f6f6f6 !important;
 }
 
 .line-through {
@@ -551,8 +583,6 @@ page {
     width: 20%;
     flex-shrink: 0;
 }
-.index .overseas_cat swiper {
-}
 .index .overseas_cat .item .goods-item {
     padding: 10rpx 0;
 }
@@ -618,8 +648,6 @@ page {
 .index .recommend_wrapper .title .text .desc {
     display: inline-block;
     padding-left: 20rpx;
-}
-.index .recommend {
 }
 
 /* 优惠券模块 */
@@ -1632,8 +1660,6 @@ page {
 .live-list-warp {
     padding: 30rpx 30rpx 50rpx 30rpx;
     overflow: hidden;
-}
-.live-list {
 }
 .live-list .live-item {
     background: #fff;

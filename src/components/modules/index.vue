@@ -49,7 +49,7 @@
             </block>
 
             <block v-if="module.type == 'product' && showCatNav == 0">
-                <product :module="module.module"></product>
+                <product :module="module.module" :module_index="module.module_index"></product>
             </block>
         </block>
 
@@ -71,7 +71,7 @@
                                 <block v-for="(item, index) in imgUrl" :key="index">
                                     <swiper-item>
                                         <view class="swiper-slide">
-                                            <image :src="imageFormat(item.pic_url)"></image>
+                                            <tigImage class="pictrue pic-btn" v-model:src="item.pic_url"> </tigImage>
                                         </view>
                                     </swiper-item>
                                 </block>
@@ -87,7 +87,8 @@
                         <block v-for="(item, index) in childCatInfo" :key="index">
                             <view class="item" v-if="index < 10">
                                 <navigator :url="'/pages/goods_search/index?category=' + item.category_id + '&title=' + item.category_name">
-                                    <image :src="item.category_pic"></image>
+                                    <!-- <image lazy-load  :src="item.category_pic"></image> -->
+                                    <tigImage v-model:src="item.category_pic"></tigImage>
                                     <view class="txt">{{ item.category_name }}</view>
                                 </navigator>
                             </view>
@@ -103,7 +104,8 @@
                             <view class="item" v-if="index < 8">
                                 <view class="itemWrap">
                                     <navigator :url="'/pages/goods_search/index?brand=' + brand.brand_id + '&title=' + brand.brand_name">
-                                        <image :src="imageFormat(brand.brand_logo)"></image>
+                                        <!-- <image lazy-load  :src="imageFormat(brand.brand_logo)"></image> -->
+                                        <tigImage v-model:src="brand.brand_logo"></tigImage>
                                         <view class="txt">{{ brand.brand_name }}</view>
                                     </navigator>
                                 </view>
@@ -130,7 +132,6 @@ import coupon from "@/components/modules/coupon/index.vue";
 import seckill from "@/components/modules/seckill/index.vue";
 import imageHotarea from "@/components/modules/imageHotarea/index.vue";
 import product from "@/components/modules/product/index.vue";
-import { imageFormat } from "@/utils/format";
 import { ref } from "vue";
 
 interface Props {
@@ -161,7 +162,7 @@ const imgUrl = ref();
 const currentColor = ref("");
 
 const onChangeCatNav = async (data: CatNav) => {
-    const { category_id, child_cat_info, brand_info, img_url, cat_color } = data;
+    const { category_id, cat_color } = data;
     if (category_id === cat_id.value) return;
     cat_id.value = category_id;
     loading.value = true;
@@ -170,9 +171,6 @@ const onChangeCatNav = async (data: CatNav) => {
     if (cat_id.value > 0) {
         showCatNav.value = 1;
         loading.value = false;
-        childCatInfo.value = child_cat_info;
-        brandInfo.value = brand_info;
-        imgUrl.value = img_url;
         currentColor.value = cat_color;
     }
     emit("load-goods-list", category_id);

@@ -19,3 +19,5 @@ dist
 *.njsproj
 *.sln
 *.sw?
+vite.config.ts
+src/config/index.config.ts

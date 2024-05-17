@@ -43,29 +43,20 @@
                             <view class="item-content" :style="allFormat.goods_padding">
                                 <view class="item-con">
                                     <view class="item-photo">
-                                        <navigator :url="''" class="item-image-a">
-                                            <van-image :src="imageFormat(item.pic_thumb)">
-                                                <template v-slot:error>加载失败</template>
-                                            </van-image>
-                                            <!-- <image :src="imageFormat(item.pic_thumb)" mode="widthFix" /> -->
+                                        <navigator :url="'/pages/productDetail/index?id=' + item.product_id" class="item-image-a">
+                                            <tigImage v-model:src="item.pic_thumb" mode="widthFix"></tigImage>
                                         </navigator>
                                         <view :class="'cap-seckill-goods__tag ' + className">
                                             <text class="cap-seckill-goods__tag-title" v-if="module?.style === 1"> 秒杀 </text>
-                                            <van-count-down title="" format="HH:mm:ss" :time="time" />
+                                            <tigCountdown :endTime="item.seckkill_data.seckill_end_time"></tigCountdown>
                                         </view>
                                     </view>
                                     <view class="item-info">
                                         <block v-if="module.show_name">
                                             <view class="item-name">
                                                 <block v-if="module.show_name">
-                                                    <navigator url="" class="item-name-a">
+                                                    <navigator :url="'/pages/productDetail/index?id=' + item.product_id" class="item-name-a">
                                                         {{ item.product_name ?? "" }}
-                                                    </navigator>
-                                                </block>
-
-                                                <block v-if="module.show_brief">
-                                                    <navigator url="" class="item-brief">
-                                                        {{ item.product_desc ?? "" }}
                                                     </navigator>
                                                 </block>
                                             </view>
@@ -73,10 +64,10 @@
                                         <block v-if="module.show_price">
                                             <view class="item-action">
                                                 <view class="item-price">
-                                                    <text class="price_format">{{ priceFormat(Number(item.product_price)) }}</text>
+                                                    <FormatPrice :priceData="item.product_price"></FormatPrice>
                                                 </view>
                                                 <view class="item-buy">
-                                                    <view @click="buy" :data-id="item.product_id" class="buy-btn">
+                                                    <view @click="buy(item.product_id)" :data-id="item.product_id" class="buy-btn">
                                                         <block v-if="module.buy_btn_style == 5 || module.buy_btn_style == 6">
                                                             <view>购买</view>
                                                         </block>
@@ -106,9 +97,10 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted } from "vue";
-import { imageFormat, priceFormat } from "@/utils/format";
+import { priceFormat } from "@/utils/format";
 import { formatFrame } from "@/components/modules";
 import commonTitle from "@/components/modules/commonTitle/index.vue";
+import tigCountdown from "@/components/tigCountdown/index.vue";
 import { getHomeSeckill } from "@/api/home/home";
 import type { SeckillList } from "@/types/home/home";
 const props = defineProps({
@@ -146,15 +138,15 @@ const className = computed(() => {
     }
 });
 
-const buy = () => {};
+const buy = (id: any) => {
+    uni.navigateTo({ url: "/pages/productDetail/index?id=" + id });
+};
 
 const seckillList = ref<SeckillList[]>();
 const getData = async () => {
     try {
         const result = await getHomeSeckill();
-        if (result.errcode === 0) {
-            seckillList.value = result.seckill_list;
-        }
+        seckillList.value = result.seckill_list;
     } catch (error) {
         console.error(error);
     }
@@ -170,12 +162,6 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    :deep(.van-count-down) {
-        color: #fff;
-        font-weight: 700;
-        font-size: 20rpx;
-    }
-
     &.flex-end {
         justify-content: flex-end;
     }
@@ -227,7 +213,7 @@ onMounted(() => {
 .goods-ad-warp .goods-ad-item .item-info .count-down em {
     font-size: 32rpx;
     font-weight: normal;
-    color: #f23030;
+    color: $tig-color-primary;
     padding: 0 4rpx;
 }
 
@@ -275,14 +261,14 @@ onMounted(() => {
     align-items: center;
 }
 .goods-ad-warp .goods-ad-item .item-info .item-price {
-    font-size: 20rpx;
-    color: #f23030;
-    line-height: 60rpx;
-    height: 60rpx;
-}
-.goods-ad-warp .goods-ad-item .item-info .item-price text {
     font-weight: normal;
     font-size: 36rpx;
+    color: $tig-color-primary;
+    & :deep(.util) {
+        font-size: 26rpx;
+        position: relative;
+        top: -2rpx;
+    }
 }
 .goods-ad-warp .goods-ad-item .item-info .item-buy {
     justify-content: center;
@@ -296,7 +282,7 @@ onMounted(() => {
 .goods-ad-warp .goods-ad-item .item-info .item-buy .module_ico {
     width: 48rpx;
     height: 48rpx;
-    color: #f23030;
+    color: $tig-color-primary;
     font-size: 36rpx;
 }
 .goods-ad-warp .goods-ad-item .item-info .item-buy .module_ico::before {
@@ -469,14 +455,14 @@ onMounted(() => {
     font-size: 40rpx;
 }
 .ad-buy_btn_style__5 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view {
-    color: #f23030;
+    color: $tig-color-primary;
     height: 44rpx;
     line-height: 44rpx;
     padding: 0 16rpx;
     display: inline-block;
     position: relative;
     border-radius: 4rpx;
-    border: 0 solid #f23030;
+    border: 0 solid $tig-color-primary;
 }
 .ad-buy_btn_style__5 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view:before {
     content: "";
@@ -496,7 +482,7 @@ onMounted(() => {
     border-radius: 4rpx;
 }
 .ad-buy_btn_style__6 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view {
-    background: #f23030;
+    background: $tig-color-primary;
     color: #fff;
     height: 44rpx;
     line-height: 44rpx;
@@ -506,14 +492,14 @@ onMounted(() => {
     border-radius: 44rpx;
 }
 .ad-buy_btn_style__7 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view {
-    color: #f23030;
+    color: $tig-color-primary;
     height: 44rpx;
     line-height: 44rpx;
     padding: 0 16rpx;
     display: inline-block;
     position: relative;
     border-radius: 4rpx;
-    border: 0 solid #f23030;
+    border: 0 solid $tig-color-primary;
 }
 .ad-buy_btn_style__7 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view:before {
     content: "";
@@ -533,7 +519,7 @@ onMounted(() => {
     border-radius: 4rpx;
 }
 .ad-buy_btn_style__8 .goods-ad-warp .goods-ad-item .item-info .item-buy .buy-btn view {
-    background: #f23030;
+    background: $tig-color-primary;
     color: #fff;
     height: 44rpx;
     line-height: 44rpx;

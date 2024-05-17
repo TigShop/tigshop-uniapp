@@ -1,14 +1,43 @@
 <template>
-    <view style="height: 100%">
+    <view style="height: 100%; padding-bottom: 110rpx; overflow: hidden; overflow-y: auto">
         <navbar :parameter="parameter"></navbar>
-        <view class="page-loading" v-if="myLoading && Object.keys(addressList).length === 0">
-            <view class="ico"></view>
-        </view>
         <view v-if="Object.keys(addressList).length > 0">
             <addressInfo :data="getAddressInfo"></addressInfo>
-            <paymentMode v-model:payTypeId="formState.pay_type_id" :availablePaymentType="availablePaymentType"></paymentMode>
-            <stroeCArd v-model:shippingType="formState.shipping_type" :cartList="cartList" :shippingTypeList="shippingTypeList"></stroeCArd>
-            <couponInfo :couponList="couponList" v-model:useCouponIds="formState.use_coupon_ids"></couponInfo>
+            <paymentMode v-model:payTypeId="formState.pay_type_id" :availablePaymentType="availablePaymentType" @change="updateOrderCheck"></paymentMode>
+            <stroeCard
+                v-model:shippingType="formState.shipping_type"
+                :cartList="cartList"
+                :shippingTypeList="shippingTypeList"
+                @change="updateOrderCheck"
+            ></stroeCard>
+            <couponInfo
+                :balance="balanceNum ?? 0"
+                :points="pointsData"
+                :availablePoints="availablePoints"
+                :pointsAmount="totalData?.points_amount ?? 0"
+                :couponAmount="totalData?.coupon_amount ?? 0"
+                :couponList="couponList"
+                v-model:useCouponIds="formState.use_coupon_ids"
+                v-model:use-point="formState.use_point"
+                @sendBalanceStatus="getBalanceStatus"
+                @change="updateCoupon"
+            ></couponInfo>
+            <invoiceInfo
+                v-model:invoiceInfoData="formState.invoice_data"
+                :typeCode="formState.invoice_data.invoice_type"
+                :getAddressInfo="getAddressInfo"
+            ></invoiceInfo>
+            <totalCard :total="totalData" :cartList="cartList"></totalCard>
+            <saveBottomBox :height="90" backgroundColor="#fff">
+                <view class="submit-btn">
+                    <view class="submit-btn-price">
+                        <FormatPrice :priceData="totalData?.unpaid_amount"></FormatPrice>
+                    </view>
+                    <view>
+                        <tigButton style="width: 200rpx; height: 60rpx" :loading="submitLoading" @click="submit"> 提交 </tigButton>
+                    </view>
+                </view>
+            </saveBottomBox>
         </view>
     </view>
 </template>
@@ -17,13 +46,15 @@
 import navbar from "@/components/navbar/index.vue";
 import addressInfo from "./src/addressInfo.vue";
 import paymentMode from "./src/paymentMode.vue";
-import stroeCArd from "./src/stroeCArd.vue";
+import stroeCard from "./src/stroeCArd.vue";
 import couponInfo from "./src/couponInfo.vue";
-import { computed, reactive, ref, watch } from "vue";
-import { getOrderCheckData, updateOrderCheckData } from "@/api/order/check";
+import invoiceInfo from "./src/invoiceInfo.vue";
+import totalCard from "./src/totalCard.vue";
+import saveBottomBox from "@/components/saveBottomBox/index.vue";
+import { reactive, ref } from "vue";
+import { getOrderCheckData, updateOrderCheckData, orderSubmit, updateCouponData } from "@/api/order/check";
 import { onShow } from "@dcloudio/uni-app";
 import type { AddressList, AvailablePaymentType, CartList, Total, StoreShippingType } from "@/types/order/check";
-import { Toast } from "vant";
 const parameter = reactive({
     navbar: "1",
     return: "1",
@@ -38,62 +69,134 @@ const formState = reactive({
     use_point: 0,
     use_balance: 0,
     use_coupon_ids: [],
-    buyer_note: ""
-});
-watch(
-    formState,
-    (newVal) => {
-        console.log(newVal)
-        // updateOrderCheck();
+    buyer_note: "",
+    invoice_data: {
+        title_type: 1,
+        invoice_type: 1
     },
-    {
-        deep: true
-    }
-);
+    use_default_coupon_ids: 0
+});
 
 const addressList = ref<AddressList[]>([]);
 const availablePaymentType = ref<AvailablePaymentType[]>([]);
 const cartList = ref<CartList[]>([]);
 const totalData = ref<Total>();
 const shippingTypeList = ref<Array<StoreShippingType[]>>([]);
-const couponList = ref<any>([])
+const couponList = ref<any>([]);
+const balanceNum = ref(0);
+const pointsData = ref(0);
+const availablePoints = ref(0);
+const getAddressInfo = ref<AddressList>({} as AddressList);
 
 const getOrderInfo = async () => {
-    myLoading.value = true;
+    uni.showLoading({
+        title: "加载中"
+    });
     try {
         const result = await getOrderCheckData();
         Object.assign(formState, result.item);
-        const { address_list, available_payment_type, cart_list, total, store_shipping_type, coupon_list } = result;
+        const { address_list, available_payment_type, cart_list, total, store_shipping_type, coupon_list, balance, points, available_points } = result;
+
+        if (address_list.length === 0) {
+            return uni.navigateTo({
+                url: "/pages/address/list"
+            });
+        }
+        getAddressInfo.value = address_list[0];
         addressList.value = address_list;
         availablePaymentType.value = available_payment_type;
         cartList.value = cart_list;
         totalData.value = total;
         shippingTypeList.value = store_shipping_type;
         couponList.value = coupon_list;
+        balanceNum.value = balance;
+        pointsData.value = points;
+        availablePoints.value = available_points;
     } catch (error) {
         console.error(error);
     } finally {
-        myLoading.value = false;
+        uni.hideLoading();
     }
 };
-const getAddressInfo = computed(() => {
-    return addressList.value.find((item) => item.is_selected === 1) || {};
-});
 
 const updateOrderCheck = async (type = "") => {
-    // uni.showLoading({
-    //     title: "加载中"
-    // });
+    uni.showLoading({
+        title: "加载中"
+    });
     try {
         const result = await updateOrderCheckData(type, formState);
         totalData.value = result.total;
-        availablePaymentType.value = result.available_payment_type
-
+        availablePaymentType.value = result.available_payment_type;
+        shippingTypeList.value = result.store_shipping_type;
         return result;
     } catch (error: any) {
-        Toast(error.message);
+        uni.showToast({
+            title: error.message,
+            duration: 1500
+        });
     } finally {
-        // uni.hideLoading();
+        uni.hideLoading();
+    }
+};
+
+const updateCoupon = async () => {
+    uni.showLoading({
+        title: "加载中"
+    });
+    try {
+        formState.use_default_coupon_ids = formState.use_coupon_ids.length === 0 ? 0 : 1;
+        const result = await updateCouponData(formState);
+        couponList.value = result.coupon_list;
+        totalData.value = result.total;
+        return result;
+    } catch (error) {
+    } finally {
+        uni.hideLoading();
+    }
+};
+
+const getBalanceStatus = (status: boolean) => {
+    if (status) {
+        formState.use_balance = balanceNum.value;
+    } else {
+        formState.use_balance = 0;
+    }
+    updateOrderCheck();
+};
+const submitLoading = ref(false);
+const submit = async () => {
+    if (submitLoading.value) return;
+    if (formState.pay_type_id === 0) {
+        return uni.showToast({
+            title: "请选择付款方式",
+            icon: "none"
+        });
+    }
+    if (formState.shipping_type.length === 0) {
+        return uni.showToast({
+            title: "请选择配送方式",
+            icon: "none"
+        });
+    }
+
+    if (submitLoading.value) return;
+
+    submitLoading.value = true;
+    try {
+        const result = await orderSubmit(formState);
+        if (result.return_type === 2) {
+            uni.redirectTo({
+                url: `/pages/user/order/list`
+            });
+        } else {
+            uni.redirectTo({
+                url: `/pages/order/pay?order_id=${result.order_id}`
+            });
+        }
+    } catch (error) {
+        console.error(error);
+    } finally {
+        submitLoading.value = false;
     }
 };
 
@@ -102,4 +205,28 @@ onShow(() => {
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.submit-btn {
+    background-color: #fff;
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+    padding: 0 30rpx;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1rpx solid #f5f5f5;
+
+    .submit-btn-price {
+        color: $tig-color-primary;
+        font-size: 40rpx;
+        font-weight: bold;
+        :deep(.util) {
+            font-size: 24rpx;
+            padding-bottom: 5rpx;
+            font-weight: normal;
+        }
+    }
+
+}
+</style>
