@@ -22,7 +22,7 @@
             <view class="total-card-item-left">使用优惠券</view>
             <view class="total-card-item-right">- <FormatPrice :priceData="total.coupon_amount"></FormatPrice></view>
         </view>
-        <view class="total-card-tig"> * 该订单完成后，您将获得 <text class="special-text">111111</text> 积分 </view>
+        <view v-if="false" class="total-card-tig"> * 该订单完成后，您将获得 <text class="special-text">111111</text> 积分 </view>
     </view>
 </template>
 
