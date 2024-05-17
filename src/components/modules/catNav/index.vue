@@ -30,7 +30,7 @@
                 <view class="catNav-item" :style="'padding-top:' + (configStore.navHeight - 110) + 'rpx;'">
                     <view class="item-content">
                         <div :class="{ flex: scrollTop > 120 }">
-                            <img class="catnav-logo" :style="logoFormat.logo_height" :src="imageFormat(logoFormat.logo_pic?.pic_url || '')" />
+                            <image class="catnav-logo" mode="heightFix" :style="logoFormat.logo_height" :src="imageFormat(logoFormat.logo_pic?.pic_url || '')" />
 
                             <view class="default-search" @click="handleSkip" :style="searchFormat['padding-right'] + searchFormat['padding-left']">
                                 <view class="default-search-config catnav-search" :style="searchFormat['item_background_color'] + searchFormat['item_radius']">
@@ -232,6 +232,7 @@ const changeCatNav = (e: any) => {
     margin-left: 10px;
     margin-top: 5px;
     margin-bottom: 10px;
+    
 }
 .default-search {
     padding: 0 10px;

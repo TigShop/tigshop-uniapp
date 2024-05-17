@@ -113,7 +113,6 @@
                                             <view class="image-ad-item">
                                                 <view class="item-content" :style="format.img_padding">
                                                     <navigator class="item-img-a" :url="urlFormat(module.pic_list[3].pic_link)">
-                                                        <!-- <image lazy-load class="item-img" :src="imageFormat(module.pic_list[3]?.pic_url)" mode=""></image> -->
                                                         <tigImage class="item-img" v-model:src="module.pic_list[3].pic_url" mode="widthFix"></tigImage>
                                                     </navigator>
                                                 </view>
@@ -127,7 +126,6 @@
                                     <view class="image-ad-item" v-for="(pic, key) in module.pic_list" :key="key">
                                         <view class="item-content" :style="format.img_padding">
                                             <view class="item-img-a" :url="pic.pic_link ? pic.pic_link.link : ''">
-                                                <!-- <img class="item-img" :src="imageFormat(pic.pic_url)" /> -->
                                                 <tigImage class="item-img" v-model:src="pic.pic_url" mode="widthFix"></tigImage>
                                             </view>
                                         </view>

@@ -26,7 +26,7 @@
                             <template v-slot:default="{ item }">
                                 <div class="swiper-main">
                                     <div class="swiper-item" v-for="(subItem, index) in item" :key="index">
-                                        <img v-if="module.nav_style === 2 || module.nav_style === 1" :src="imageFormat(subItem.pic_url)" />
+                                        <image v-if="module.nav_style === 2 || module.nav_style === 1" :src="imageFormat(subItem.pic_url)" />
                                         <div v-if="module.nav_style === 3 || module.nav_style === 1" class="imagenav-item-text">
                                             {{ subItem.pic_title }}
                                         </div>
@@ -41,12 +41,12 @@
                 <div class="imagenav-main">
                     <div class="imagenav-main-item" v-for="(item, index) in module.pic_list" :key="index" @click="handleToPage(item.pic_link)">
                         <view class="item-img-a">
-                            <img
+                            <image
                                 :class="{ 'img-height': module.nav_style === 2 }"
                                 v-if="module.nav_style === 2 || module.nav_style === 1"
                                 class="imagenav-item-img"
                                 :src="imageFormat(item.pic_url)"
-                                alt=""
+                                mode="widthFix"
                             />
                         </view>
                         <view class="item-text-a">
@@ -150,7 +150,8 @@ const handleToPage = (data: string | { path: string; [key: string]: any }) => {
     .imagenav-main-item {
         margin-top: 8px;
         margin-bottom: 2px;
-        padding-bottom: 6px;
+        padding-bottom: 22px;
+        position: relative;
 
         .imagenav-item-img {
             width: 100%;
@@ -162,9 +163,8 @@ const handleToPage = (data: string | { path: string; [key: string]: any }) => {
 
         .imagenav-item-text {
             text-align: center;
-            line-height: 20px;
-            height: 30%;
-            font-size: 20rpx;
+            font-size: 24rpx;
+            height: 30rpx;
         }
     }
 }
@@ -198,5 +198,13 @@ const handleToPage = (data: string | { path: string; [key: string]: any }) => {
     border-radius: 0;
     height: 4rpx;
     margin: 0 2rpx;
+}
+.item-text-a {
+    position: absolute;
+    width: 100%;
+    bottom: 6rpx;
+    display: flex;
+    align-items: end;
+    justify-content: center;
 }
 </style>

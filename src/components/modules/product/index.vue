@@ -87,7 +87,6 @@
                                     <view class="item-con">
                                         <view class="item-photo">
                                             <navigator :url="urlFormat({ path: 'product', id: item.product_id })" class="item-image-a">
-                                                <!-- <image lazy-load :src="imageFormat(item.pic_thumb)" mode="widthFix" /> -->
                                                 <tigImage v-model:src="item.pic_thumb" mode="widthFix"></tigImage>
                                             </navigator>
                                         </view>
@@ -349,13 +348,11 @@ const buy = () => {};
 .goods-ad-warp .goods-ad-item .item-info .item-price {
     font-size: 36rpx;
     color: $tig-color-primary;
-    line-height: 60rpx;
-    height: 60rpx;
-}
 
-.item-price {
-    :deep(.util) {
+    & :deep(.util) {
         font-size: 26rpx;
+        position: relative;
+        top: -2rpx;
     }
 }
 
@@ -514,12 +511,6 @@ const buy = () => {};
     opacity: 1;
     background-color: #fff;
 }
-/*.ad-style__7.ad-pic_page_type__2 .goods-ad-warp .swiper-pagination-con{position:absolute;bottom:30rpx;display:flex;justify-content:center;align-items:center;width:100%}
-.ad-style__7.ad-pic_page_type__2 .goods-ad-warp .swiper-pagination{margin:0 6rpx;background:#333;width:12rpx;height:12rpx;display:inline-block;border-radius:100%;background:#000;opacity:.2}
-.ad-style__7.ad-pic_page_type__2 .goods-ad-warp .swiper-pagination.active{opacity:1}
-.ad-style__7.ad-pic_page_type__3 .goods-ad-warp .swiper-pagination-con{text-align:center;right:0;position:absolute;width:110rpx;bottom:20rpx}
-.ad-style__7.ad-pic_page_type__3 .goods-ad-warp .swiper-pagination{position:absolute;text-align:center;z-index:10;bottom:0;left:0;width:100%}
-.ad-style__7.ad-pic_page_type__3 .goods-ad-warp .swiper-pagination{text-align:right;background:#000;opacity:.3;border-radius:200rpx;padding:2rpx 10rpx;display:inline-block;width:auto;color:#fff;font-size:24rpx}*/
 .ad-buy_btn_style__0 .goods-ad-warp .goods-ad-item .item-info .item-buy {
     display: none;
 }
