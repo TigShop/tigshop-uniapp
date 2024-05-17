@@ -57,6 +57,9 @@ const handleDispatching = () => {
         padding-bottom: 35rpx;
         display: flex;
         justify-content: space-between;
+        &:last-child {
+            padding-bottom: 0;
+        } 
 
         .total-card-item-left {
             display: flex;
