@@ -1,7 +1,7 @@
 <template>
     <view class="menu-card">
         <block v-for="(item, index) in commodityList" :key="index">
-            <goods-item :item="item" :isExchange="isExchange" @callback="$emit('callback')"></goods-item>
+            <goods-item :item="item" @callback="$emit('callback')"></goods-item>
         </block>
     </view>
     <block v-if="commodityList.length === 0">
@@ -16,10 +16,6 @@ const props = defineProps({
     commodityList: {
         type: Array as PropType<any[]>,
         default: ""
-    },
-    isExchange: {
-        type: Boolean,
-        default: false
     }
 });
 const emits = defineEmits(["callback"]);

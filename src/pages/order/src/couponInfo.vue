@@ -96,8 +96,8 @@
                                     <view class="col-1">
                                         <view class="title">{{ item.coupon_name }}</view>
                                     </view>
-                                    <view v-if="item.coupon_desc" class="col-2">
-                                        {{ item.coupon_desc }}
+                                    <view v-if="item.disable_reason" class="col-2">
+                                        {{ item.disable_reason }}
                                     </view>
                                     <view class="col-3">
                                         有效期：{{ item.end_date }}

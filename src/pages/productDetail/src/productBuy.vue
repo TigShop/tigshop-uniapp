@@ -7,7 +7,7 @@
 import { ref, toRefs } from "vue";
 import { addToCart } from "@/api/product/product";
 const props = defineProps({
-    id: { type: String, default: "" },
+    id: { type: Number, default: "" },
     number: { type: Number, default: 1 },
     skuId: { type: Number, default: 0 },
     disabled: { type: Boolean, default: false },

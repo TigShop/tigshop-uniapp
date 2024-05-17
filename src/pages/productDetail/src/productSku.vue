@@ -10,14 +10,8 @@
                         <image lazy-load :src="imageFormat(skuProductImage)" class="slide-image" />
                     </view>
                     <view class="info">
-                        <view class="price" v-if="!isExchange">
+                        <view class="price" >
                             <view class="now"><FormatPrice :priceData="productPrice"></FormatPrice></view>
-                        </view>
-                        <view class="exchange-price" v-if="isExchange">
-                            <FormatPrice :priceData="productInfo.discounts_price"></FormatPrice>
-                            <text> + </text>
-                            <text class="exchange-num">{{ productInfo.exchange_integral }}</text>
-                            <text>积分</text>
                         </view>
                         <view class="name">
                             {{ productInfo.product_name }}
@@ -30,7 +24,7 @@
                 </view>
             </view>
             <view class="product-sku-info" v-if="attrList.length > 0">
-                <view class="sku-item flex align-center" v-for="(item, index) in attrList">
+                <view class="sku-item" v-for="(item, index) in attrList">
                     <view class="tit">
                         {{ item.attr_name }}
                     </view>
@@ -43,38 +37,28 @@
                     </view>
                 </view>
             </view>
-            <view class="product-sku-info">
-                <view class="sku-item flex align-center">
-                    <view class="tit">
-                        数量
-                    </view>
+            <view class="product-sku-info pb100">
+                <view class="num-item ">
+                    <view class="tit">购买数量</view>
                     <view class="sku-num flex align-center">
                         <uni-number-box :min="1" :max="productStock" v-model="productNumber" :width="60" />
-                        <view class="stock" v-if="!isExchange">库存：<text class="green-txt" v-if="productStock > 50">充足</text> <text class="red-txt" v-else>仅剩{{productStock}}件</text> </view>
+                        <view class="stock" >库存：<text class="green-txt" v-if="productStock > 50">充足</text> <text class="red-txt" v-else>仅剩{{productStock}}件</text> </view>
                     </view>
                 </view>
             </view>
             <view class="footer">
-                <view class="add_cart" v-if="isExchange">
-                    <productBuy :id="productInfo.id" :skuId="skuId" :disabled="productStock == 0" :number="productNumber" :isQuick="true">
-                        <view class="btn exBtn">立刻兑换</view>
-                    </productBuy>
-                </view>
-                <view class="add_cart" v-else>
+                <view class="add_cart">
                     <productBuy :id="product_id" :skuId="skuId" :disabled="productStock == 0" :number="productNumber" @callback="addCart">
-                        <view class="btn exBtn" v-if="productStock == 0">已抢完</view>
-                        <view class="btn cart" v-else>加入购物车</view>
+                        <view class="btn cart" :class="productStock===0?'disabled-div':''" >加入购物车</view>
                     </productBuy>
-
                     <productBuy
-                        v-if="productStock != 0"
                         :id="product_id"
                         :skuId="skuId"
                         :disabled="productStock == 0"
                         :number="productNumber"
                         :isQuick="true"
                     >
-                        <view class="btn redbtn buy-right" @click="closeDrawer">立即购买</view>
+                        <view class="btn redbtn buy-right "  :class="productStock===0?'disabled-div':''" @click="closeDrawer">立即购买</view>
                     </productBuy>
                 </view>
             </view>
@@ -103,14 +87,10 @@ interface Props {
 const props = defineProps<Props>();
 const product_id = ref<string>("");
 const productNumber = ref<number>(1)
-const isExchange = ref(false)
 onLoad((option) => {
     if (option) {
-        const { id, is_exchange } = option;
-        if(is_exchange) {
-            let is_exchange_bool = JSON.parse(is_exchange);
-            isExchange.value = is_exchange_bool;
-        }
+        const { id } = option;
+
         if (id) {
             product_id.value = id;
         }
@@ -228,21 +208,7 @@ const loadPrice = async (skuId:any) => {
         }
         .info{
             margin-left: 20rpx;
-            padding-top: 30rpx;
             .price{
-                color: $tig-color-primary;
-                font-weight: bold;
-                font-size: 36rpx;
-                display: flex;
-                align-items: center;
-                line-height: 36rpx;
-                margin-bottom: 10rpx;
-                :deep(.util) {
-                    font-size: 24rpx;
-                    line-height: 36rpx;
-                }
-            }
-            .exchange-price{
                 color: $tig-color-primary;
                 font-weight: bold;
                 font-size: 36rpx;
@@ -263,9 +229,13 @@ const loadPrice = async (skuId:any) => {
     }
 }
 .product-sku-info {
-   padding: 20rpx;
+    padding: 20rpx 20rpx 0 20rpx;
+    box-sizing: border-box;
     .sku-item {
         margin-bottom: 30rpx;
+        display: flex;
+        flex-direction: column;
+        gap: 20rpx;
         .tit {
             color: #999;
             width: 100rpx;
@@ -274,9 +244,13 @@ const loadPrice = async (skuId:any) => {
             font-size: 24rpx;
         }
         .sku-tag {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
             .tag {
-                margin-right: 30rpx;
+                margin: 10rpx;
                 background-color: #f7f8fa;
+                border: 1px solid #f7f8fa;
                 color: #333;
                 height: 55rpx;
                 line-height: 55rpx;
@@ -297,6 +271,22 @@ const loadPrice = async (skuId:any) => {
                 color: #999;
             }
         }
+
+    }
+
+    .num-item{
+        display: flex;
+
+        align-items: center;
+        justify-content: space-between;
+        .tit{
+            color: #999;
+            width: 100rpx;
+            height: 33rpx;
+            line-height: 32rpx;
+            font-size: 24rpx;
+        }
+
         .sku-num{
             :deep(.uni-numbox){
                 border: 1rpx solid $tig-color-grey;
@@ -332,13 +322,18 @@ const loadPrice = async (skuId:any) => {
 }
 .footer{
     position: fixed;
-    bottom: 20rpx;
-    left: 1vw;
-    height: 80rpx;
+    bottom: 0;
+    left: 0;
+    padding-bottom: 20rpx;
     z-index: 999;
+    background-color: #FFFFFF;
     .add_cart{
         width:100%;
         display: flex;
+        height: 80rpx;
+        margin-left: 1vw;
+        padding-bottom: 20rpx;
+
         .btn{
             width:49vw;
 
@@ -360,5 +355,14 @@ const loadPrice = async (skuId:any) => {
             border-radius: 0 100rpx 100rpx 0;
         }
     }
+}
+.pb100{
+    padding-bottom: 70rpx;
+}
+.disabled-div{
+    background-color: #ddd; // 灰色背景
+    color: #aaa; // 灰色字体
+    opacity: 0.6; // 降低透明度
+    pointer-events: none;
 }
 </style>
