@@ -44,7 +44,6 @@
                                 <view class="item-con">
                                     <view class="item-photo">
                                         <navigator :url="'/pages/productDetail/index?id=' + item.product_id" class="item-image-a">
-                                            <!-- <image lazy-load  :src="imageFormat(item.pic_thumb)" mode="widthFix" /> -->
                                             <tigImage v-model:src="item.pic_thumb" mode="widthFix"></tigImage>
                                         </navigator>
                                         <view :class="'cap-seckill-goods__tag ' + className">
@@ -65,7 +64,7 @@
                                         <block v-if="module.show_price">
                                             <view class="item-action">
                                                 <view class="item-price">
-                                                    <text class="price_format">{{ priceFormat(Number(item.product_price)) }}</text>
+                                                    <FormatPrice :priceData="item.product_price"></FormatPrice>
                                                 </view>
                                                 <view class="item-buy">
                                                     <view @click="buy(item.product_id)" :data-id="item.product_id" class="buy-btn">
@@ -98,10 +97,10 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted } from "vue";
-import { imageFormat, priceFormat } from "@/utils/format";
+import { priceFormat } from "@/utils/format";
 import { formatFrame } from "@/components/modules";
 import commonTitle from "@/components/modules/commonTitle/index.vue";
-import tigCountdown from '@/components/tigCountdown/index.vue'
+import tigCountdown from "@/components/tigCountdown/index.vue";
 import { getHomeSeckill } from "@/api/home/home";
 import type { SeckillList } from "@/types/home/home";
 const props = defineProps({
@@ -140,7 +139,7 @@ const className = computed(() => {
 });
 
 const buy = (id: any) => {
-    uni.navigateTo({ url:'/pages/productDetail/index?id=' + id  })
+    uni.navigateTo({ url: "/pages/productDetail/index?id=" + id });
 };
 
 const seckillList = ref<SeckillList[]>();
@@ -262,14 +261,14 @@ onMounted(() => {
     align-items: center;
 }
 .goods-ad-warp .goods-ad-item .item-info .item-price {
-    font-size: 20rpx;
-    color: $tig-color-primary;
-    line-height: 60rpx;
-    height: 60rpx;
-}
-.goods-ad-warp .goods-ad-item .item-info .item-price text {
     font-weight: normal;
     font-size: 36rpx;
+    color: $tig-color-primary;
+    & :deep(.util) {
+        font-size: 26rpx;
+        position: relative;
+        top: -2rpx;
+    }
 }
 .goods-ad-warp .goods-ad-item .item-info .item-buy {
     justify-content: center;

@@ -3,7 +3,8 @@
         <view class="tabbar">
             <view class="tabbar-item" v-for="(item, index) in tabbarStore.tabbarList" :key="index" @click="handleTabbar(item, index)">
                 <view class="tabbar-icon">
-                    <image class="tabbar-icon-img" :src="configStore.currentActiveValue === index ? imageFormat(item.activeImage) : imageFormat(item.image)" />
+                    <!-- <image class="tabbar-icon-img" :src="configStore.currentActiveValue === index ? imageFormat(item.activeImage) : imageFormat(item.image)" /> -->
+                    <image class="tabbar-icon-img" :src="configStore.currentActiveValue === index ? item.activeImage : item.image" />
                 </view>
                 <view class="tabbar-text" :class="{ active: configStore.currentActiveValue === index }">{{ item.text }}</view>
             </view>

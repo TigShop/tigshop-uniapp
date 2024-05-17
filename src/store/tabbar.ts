@@ -40,23 +40,21 @@ export const usetabbarStore = defineStore("tabbar", {
                 }
             ];
             this.tabbarList = defaultTabbarList;
-            this.setTabBarItem();
-            try {
-                const result = await getMobileNav();
-                this.tabbarList = result.item.data.nav_list.map((item: any) => {
-                    return {
-                        pagePath: urlFormat(item.pic_thumb),
-                        image: item.pic_thumb,
-                        activeImage: item.pic_active_thumb,
-                        text: item.pic_title
-                    };
-                });
-            } catch (error) {
-                console.error(error);
-                this.tabbarList = defaultTabbarList;
-            }
-            
-            console.log(this.tabbarList)
+            // this.setTabBarItem();
+            // try {
+            //     const result = await getMobileNav();
+            //     this.tabbarList = result.item.data.nav_list.map((item: any) => {
+            //         return {
+            //             pagePath: urlFormat(item.pic_thumb),
+            //             image: item.pic_thumb,
+            //             activeImage: item.pic_active_thumb,
+            //             text: item.pic_title
+            //         };
+            //     });
+            // } catch (error) {
+            //     console.error(error);
+            //     this.tabbarList = defaultTabbarList;
+            // }
         },
         setTabBarItem() {
             this.tabbarList.forEach((item, index) => {
