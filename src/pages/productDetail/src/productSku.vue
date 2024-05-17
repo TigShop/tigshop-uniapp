@@ -221,19 +221,6 @@ const loadPrice = async (skuId:any) => {
                     line-height: 36rpx;
                 }
             }
-            .exchange-price{
-                color: $tig-color-primary;
-                font-weight: bold;
-                font-size: 36rpx;
-                display: flex;
-                align-items: center;
-                line-height: 36rpx;
-                margin-bottom: 10rpx;
-                :deep(.util) {
-                    font-size: 24rpx;
-                    line-height: 36rpx;
-                }
-            }
             .name{
                 color:$tig-color-grey;
                 font-size: 24rpx;

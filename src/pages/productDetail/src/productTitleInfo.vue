@@ -1,20 +1,14 @@
 <template>
     <view class="product-title-info">
         <view class="title-info-top">
-            <view class="title-top-price" v-if="isExchange == false">
+            <view class="title-top-price">
                 <FormatPrice :priceData="productPrice"></FormatPrice>
                 <view class="title-top-market_price">
                     <FormatPrice :priceData="productInfo.market_price"></FormatPrice>
                 </view>
             </view>
-            <view class="title-top-price" v-if="isExchange == true">
-                <FormatPrice :priceData="productInfo.discounts_price"></FormatPrice>
-                <text> + </text>
-                <text class="exchange-num">{{ productInfo.exchange_integral }}</text>
-                <text>积分</text>
-            </view>
             <view class="title-top-panle">
-                <view class="title-top-panle-collect" v-if="isExchange == false" @click="addCollect(is_collect)">
+                <view class="title-top-panle-collect" @click="addCollect(is_collect)">
                     <view class="iconfont icon-shoucang1" :class="{ 'icon-shoucang2': is_collect }"></view>
                     <view class="title-panle-collect-text">收藏</view>
                 </view>
@@ -40,7 +34,6 @@ import { onLoad } from "@dcloudio/uni-app";
 import { getCollectProduct, delCollectProduct, updateCollectProduct } from "@/api/product/product";
 const is_collect = ref(false);
 const product_id = ref<number>(0)
-const isExchange = ref(false)
 const props = defineProps({
     productInfo: {
         type: Object as PropType<ProductItem>,
@@ -88,12 +81,8 @@ const addCollect = async (is_collect: boolean) => {
 };
 onLoad((option) => {
     if (option) {
-        const { id, is_exchange } = option;
-        if(is_exchange) {
-            let is_exchange_bool = JSON.parse(is_exchange);
-            isExchange.value = is_exchange_bool;
-        }
-        if (id && !isExchange.value) {
+        const { id } = option;
+        if (id) {
             product_id.value = id;
             getCollect(id);
         }

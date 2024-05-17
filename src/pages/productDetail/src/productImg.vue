@@ -5,7 +5,7 @@
             <swiper :indicator-dots="false" :circular="true" interval="3000" duration="500" @change="swiperChange">
                 <block v-for="(item, index) in picList" :key="index">
                     <swiper-item>
-                        <image lazy-load @click="swiperImagePreview(index)" :src="imageFormat(item.pic_url)" class="slide-image" />
+                        <image lazy-load @click="swiperImagePreview(index)" :src="imageFormat(item.pic_url || '')" class="slide-image" />
                     </swiper-item>
                 </block>
             </swiper>
@@ -45,7 +45,7 @@ const swiperChange = (e: any) => {
     currentPic.value = e.detail.current + 1;
 };
 const swiperImagePreview = (index: number) => {
-    const images = props.picList.map((item) => imageFormat(item.pic_url));
+    const images = props.picList.map((item) => imageFormat(item.pic_url || ''));
     uni.previewImage({
         current: images[index],
         urls: images

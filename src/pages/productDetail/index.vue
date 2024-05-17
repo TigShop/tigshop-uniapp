@@ -16,7 +16,6 @@
                     :productPrice="productPrice"
                     :productStock="productStock"
                     :productNumber="productNumber"
-                    :isExchange="isExchange"
                     @change="onProductSkuChange"
                     @addCart="_getCartCount"
                 >
@@ -119,17 +118,9 @@
                     :productPrice="productPrice"
                     :productStock="productStock"
                     :productNumber="productNumber"
-                    :isExchange="isExchange"
                     @change="onProductSkuChange"
                     @addCart="_getCartCount"
                 >
-                    <!-- <view class="flex align-center justify-between" v-if="!isExchange">
-                        <view class="btn cart">加入购物车</view>
-                        <view class="btn buy">立即购买 </view>
-                    </view>
-                    <view class="flex align-center justify-between" v-if="isExchange">
-                        <view class="btn cart" style="width: 60vw">立即兑换 </view>
-                    </view> -->
                     <view class="btn-box">
                         <view class="btn cart">加入购物车</view>
                         <view class="btn buy">立即购买 </view>
@@ -169,7 +160,6 @@ import { reactive, ref } from "vue";
 import { onLoad, onShow, onPageScroll } from "@dcloudio/uni-app";
 import { getProductDetail, getProductSkuDetail, getProductCouponList } from "@/api/product/product";
 import { addCoupon } from "@/api/coupon/coupon";
-import { getExchangeDetail } from "@/api/exchange/exchange";
 import tigBackTop from "@/components/tigBackTop/index.vue";
 import { asyncGetCartCount } from "@/api/cart/cart";
 import type { PicList, ProductItem, AttrList, SkuList, ServiceList, RankDetail, DescArr, ProductCouponItem } from "@/types/product/product";
@@ -182,7 +172,6 @@ const parameter = reactive({
     title: "商品详情",
     class: "pageGoods"
 });
-const isExchange = ref(false);
 const scrollTop = ref(0);
 onPageScroll((e) => {
     scrollTop.value = e.scrollTop;
@@ -195,10 +184,6 @@ const showDrawer = () => {
 };
 onLoad((option) => {
     if (option) {
-        if (option.is_exchange) {
-            let is_exchange_bool = JSON.parse(option.is_exchange);
-            isExchange.value = is_exchange_bool;
-        }
         const { id } = option;
         if (id) {
             product_id.value = id;
@@ -226,11 +211,7 @@ const checkedValue = ref<string[]>([]);
 const __getProductDetail = async (id: string) => {
     try {
         let result: any = {};
-        if (isExchange.value == true) {
-            result = await getExchangeDetail(id);
-        } else {
-            result = await getProductDetail(id);
-        }
+        result = await getProductDetail(id);
         product.value = result.item;
         attrList.value = result.attr_list;
         picList.value = result.pic_list;
@@ -240,9 +221,7 @@ const __getProductDetail = async (id: string) => {
         descArr.value = result.desc_arr;
         serviceList.value = result.service_list;
         productStock.value = result.item.product_stock;
-        if (isExchange.value == false) {
-            loadPrice();
-        }
+        loadPrice();
     } catch (error: any) {
         uni.showToast({
             title: error.message,
@@ -264,9 +243,7 @@ const onProductSkuChange = (item: any) => {
         skuStr.value = item.sku_str;
     }
     productNumber.value = item.productNumber;
-    if (isExchange.value == false) {
-        loadPrice();
-    }
+    loadPrice();
 };
 const loadPrice = async () => {
     try {
