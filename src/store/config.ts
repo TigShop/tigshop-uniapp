@@ -6,6 +6,14 @@ interface State {
     previewId: number; //预览id
     XClientType: string; //运行环境
     currentActiveValue: number; // 当前tabbar索引
+    safeAreaInsets: SafeAreaInsets; // 安全区
+}
+
+interface SafeAreaInsets {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
 }
 
 export const useConfigStore = defineStore("config", {
@@ -14,11 +22,23 @@ export const useConfigStore = defineStore("config", {
         navHeightNum: 0,
         previewId: 0,
         XClientType: "",
-        currentActiveValue: uni.getStorageSync("currentActiveValue") || 0
+        currentActiveValue: uni.getStorageSync("currentActiveValue") || 0,
+        safeAreaInsets: {
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0
+        }
     }),
     getters: {
         navHeight: (state: State): number => {
             return state.navHeightNum;
+        },
+        saveTop: (state: State): number => {
+            return state.safeAreaInsets.top;
+        },
+        saveBottom: (state: State): number => {
+            return state.safeAreaInsets.bottom;
         }
     },
     actions: {
@@ -26,6 +46,7 @@ export const useConfigStore = defineStore("config", {
             uni.getSystemInfo({
                 success: (res: any) => {
                     this.navHeightNum = res.statusBarHeight * (750 / res.windowWidth) + 97;
+                    this.safeAreaInsets = res.safeAreaInsets;
                 },
                 fail(err) {}
             });

@@ -1,87 +1,89 @@
 <template>
-    <view style="height: 100%">
-        <navbar :parameter="parameter"></navbar>
-        <view class="page-loading" v-if="loading || !partAllLoading"><view class="ico"></view></view>
-        <view class="pageMain" v-if="partAllLoading">
-            <block v-if="showCatLevel == 0">
-                <view class="productSort">
-                    <view class="header acea-row row-center-wrapper" :style="'top:' + navH + 'rpx'">
-                        <view @click.stop="toSearch" class="acea-row row-between-wrapper input">
-                            <text class="iconfont-h5 icon-sousuo"></text>
-                            <view class="txt"> 点击搜索商品信息 </view>
-                        </view>
-                    </view>
-                    <view class="aside" :style="'top:' + navH + 'rpx;margin-top:98rpx;padding-bottom:' + tabbarStore.tabbarHeight">
-                        <view :class="'item acea-row row-center-wrapper ' + (cat_id == 0 ? 'on' : '')" data-cat_id="0" @click="changeCat(0)"
-                            ><text>推荐</text></view
-                        >
-                        <block v-for="(item, index) in productList" :key="index">
-                            <view
-                                :class="'item acea-row row-center-wrapper ' + (cat_id == item.category_id ? 'on' : '')"
-                                :data-cat_id="item.category_id"
-                                @click="changeCat(item.category_id, item)"
-                            >
-                                <text v-if="item.cat_short_name">{{ item.cat_short_name }}</text>
-                                <text v-else>{{ item.category_name }}</text>
+    <view>
+        <saveContentbox :has_tabbar="true">
+            <navbar :parameter="parameter"></navbar>
+            <view class="page-loading" v-if="loading || !partAllLoading"><view class="ico"></view></view>
+            <view class="pageMain" v-if="partAllLoading">
+                <block v-if="showCatLevel == 0">
+                    <view class="productSort">
+                        <view class="header acea-row row-center-wrapper" :style="'top:' + navH + 'rpx'">
+                            <view @click.stop="toSearch" class="acea-row row-between-wrapper input">
+                                <text class="iconfont-h5 icon-sousuo"></text>
+                                <view class="txt"> 点击搜索商品信息 </view>
                             </view>
-                        </block>
-                    </view>
-                    <view class="conter">
-                        <block v-if="!loading">
-                            <block v-if="cat_id == 0">
-                                <view class="listw">
-                                    <view class="title acea-row row-center-wrapper">
-                                        <view class="name">热门分类</view>
-                                    </view>
-                                    <view class="list acea-row">
-                                        <block v-for="(hot, index) in hotCat" :key="index">
-                                            <navigator
-                                                hover-class="none"
-                                                :url="'/pages/search/result?category_id=' + hot.category_id"
-                                                class="item acea-row row-column row-middle"
-                                            >
-                                                <view class="picture">
-                                                    <tigImage v-model:src="hot.category_pic" mode="aspectFill"></tigImage>
-                                                </view>
-                                                <view class="name line1">{{ hot.category_name }}</view>
-                                            </navigator>
-                                        </block>
-                                    </view>
+                        </view>
+                        <view class="aside" :style="'top:' + navH + 'rpx;margin-top:98rpx;padding-bottom:' + tabbarStore.tabbarHeight">
+                            <view :class="'item acea-row row-center-wrapper ' + (cat_id == 0 ? 'on' : '')" data-cat_id="0" @click="changeCat(0)"
+                                ><text>推荐</text></view
+                            >
+                            <block v-for="(item, index) in productList" :key="index">
+                                <view
+                                    :class="'item acea-row row-center-wrapper ' + (cat_id == item.category_id ? 'on' : '')"
+                                    :data-cat_id="item.category_id"
+                                    @click="changeCat(item.category_id, item)"
+                                >
+                                    <text v-if="item.cat_short_name">{{ item.cat_short_name }}</text>
+                                    <text v-else>{{ item.category_name }}</text>
                                 </view>
                             </block>
-                            <block v-if="cat_id > 0">
-                                <view class="listw" v-for="(cat, index) in childCat" :key="index" :id="'b' + index">
-                                    <view class="title acea-row row-center-wrapper">
-                                        <navigator
-                                            hover-class="none"
-                                            :url="'/pages/search/result?category_id=' + cat.category_id"
-                                            class="item acea-row row-column row-middle"
-                                        >
-                                            <view class="name">{{ cat.category_name }}</view>
-                                        </navigator>
+                        </view>
+                        <view class="conter">
+                            <block v-if="!loading">
+                                <block v-if="cat_id == 0">
+                                    <view class="listw">
+                                        <view class="title acea-row row-center-wrapper">
+                                            <view class="name">热门分类</view>
+                                        </view>
+                                        <view class="list acea-row">
+                                            <block v-for="(hot, index) in hotCat" :key="index">
+                                                <navigator
+                                                    hover-class="none"
+                                                    :url="'/pages/search/result?category_id=' + hot.category_id"
+                                                    class="item acea-row row-column row-middle"
+                                                >
+                                                    <view class="picture">
+                                                        <tigImage v-model:src="hot.category_pic" mode="aspectFill"></tigImage>
+                                                    </view>
+                                                    <view class="name line1">{{ hot.category_name }}</view>
+                                                </navigator>
+                                            </block>
+                                        </view>
                                     </view>
-                                    <view class="list acea-row">
-                                        <block v-for="(childCatItem, index1) in cat.children" :key="index1">
+                                </block>
+                                <block v-if="cat_id > 0">
+                                    <view class="listw" v-for="(cat, index) in childCat" :key="index" :id="'b' + index">
+                                        <view class="title acea-row row-center-wrapper">
                                             <navigator
                                                 hover-class="none"
-                                                :url="'/pages/search/result?category_id=' + childCatItem.category_id"
+                                                :url="'/pages/search/result?category_id=' + cat.category_id"
                                                 class="item acea-row row-column row-middle"
                                             >
-                                                <!-- <view class="picture" v-if="childCatItem.cat_pic"
+                                                <view class="name">{{ cat.category_name }}</view>
+                                            </navigator>
+                                        </view>
+                                        <view class="list acea-row">
+                                            <block v-for="(childCatItem, index1) in cat.children" :key="index1">
+                                                <navigator
+                                                    hover-class="none"
+                                                    :url="'/pages/search/result?category_id=' + childCatItem.category_id"
+                                                    class="item acea-row row-column row-middle"
+                                                >
+                                                    <!-- <view class="picture" v-if="childCatItem.cat_pic"
                                                     ><image lazy-load  :src="childCatItem.cat_pic"></image
                                                 ></view> -->
-                                                <view class="name line1">{{ childCatItem.category_name }}</view>
-                                            </navigator>
-                                        </block>
+                                                    <view class="name line1">{{ childCatItem.category_name }}</view>
+                                                </navigator>
+                                            </block>
+                                        </view>
                                     </view>
-                                </view>
+                                </block>
                             </block>
-                        </block>
+                        </view>
                     </view>
-                </view>
-            </block>
-        </view>
-        <view :style="{ height: tabbarStore.tabbarHeight }"></view>
+                </block>
+            </view>
+        </saveContentbox>
+
         <tabbar></tabbar>
     </view>
 </template>

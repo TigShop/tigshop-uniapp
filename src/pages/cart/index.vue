@@ -1,128 +1,130 @@
 <template>
     <view class="safe-padding">
-        <navbar :parameter="parameter"></navbar>
-        <view class="cart-box shoppingCart">
-            <view class="top-text" v-if="cartList.length > 0">
-                <view class="fl">
-                    已选商品
-                    <text class="select-num">{{ total.checked_count }}</text>
-                    件
+        <saveContentbox :specialNum="100" :has_tabbar="true">
+            <navbar :parameter="parameter"></navbar>
+            <view class="cart-box shoppingCart">
+                <view class="top-text" v-if="cartList.length > 0">
+                    <view class="fl">
+                        已选商品
+                        <text class="select-num">{{ total.checked_count }}</text>
+                        件
+                    </view>
+                    <view class="fr administrate acea-row row-center-wrapper" @click="cartManageFun">
+                        <text class="manage-btn">{{ !cartManage ? "管理" : "完成" }}</text>
+                    </view>
                 </view>
-                <view class="fr administrate acea-row row-center-wrapper" @click="cartManageFun">
-                    <text class="manage-btn">{{ !cartManage ? "管理" : "完成" }}</text>
-                </view>
-            </view>
-            <view class="cart_list_wrap" v-if="cartList.length > 0">
-                <block v-for="(item, index) in cartList" :key="index">
-                    <view class="cart_table" id="">
-                        <view class="cart_store_title noborder">
-                            <tigCheckbox v-model:checked="item.is_checked" @change="onCheckAllItem(index)"></tigCheckbox>
-                            <view class="store_label">{{ item.store_title ? item.store_title : "自营" }}</view>
-                        </view>
-                        <view class="goods-list-cart">
-                            <uni-swipe-action>
-                                <block v-for="(goods, index) in item.carts" :key="goods.product_id">
-                                    <view class="cart_item">
-                                        <uni-swipe-action-item :threshold="0" autoClose>
-                                            <view class="cart_list_con" :class="{ cart_item_disabled: goods.is_disabled }">
-                                                <tigCheckbox
-                                                    class="check-item"
-                                                    v-model:checked="goods.is_checked"
-                                                    @change="onChangeCheck"
-                                                    :disabled="goods.is_disabled"
-                                                ></tigCheckbox>
-                                                <navigator :url="'/pages/productDetail/index?id=' + goods.cart_id" class="photo">
-                                                    <view class="photo-img">
-                                                        <tigImage v-model:src="goods.pic_thumb"></tigImage>
-                                                        <view class="cart-notice-row" v-if="goods.stock === 0">已售罄</view>
-                                                        <view class="cart-notice-row" v-if="goods.product_status === 0">已下架</view>
-                                                    </view>
-                                                </navigator>
-                                                <view class="cart-row">
-                                                    <navigator target="_blank" :url="'/pages/productDetail/index?id=' + goods.product_id">
-                                                        <view class="name">
-                                                            {{ goods.product_name }}
+                <view class="cart_list_wrap" v-if="cartList.length > 0">
+                    <block v-for="(item, index) in cartList" :key="index">
+                        <view class="cart_table" id="">
+                            <view class="cart_store_title noborder">
+                                <tigCheckbox v-model:checked="item.is_checked" @change="onCheckAllItem(index)"></tigCheckbox>
+                                <view class="store_label">{{ item.store_title ? item.store_title : "自营" }}</view>
+                            </view>
+                            <view class="goods-list-cart">
+                                <uni-swipe-action>
+                                    <block v-for="(goods, index) in item.carts" :key="goods.product_id">
+                                        <view class="cart_item">
+                                            <uni-swipe-action-item :threshold="0" autoClose>
+                                                <view class="cart_list_con" :class="{ cart_item_disabled: goods.is_disabled }">
+                                                    <tigCheckbox
+                                                        class="check-item"
+                                                        v-model:checked="goods.is_checked"
+                                                        @change="onChangeCheck"
+                                                        :disabled="goods.is_disabled"
+                                                    ></tigCheckbox>
+                                                    <navigator :url="'/pages/productDetail/index?id=' + goods.cart_id" class="photo">
+                                                        <view class="photo-img">
+                                                            <tigImage v-model:src="goods.pic_thumb"></tigImage>
+                                                            <view class="cart-notice-row" v-if="goods.stock === 0">已售罄</view>
+                                                            <view class="cart-notice-row" v-if="goods.product_status === 0">已下架</view>
                                                         </view>
                                                     </navigator>
-                                                    <view class="extra_info" v-if="goods.goods_attr">
-                                                        <text v-if="goods.goods_attr" class="desc">{{ goods.goods_attr }}</text>
-                                                    </view>
-                                                    <view class="cart-price">
-                                                        <view class="price-one">
-                                                            <FormatPrice :priceData="goods.price"></FormatPrice>
+                                                    <view class="cart-row">
+                                                        <navigator target="_blank" :url="'/pages/productDetail/index?id=' + goods.product_id">
+                                                            <view class="name">
+                                                                {{ goods.product_name }}
+                                                            </view>
+                                                        </navigator>
+                                                        <view class="extra_info" v-if="goods.goods_attr">
+                                                            <text v-if="goods.goods_attr" class="desc">{{ goods.goods_attr }}</text>
                                                         </view>
-                                                        <view class="cart-num-box">
-                                                            <uni-number-box
-                                                                :disabled="goods.is_disabled"
-                                                                v-model="goods.quantity"
-                                                                :min="1"
-                                                                @change="updateCartItem(goods.cart_id, goods.quantity)"
-                                                            />
+                                                        <view class="cart-price">
+                                                            <view class="price-one">
+                                                                <FormatPrice :priceData="goods.price"></FormatPrice>
+                                                            </view>
+                                                            <view class="cart-num-box">
+                                                                <uni-number-box
+                                                                    :disabled="goods.is_disabled"
+                                                                    v-model="goods.quantity"
+                                                                    :min="1"
+                                                                    @change="updateCartItem(goods.cart_id, goods.quantity)"
+                                                                />
+                                                            </view>
                                                         </view>
                                                     </view>
                                                 </view>
-                                            </view>
-                                            <template #right>
-                                                <view class="cart-move-box">
-                                                    <view class="btn-collect" @click="handleCollect(goods.product_id, goods.cart_id)">
-                                                        <text>移入收藏</text>
+                                                <template #right>
+                                                    <view class="cart-move-box">
+                                                        <view class="btn-collect" @click="handleCollect(goods.product_id, goods.cart_id)">
+                                                            <text>移入收藏</text>
+                                                        </view>
+                                                        <view class="btn-del" @click="handleDel(goods.cart_id)"><text>删除</text></view>
                                                     </view>
-                                                    <view class="btn-del" @click="handleDel(goods.cart_id)"><text>删除</text></view>
-                                                </view>
-                                            </template>
-                                        </uni-swipe-action-item>
-                                    </view>
-                                </block>
-                            </uni-swipe-action>
-                        </view>
-                    </view>
-                </block>
-            </view>
-            <view v-if="cartList.length > 0" class="checkOutBar" :style="{ bottom: tabbarStore.tabbarHeight }">
-                <view class="bar-check">
-                    <view class="checkbox-pad">
-                        <tigCheckbox v-model:checked="allChecked" @change="onCheckAll"></tigCheckbox>
-                    </view>
-                </view>
-                <view class="edit-cart-action" v-if="cartManage">
-                    <view class="l_a_tool lt_delete" @click="checkClearCart">清空购物车</view>
-                    <view class="l_a_tool" :class="{ lt_disable: cartIds.length === 0 }" @click="delCartItem">删除勾选商品</view>
-                </view>
-                <view class="cart-total-box" v-if="!cartManage">
-                    <view class="cart-total">
-                        <view @click="handleCheckout" :class="'btn-checkout ' + (total.checked_count == 0 ? 'unable_btn' : '')">去结算</view>
-                        <view class="item-total">
-                            <view class="item-total-amount">
-                                <text class="txt">合计：</text>
-                                <FormatPrice :priceData="total.product_amount"></FormatPrice>
+                                                </template>
+                                            </uni-swipe-action-item>
+                                        </view>
+                                    </block>
+                                </uni-swipe-action>
                             </view>
-                            <view class="item-total-desc">{{ total.discounts ? "组合优惠：" + total.discounts + " " : "" }}(不含运费)</view>
+                        </view>
+                    </block>
+                </view>
+                <view v-if="cartList.length > 0" class="checkOutBar" :style="{ bottom: tabbarStore.tabbarHeightNum + configStore.saveBottom + 'rpx' }">
+                    <view class="bar-check">
+                        <view class="checkbox-pad">
+                            <tigCheckbox v-model:checked="allChecked" @change="onCheckAll"></tigCheckbox>
+                        </view>
+                    </view>
+                    <view class="edit-cart-action" v-if="cartManage">
+                        <view class="l_a_tool lt_delete" @click="checkClearCart">清空购物车</view>
+                        <view class="l_a_tool" :class="{ lt_disable: cartIds.length === 0 }" @click="delCartItem">删除勾选商品</view>
+                    </view>
+                    <view class="cart-total-box" v-if="!cartManage">
+                        <view class="cart-total">
+                            <view @click="handleCheckout" :class="'btn-checkout ' + (total.checked_count == 0 ? 'unable_btn' : '')">去结算</view>
+                            <view class="item-total">
+                                <view class="item-total-amount">
+                                    <text class="txt">合计：</text>
+                                    <FormatPrice :priceData="total.product_amount"></FormatPrice>
+                                </view>
+                                <view class="item-total-desc">{{ total.discounts ? "组合优惠：" + total.discounts + " " : "" }}(不含运费)</view>
+                            </view>
                         </view>
                     </view>
                 </view>
-            </view>
-            <view class="noCart" v-if="cartList.length === 0">
-                <view class="pictrue"><image lazy-load src="/static/images/cart_empty.png"></image></view>
-                <view class="noCart_text">购物车内还没商品哦，去逛逛吧~</view>
-            </view>
+                <view class="noCart" v-if="cartList.length === 0">
+                    <view class="pictrue"><image lazy-load src="/static/images/cart_empty.png"></image></view>
+                    <view class="noCart_text">购物车内还没商品哦，去逛逛吧~</view>
+                </view>
 
-            <view class="recommend_wrapper">
-                <view class="title" v-if="guessLike.length > 0">
-                    <view class="text">
-                        <view class="name">猜你喜欢</view>
-                        <view class="desc">您还可以逛一逛</view>
+                <view class="recommend_wrapper">
+                    <view class="title" v-if="guessLike.length > 0">
+                        <view class="text">
+                            <view class="name">猜你喜欢</view>
+                            <view class="desc">您还可以逛一逛</view>
+                        </view>
+                    </view>
+                    <view class="recommend">
+                        <masonry :commodityList="guessLike" @callback="getCartList"></masonry>
+                    </view>
+                    <view class="loading-box" v-if="page > 1">
+                        <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
+                        <view v-else>没有更多了~</view>
                     </view>
                 </view>
-                <view class="recommend">
-                    <masonry :commodityList="guessLike" @callback="getCartList"></masonry>
-                </view>
-                <view class="loading-box" v-if="page > 1">
-                    <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
-                    <view v-else>没有更多了~</view>
-                </view>
             </view>
-            <view :style="{ height: tabbarStore.tabbarHeightNum + 100 + 'rpx' }"></view>
-        </view>
+        </saveContentbox>
+
         <tabbar></tabbar>
     </view>
 </template>
@@ -134,12 +136,14 @@ import masonry from "@/components/masonry/masonry.vue";
 import tigCheckbox from "@/components/tigCheckbox/index.vue";
 import { onLoad, onShow, onReachBottom } from "@dcloudio/uni-app";
 import { usetabbarStore } from "@/store/tabbar";
+import { useConfigStore } from "@/store/config";
 import { getCart, updateCartItemData, updateCartCheck, clearCart, removeCartItemData } from "@/api/cart/cart";
 import { updateCollectProduct } from "@/api/product/product";
 import { getGuessLike } from "@/api/common";
 import type { GuessLikeProductList } from "@/types/common";
 import type { updateCartCheckitem } from "@/types/cart/cart";
 const tabbarStore = usetabbarStore();
+const configStore = useConfigStore();
 const parameter = ref({
     navbar: "1",
     return: "0",
@@ -299,11 +303,10 @@ const cartIds = computed(() => {
             if (product.is_checked) carti_ds.push(product.cart_id);
         });
     });
-    console.log(carti_ds)
     return carti_ds || [];
 });
 const delCartItem = () => {
-    console.log(cartIds.value)
+    console.log(cartIds.value);
     if (cartIds.value.length == 0) return uni.$u.toast("请选择要删除的商品");
     uni.showModal({
         title: "提示",
@@ -917,7 +920,6 @@ onShow(() => {
 }
 
 .checkOutBar {
-    margin-bottom: var(--window-bottom);
     width: 100%;
     height: 100rpx;
     background-color: #fff;

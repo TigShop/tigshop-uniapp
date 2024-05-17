@@ -1,30 +1,32 @@
 <template>
-    <view style="padding-bottom: 90rpx;" >
-        <view class="preview-box" v-if="configStore.previewId > 0">
-            <view class="container">预览：&emsp;<text>移动端</text></view>
-        </view>
-        <view v-if="configStore.previewId > 0" style="padding: 58rpx"></view>
-        <navbar :parameter="parameter" :logoUrl="logoUrl || ''" v-if="showCatNav == 0"></navbar>
-        <view>
-            <view class="index_empty" v-if="loading">
-                <image lazy-load src="/static/images/common/index_empty.png" mode="widthFix"></image>
+    <view>
+        <saveContentbox :has_tabbar="true">
+            <view class="preview-box" v-if="configStore.previewId > 0">
+                <view class="container">预览：&emsp;<text>移动端</text></view>
             </view>
-            <view class="index" v-else>
-                <view class="decorate-page-window">
-                    <modules :modules="modulesData" :scrollTop="scrollTop" @load-goods-list="loadGoodsList"></modules>
+            <view v-if="configStore.previewId > 0" style="padding: 58rpx"></view>
+            <navbar :parameter="parameter" :logoUrl="logoUrl || ''" v-if="showCatNav == 0"></navbar>
+            <view>
+                <view class="index_empty" v-if="loading">
+                    <image lazy-load src="/static/images/common/index_empty.png" mode="widthFix"></image>
                 </view>
+                <view class="index" v-else>
+                    <view class="decorate-page-window">
+                        <modules :modules="modulesData" :scrollTop="scrollTop" @load-goods-list="loadGoodsList"></modules>
+                    </view>
+                </view>
+                <!-- 加载商品模块 -->
+                <view class="goods-container" v-if="categoryId > 0">
+                    <masonry :commodityList="commodityList"></masonry>
+                </view>
+                <view class="bottomLoading" v-if="bottomLoading && categoryId > 0"
+                    ><image lazy-load class="loading" src="/static/images/common/loading.gif"></image
+                ></view>
+                <view v-if="loadend && categoryId > 0" class="noMore">没有更多了~</view>
             </view>
-            <!-- 加载商品模块 -->
-            <view class="goods-container" v-if="categoryId > 0">
-                <masonry :commodityList="commodityList"></masonry>
-            </view>
-            <view class="bottomLoading" v-if="bottomLoading && categoryId > 0"
-                ><image lazy-load class="loading" src="/static/images/common/loading.gif"></image
-            ></view>
-            <view v-if="loadend && categoryId > 0" class="noMore">没有更多了~</view>
-        </view>
+        </saveContentbox>
         <tabbar></tabbar>
-        <tigBackTop :class="{show: scrollTop > 100}"></tigBackTop>
+        <tigBackTop :class="{ show: scrollTop > 100 }"></tigBackTop>
     </view>
 </template>
 
@@ -102,7 +104,7 @@ const getIndexData = async () => {
         loading.value = false;
     }
 };
-provide('decorate_id', decorate_id)
+provide("decorate_id", decorate_id);
 
 onLoad((options: any) => {
     const getWindowInfo = uni.getWindowInfo();

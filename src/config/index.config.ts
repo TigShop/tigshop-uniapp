@@ -7,7 +7,7 @@ const CONFIG: any = {
     },
     // 生产环境配置
     production: {
-        baseUrl: "http://lyecs8.com:7888/", // 接口请求地址
+        baseUrl: "http://192.168.5.109:82/", // 接口请求地址
         requestUrlPrefix: "index/"
     }
 };

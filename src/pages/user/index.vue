@@ -1,202 +1,204 @@
 <template>
-    <view style="height: 100%">
-        <navbar :parameter="parameter"></navbar>
-        <view>
-            <view class="page-loading" v-if="loading"><view class="ico"></view></view>
-            <view class="user" v-if="member">
-                <view class="user_header user_bg_color">
-                    <view class="picTxt">
-                        <tigUpload @change="__getUser()" requestUrl="user/user/modify_avatar">
-                            <tigImage class="pictrue pic-btn" v-model:src="member!.avatar"> </tigImage>
-                        </tigUpload>
-                        <view class="text">
-                            <view class="acea-row row-middle">
-                                <view class="name line1">{{ member!.nickname }}</view>
-                                <!-- <view class="acea-row qiandao" @click="goPages('/pages/sign/index')">
+    <view>
+        <saveContentbox :has_tabbar="true">
+            <navbar :parameter="parameter"></navbar>
+            <view>
+                <view class="page-loading" v-if="loading"><view class="ico"></view></view>
+                <view class="user" v-if="member">
+                    <view class="user_header user_bg_color">
+                        <view class="picTxt">
+                            <tigUpload @change="__getUser()" requestUrl="user/user/modify_avatar">
+                                <tigImage class="pictrue pic-btn" v-model:src="member!.avatar"> </tigImage>
+                            </tigUpload>
+                            <view class="text">
+                                <view class="acea-row row-middle">
+                                    <view class="name line1">{{ member!.nickname }}</view>
+                                    <!-- <view class="acea-row qiandao" @click="goPages('/pages/sign/index')">
                                     <view class="iconfont icon-qiandao"></view>
                                     <view class>签到有礼</view>
                                 </view> -->
+                                </view>
+                                <view class="member acea-row row-middle" v-if="member.rank_name">{{ member.rank_name }}</view>
+                                <view class="member acea-row row-middle" v-else>普通会员</view>
                             </view>
-                            <view class="member acea-row row-middle" v-if="member.rank_name">{{ member.rank_name }}</view>
-                            <view class="member acea-row row-middle" v-else>普通会员</view>
+                            <view class="iconfont icon-shezhi" @click="goPages('/pages/user/profile/index')"></view>
                         </view>
-                        <view class="iconfont icon-shezhi" @click="goPages('/pages/user/profile/index')"></view>
-                    </view>
-                    <view class="user_top_group">
-                        <view class="item" @click="goPages('/pages/user/collectProduct/index')">
-                            <view class="tit">
-                                商品收藏
-                                <text class="txt">{{ orderNum.product_collect >= 0 ? orderNum.product_collect : "--" }}</text>
+                        <view class="user_top_group">
+                            <view class="item" @click="goPages('/pages/user/collectProduct/index')">
+                                <view class="tit">
+                                    商品收藏
+                                    <text class="txt">{{ orderNum.product_collect >= 0 ? orderNum.product_collect : "--" }}</text>
+                                </view>
                             </view>
-                        </view>
-                        <!-- <view class="item" @click="goPages('/pages/user_collection_store_list/index')">
+                            <!-- <view class="item" @click="goPages('/pages/user_collection_store_list/index')">
                             <view class="tit">
                                 店铺关注
                                 <text class="txt">{{ count.collect_store_count >= 0 ? count.collect_store_count : "--" }}</text>
                             </view>
                         </view> -->
-                        <view class="item" @click="goPages('/pages/user/comment/list')">
-                            <view class="tit">
-                                待评价
-                                <text class="txt">{{ orderNum.await_comment >= 0 ? orderNum.await_comment : "--" }}</text>
+                            <view class="item" @click="goPages('/pages/user/comment/list')">
+                                <view class="tit">
+                                    待评价
+                                    <text class="txt">{{ orderNum.await_comment >= 0 ? orderNum.await_comment : "--" }}</text>
+                                </view>
+                            </view>
+                            <view class="item" @click="goPages('/pages/user/historyProduct/index')">
+                                <view class="tit">浏览记录 </view>
                             </view>
                         </view>
-                        <view class="item" @click="goPages('/pages/user/historyProduct/index')">
-                            <view class="tit">浏览记录 </view>
-                        </view>
-                    </view>
 
-                    <view class="member-info__level-wrapper">
-                        <view class="member-info__level-1" @click="goPages('/pages/ranks/index')">
-                            <view class="name">去看看我的VIP特权</view>
-                            <view class="level"><text class="iconfont icon-xiangyou"></text></view>
-                        </view>
-                    </view>
-                </view>
-                <view class="user_wrapper">
-                    <view class="list-group my-order">
-                        <view class="title acea-row row-between-wrapper">
-                            <view class="">我的订单</view>
-                            <view class="more" @click="goPages('/pages/user/order/list')">
-                                <view>全部订单</view>
-                                <view class="iconfont icon-xiangyou"></view>
-                            </view>
-                        </view>
-                        <view class="wrap">
-                            <view class="li" @click="goPages('/pages/user/order/list?type=await_pay')">
-                                <uni-badge v-if="orderNum.await_pay > 0" class="badgecolor" :text="orderNum.await_pay" absolute="rightTop" size="small">
-                                    <text class="iconfont icon-daifukuan"></text>
-                                    <view class="txt">待付款</view>
-                                </uni-badge>
-                                <block v-else>
-                                    <text class="iconfont icon-daifukuan"></text>
-                                    <view class="txt">待付款</view>
-                                </block>
-                            </view>
-                            <view class="li" @click="goPages('/pages/user/order/list?type=await_shipping')">
-                                <uni-badge
-                                    v-if="orderNum.await_received > 0"
-                                    class="badgecolor"
-                                    :text="orderNum.await_received"
-                                    absolute="rightTop"
-                                    size="small"
-                                >
-                                    <text class="iconfont icon-daishouhuo1"></text>
-                                    <view class="txt">待收货</view>
-                                </uni-badge>
-                                <block v-else>
-                                    <text class="iconfont icon-daishouhuo1"></text>
-                                    <view class="txt">待收货</view>
-                                </block>
-                            </view>
-                            <view class="li" @click="goPages('/pages/user/order/list?type=await_comment')">
-                                <uni-badge
-                                    v-if="orderNum.await_comment > 0"
-                                    class="badgecolor"
-                                    :text="orderNum.await_comment"
-                                    absolute="rightTop"
-                                    size="small"
-                                >
-                                    <text class="iconfont icon-pingjia"></text>
-                                    <view class="txt">待评价</view>
-                                </uni-badge>
-                                <block v-else>
-                                    <text class="iconfont icon-pingjia"></text>
-                                    <view class="txt">待评价</view>
-                                </block>
-                            </view>
-                            <view class="li" @click="goPages('/pages/user/afterSale/list')">
-                                <text class="iconfont icon-shouhou1"></text>
-                                <view class="txt">退换/售后</view>
-                                <text class="counts" v-if="count.return_count > 0">{{ count.return_count }}</text>
+                        <view class="member-info__level-wrapper">
+                            <view class="member-info__level-1" @click="goPages('/pages/ranks/index')">
+                                <view class="name">去看看我的VIP特权</view>
+                                <view class="level"><text class="iconfont icon-xiangyou"></text></view>
                             </view>
                         </view>
                     </view>
-                    <view class="list-group my-wallet">
-                        <view class="title acea-row row-between-wrapper">
-                            <view class="">我的钱包</view>
-                            <view class="more" @click="goPages('/pages/user/account/index')">
-                                <view>进入钱包</view>
-                                <view class="iconfont icon-xiangyou"></view>
+                    <view class="user_wrapper">
+                        <view class="list-group my-order">
+                            <view class="title acea-row row-between-wrapper">
+                                <view class="">我的订单</view>
+                                <view class="more" @click="goPages('/pages/user/order/list')">
+                                    <view>全部订单</view>
+                                    <view class="iconfont icon-xiangyou"></view>
+                                </view>
+                            </view>
+                            <view class="wrap">
+                                <view class="li" @click="goPages('/pages/user/order/list?type=await_pay')">
+                                    <uni-badge v-if="orderNum.await_pay > 0" class="badgecolor" :text="orderNum.await_pay" absolute="rightTop" size="small">
+                                        <text class="iconfont icon-daifukuan"></text>
+                                        <view class="txt">待付款</view>
+                                    </uni-badge>
+                                    <block v-else>
+                                        <text class="iconfont icon-daifukuan"></text>
+                                        <view class="txt">待付款</view>
+                                    </block>
+                                </view>
+                                <view class="li" @click="goPages('/pages/user/order/list?type=await_shipping')">
+                                    <uni-badge
+                                        v-if="orderNum.await_received > 0"
+                                        class="badgecolor"
+                                        :text="orderNum.await_received"
+                                        absolute="rightTop"
+                                        size="small"
+                                    >
+                                        <text class="iconfont icon-daishouhuo1"></text>
+                                        <view class="txt">待收货</view>
+                                    </uni-badge>
+                                    <block v-else>
+                                        <text class="iconfont icon-daishouhuo1"></text>
+                                        <view class="txt">待收货</view>
+                                    </block>
+                                </view>
+                                <view class="li" @click="goPages('/pages/user/order/list?type=await_comment')">
+                                    <uni-badge
+                                        v-if="orderNum.await_comment > 0"
+                                        class="badgecolor"
+                                        :text="orderNum.await_comment"
+                                        absolute="rightTop"
+                                        size="small"
+                                    >
+                                        <text class="iconfont icon-pingjia"></text>
+                                        <view class="txt">待评价</view>
+                                    </uni-badge>
+                                    <block v-else>
+                                        <text class="iconfont icon-pingjia"></text>
+                                        <view class="txt">待评价</view>
+                                    </block>
+                                </view>
+                                <view class="li" @click="goPages('/pages/user/afterSale/list')">
+                                    <text class="iconfont icon-shouhou1"></text>
+                                    <view class="txt">退换/售后</view>
+                                    <text class="counts" v-if="count.return_count > 0">{{ count.return_count }}</text>
+                                </view>
                             </view>
                         </view>
-                        <view class="wrap">
-                            <view class="li" @click="goPages('/pages/user/account/index')">
-                                <text class="num">{{ Number(member.total_balance) >= 0 ? member.total_balance : 0 }}</text>
-                                <view class="txt">余额</view>
+                        <view class="list-group my-wallet">
+                            <view class="title acea-row row-between-wrapper">
+                                <view class="">我的钱包</view>
+                                <view class="more" @click="goPages('/pages/user/account/index')">
+                                    <view>进入钱包</view>
+                                    <view class="iconfont icon-xiangyou"></view>
+                                </view>
                             </view>
-                            <view class="li" @click="goPages('/pages/coupon/index?type=2')">
-                                <text class="num">{{ member.coupon >= 0 ? member.coupon : 0 }}</text>
-                                <view class="txt">优惠券</view>
-                            </view>
-                            <view class="li" @click="goPages('/pages/user/point/detail')">
-                                <text class="num">{{ member.points >= 0 ? member.points : 0 }}</text>
-                                <view class="txt">积分</view>
+                            <view class="wrap">
+                                <view class="li" @click="goPages('/pages/user/account/index')">
+                                    <text class="num">{{ Number(member.total_balance) >= 0 ? member.total_balance : 0 }}</text>
+                                    <view class="txt">余额</view>
+                                </view>
+                                <view class="li" @click="goPages('/pages/coupon/index?type=2')">
+                                    <text class="num">{{ member.coupon >= 0 ? member.coupon : 0 }}</text>
+                                    <view class="txt">优惠券</view>
+                                </view>
+                                <view class="li" @click="goPages('/pages/user/point/detail')">
+                                    <text class="num">{{ member.points >= 0 ? member.points : 0 }}</text>
+                                    <view class="txt">积分</view>
+                                </view>
                             </view>
                         </view>
-                    </view>
-                    <!-- <block v-if="wap_user_center_ads.ad_list" v-for="(ads, index) in wap_user_center_ads.ad_list" :key="index">
+                        <!-- <block v-if="wap_user_center_ads.ad_list" v-for="(ads, index) in wap_user_center_ads.ad_list" :key="index">
                         <view style="margin-top: 10px">
                             <view class="item" @click="goPages(ads.ad_link)">
                                 <image lazy-load :src="ads.pic_url" mode="widthFix" style="width: 100%; display: block"></image>
                             </view>
                         </view>
                     </block> -->
-                    <view class="list-group my-service">
-                        <view class="title acea-row row-middle">我的服务</view>
-                        <view class="serviceList acea-row row-middle">
-                            <view class="item" @click="goPages('/pages/user/profile/index')">
-                                <view class="pic"><image lazy-load src="/static/images/user/zhanghaoguanli.png"></image></view>
-                                <view>账号管理</view>
-                            </view>
-                            <view class="item" @click="goPages('/pages/address/list')">
-                                <view class="pic"><image lazy-load src="/static/images/user/shouhuodizhi.png"></image></view>
-                                <view>收货地址</view>
-                            </view>
-                            <!-- <view class="item" @click="goPages('/pages/user/profile/index')">
+                        <view class="list-group my-service">
+                            <view class="title acea-row row-middle">我的服务</view>
+                            <view class="serviceList acea-row row-middle">
+                                <view class="item" @click="goPages('/pages/user/profile/index')">
+                                    <view class="pic"><image lazy-load src="/static/images/user/zhanghaoguanli.png"></image></view>
+                                    <view>账号管理</view>
+                                </view>
+                                <view class="item" @click="goPages('/pages/address/list')">
+                                    <view class="pic"><image lazy-load src="/static/images/user/shouhuodizhi.png"></image></view>
+                                    <view>收货地址</view>
+                                </view>
+                                <!-- <view class="item" @click="goPages('/pages/user/profile/index')">
                                 <view class="pic"><image lazy-load src="/static/images/user/anquanzhongxin.png"></image></view>
                                 <view>安全中心</view>
                             </view> -->
-                            <view class="item" @click="goPages('/pages/user/invoiceManagement/index')">
-                                <view class="pic">
-                                    <image lazy-load src="/static/images/user/fapiao.png"></image>
+                                <view class="item" @click="goPages('/pages/user/invoiceManagement/index')">
+                                    <view class="pic">
+                                        <image lazy-load src="/static/images/user/fapiao.png"></image>
+                                    </view>
+                                    <view>发票管理</view>
                                 </view>
-                                <view>发票管理</view>
-                            </view>
-                            <view class="item" @click="goPages('/pages/user/messageLog/index')">
-                                <view class="pic"><image lazy-load src="/static/images/user/xiaoxi.png"></image></view>
-                                <view>站内消息</view>
-                            </view>
-                            <!-- <view class="item" @click="goPages('/pages/pin_order/index')">
+                                <view class="item" @click="goPages('/pages/user/messageLog/index')">
+                                    <view class="pic"><image lazy-load src="/static/images/user/xiaoxi.png"></image></view>
+                                    <view>站内消息</view>
+                                </view>
+                                <!-- <view class="item" @click="goPages('/pages/pin_order/index')">
                                 <view class="pic">
                                     <image lazy-load src="/static/images/user/dingdan.png"></image>
                                 </view>
                                 <view>拼团订单</view>
                             </view> -->
+                            </view>
                         </view>
                     </view>
-                </view>
-                <!-- 猜你喜欢 -->
-                <view class="recommend_wrapper">
-                    <view class="title">
-                        <view class="text">
-                            <view class="name">猜你喜欢</view>
-                            <view class="desc">您还可以逛一逛</view>
+                    <!-- 猜你喜欢 -->
+                    <view class="recommend_wrapper">
+                        <view class="title">
+                            <view class="text">
+                                <view class="name">猜你喜欢</view>
+                                <view class="desc">您还可以逛一逛</view>
+                            </view>
                         </view>
-                    </view>
-                    <view class="recommend">
-                        <view class="container">
-                            <masonry :commodityList="guessLike"></masonry>
+                        <view class="recommend">
+                            <view class="container">
+                                <masonry :commodityList="guessLike"></masonry>
+                            </view>
                         </view>
                     </view>
                 </view>
             </view>
-        </view>
-        <view class="loading-box" v-if="page > 1">
-            <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
-            <view v-else>没有更多了~</view>
-        </view>
-        <view :style="{ height: tabbarStore.tabbarHeight }"></view>
+            <view class="loading-box" v-if="page > 1">
+                <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
+                <view v-else>没有更多了~</view>
+            </view></saveContentbox
+        >
+
         <tigBackTop :class="{ show: scrollTop > 100 }"></tigBackTop>
         <tabbar></tabbar>
     </view>
@@ -208,7 +210,6 @@ import masonry from "@/components/masonry/masonry.vue";
 import tigBackTop from "@/components/tigBackTop/index.vue";
 import tigUpload from "@/components/tigUpload/index.vue";
 import { useUserStore } from "@/store/user";
-import { usetabbarStore } from "@/store/tabbar";
 import { getGuessLike } from "@/api/common";
 import type { GuessLikeProductList } from "@/types/common";
 import { ref } from "vue";
@@ -218,7 +219,6 @@ import type { UserItem } from "@/types/user/user";
 import type { OrderNumItem } from "@/types/user/order";
 import { getOrderNum } from "@/api/user/order";
 const userStore = useUserStore();
-const tabbarStore = usetabbarStore();
 
 const loading = ref(false);
 const parameter = ref({

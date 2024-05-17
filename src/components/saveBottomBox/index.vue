@@ -1,5 +1,5 @@
 <template>
-    <view class="save-bottom-box safe-padding">
+    <view class="save-bottom-box" :style="{'padding-bottom': configStore.saveBottom + 'rpx'}">
         <view style="height: 100%;width: 100%;">
             <slot></slot>
         </view>
@@ -7,6 +7,8 @@
 </template>
 
 <script setup lang="ts">
+import { useConfigStore } from "@/store/config";
+const configStore = useConfigStore();
 const props = defineProps({
     height: {
         type: [Number, String],
@@ -29,5 +31,6 @@ const props = defineProps({
     left: 0;
     background-color: v-bind("props.backgroundColor");
     border-top: 1px solid #eee;
+    box-sizing: content-box;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <view>
+    <view class="safe-padding">
         <navbar :parameter="parameter"></navbar>
         <view class="address-list">
             <radio-group @change="getCurrentAddress">

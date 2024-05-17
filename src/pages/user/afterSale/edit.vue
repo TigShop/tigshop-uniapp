@@ -1,92 +1,94 @@
 <template>
-    <view class="after-sale" v-if="Object.keys(infoData).length">
-        <view class="after-sale-product">
-            <block v-for="item in infoData.list" :key="item.item_id">
-                <view class="product-card-item">
-                    <view class="product-card-item-left">
-                        <view class="left-img">
-                            <tigImage v-model:src="item.pic_thumb"></tigImage>
+    <saveContentbox :specialNum="100" :saveTop="true">
+        <view class="after-sale" v-if="Object.keys(infoData).length">
+            <view class="after-sale-product">
+                <block v-for="item in infoData.list" :key="item.item_id">
+                    <view class="product-card-item">
+                        <view class="product-card-item-left">
+                            <view class="left-img">
+                                <tigImage v-model:src="item.pic_thumb"></tigImage>
+                            </view>
+                        </view>
+                        <view class="product-card-item-right">
+                            <view class="right-title">
+                                <text>{{ item.product_name }}</text>
+                            </view>
+                            <view class="right-price">
+                                <FormatPrice class="right-price-pricenum" :priceData="item.price"></FormatPrice>
+                                <view class="right-price-quantity">x {{ item.quantity }}</view>
+                            </view>
+                        </view>
+                        <view class="btn-box">
+                            <view class="btn-box-content">
+                                <text class="btn-box-content-text">可退换数量{{ item.quantity }}</text>
+                                <uni-number-box :max="item.quantity" v-model="item.number" />
+                            </view>
                         </view>
                     </view>
-                    <view class="product-card-item-right">
-                        <view class="right-title">
-                            <text>{{ item.product_name }}</text>
-                        </view>
-                        <view class="right-price">
-                            <FormatPrice class="right-price-pricenum" :priceData="item.price"></FormatPrice>
-                            <view class="right-price-quantity">x {{ item.quantity }}</view>
-                        </view>
-                    </view>
-                    <view class="btn-box">
-                        <view class="btn-box-content">
-                            <text class="btn-box-content-text">可退换数量{{ item.quantity }}</text>
-                            <uni-number-box :max="item.quantity" v-model="item.number" />
-                        </view>
-                    </view>
-                </view>
-            </block>
-        </view>
-
-        <view class="after-sale-form">
-            <uni-forms ref="formRef" :modelValue="form" label-width="170rpx">
-                <uni-forms-item label="退款方式" name="aftersale_type">
-                    <picker style="height: 100%" @change="getAftersaleType" :value="aftersaleTypeIndex" range-key="label" :range="aftersale_type_list">
-                        <view class="form-item-content">
-                            <view>
-                                <text class="form-item-value" v-if="aftersaleTypeIndex !== null">{{ aftersale_type_list[aftersaleTypeIndex!].label }}</text>
-                                <text class="form-item-text" v-else>请选择</text>
-                            </view>
-                            <view class="form-item-icon">
-                                <uni-icons type="arrowright" size="16" color="#999"></uni-icons>
-                            </view>
-                        </view>
-                    </picker>
-                </uni-forms-item>
-                <uni-forms-item label="退款原因" name="aftersale_reason">
-                    <picker @change="getAftersaleReason" :value="aftersaleReasonIndex" :range="aftersaleReasonList">
-                        <view class="form-item-content">
-                            <view>
-                                <text class="form-item-value" v-if="form.aftersale_reason">{{ form.aftersale_reason }}</text>
-                                <text class="form-item-text" v-else>请选择</text>
-                            </view>
-                            <view class="form-item-icon">
-                                <uni-icons type="arrowright" size="16" color="#999"></uni-icons>
-                            </view>
-                        </view>
-                    </picker>
-                </uni-forms-item>
-                <uni-forms-item label="问题描述" name="description">
-                    <uni-easyinput
-                        type="textarea"
-                        primaryColor="rgb(192, 196, 204)"
-                        maxlength="100"
-                        :inputBorder="false"
-                        v-model="form.description"
-                        autoHeight
-                        placeholder="最多100字"
-                        placeholderStyle="font-size: 26rpx;text-align: end;"
-                    />
-                </uni-forms-item>
-                <uni-forms-item label="上传凭证" name="description">
-                    <uni-file-picker
-                        :auto-upload="false"
-                        v-model="fileLists"
-                        @select="handlePicSelect"
-                        @delete="handlePicDelete"
-                        limit="5"
-                        title="最多选择5张图片"
-                    >
-                        <uni-icons type="camera" size="30" color="#cccccc"></uni-icons>
-                    </uni-file-picker>
-                </uni-forms-item>
-            </uni-forms>
-        </view>
-        <saveBottomBox :height="90" backgroundColor="#fff">
-            <view class="after-sale-btn-box">
-                <tigButton style="width: 100%; height: 100%" @click="handleSave"> 提交 </tigButton>
+                </block>
             </view>
-        </saveBottomBox>
-    </view>
+
+            <view class="after-sale-form">
+                <uni-forms ref="formRef" :modelValue="form" label-width="170rpx">
+                    <uni-forms-item label="退款方式" name="aftersale_type">
+                        <picker style="height: 100%" @change="getAftersaleType" :value="aftersaleTypeIndex" range-key="label" :range="aftersale_type_list">
+                            <view class="form-item-content">
+                                <view>
+                                    <text class="form-item-value" v-if="aftersaleTypeIndex !== null">{{ aftersale_type_list[aftersaleTypeIndex!].label }}</text>
+                                    <text class="form-item-text" v-else>请选择</text>
+                                </view>
+                                <view class="form-item-icon">
+                                    <uni-icons type="arrowright" size="16" color="#999"></uni-icons>
+                                </view>
+                            </view>
+                        </picker>
+                    </uni-forms-item>
+                    <uni-forms-item label="退款原因" name="aftersale_reason">
+                        <picker @change="getAftersaleReason" :value="aftersaleReasonIndex" :range="aftersaleReasonList">
+                            <view class="form-item-content">
+                                <view>
+                                    <text class="form-item-value" v-if="form.aftersale_reason">{{ form.aftersale_reason }}</text>
+                                    <text class="form-item-text" v-else>请选择</text>
+                                </view>
+                                <view class="form-item-icon">
+                                    <uni-icons type="arrowright" size="16" color="#999"></uni-icons>
+                                </view>
+                            </view>
+                        </picker>
+                    </uni-forms-item>
+                    <uni-forms-item label="问题描述" name="description">
+                        <uni-easyinput
+                            type="textarea"
+                            primaryColor="rgb(192, 196, 204)"
+                            maxlength="100"
+                            :inputBorder="false"
+                            v-model="form.description"
+                            autoHeight
+                            placeholder="最多100字"
+                            placeholderStyle="font-size: 26rpx;text-align: end;"
+                        />
+                    </uni-forms-item>
+                    <uni-forms-item label="上传凭证" name="description">
+                        <uni-file-picker
+                            :auto-upload="false"
+                            v-model="fileLists"
+                            @select="handlePicSelect"
+                            @delete="handlePicDelete"
+                            limit="5"
+                            title="最多选择5张图片"
+                        >
+                            <uni-icons type="camera" size="30" color="#cccccc"></uni-icons>
+                        </uni-file-picker>
+                    </uni-forms-item>
+                </uni-forms>
+            </view>
+            <saveBottomBox :height="90" backgroundColor="#fff">
+                <view class="after-sale-btn-box">
+                    <tigButton style="width: 100%; height: 100%" @click="handleSave"> 提交 </tigButton>
+                </view>
+            </saveBottomBox>
+        </view>
+    </saveContentbox>
 </template>
 
 <script setup lang="ts">

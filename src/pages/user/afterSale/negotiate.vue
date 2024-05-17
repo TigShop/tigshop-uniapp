@@ -1,28 +1,30 @@
 <template>
     <view class="negotiate">
-        <block v-if="infoData.length > 0">
-            <view class="negotiate-item" :class="{ user: item.user_name, store: item.admin_name }" v-for="item in infoData" :key="item.log_id">
-                <view class="negotiate-item-title">
-                    <view class="negotiate-title-text">{{ item.admin_name ? item.admin_name : item.user_name }}</view>
-                    <view class="negotiate-title-time">{{ item.add_time }}</view>
-                </view>
-                <view class="negotiate-item-content">
-                    <view class="negotiate-content-text"> {{ item.log_info }}</view>
-                    <view class="negotiate-pics" v-if="item.return_pic && item.return_pic.length > 0">
-                        <view class="pics-item" v-for="(sunItem, index) in item.return_pic" :key="index">
-                            <tigImage v-model:src="item.return_pic[index].pic_thumb"></tigImage>
+        <saveContentbox :specialNum="100" :saveTop="true">
+            <block v-if="infoData.length > 0">
+                <view class="negotiate-item" :class="{ user: item.user_name, store: item.admin_name }" v-for="item in infoData" :key="item.log_id">
+                    <view class="negotiate-item-title">
+                        <view class="negotiate-title-text">{{ item.admin_name ? item.admin_name : item.user_name }}</view>
+                        <view class="negotiate-title-time">{{ item.add_time }}</view>
+                    </view>
+                    <view class="negotiate-item-content">
+                        <view class="negotiate-content-text"> {{ item.log_info }}</view>
+                        <view class="negotiate-pics" v-if="item.return_pic && item.return_pic.length > 0">
+                            <view class="pics-item" v-for="(sunItem, index) in item.return_pic" :key="index">
+                                <tigImage v-model:src="item.return_pic[index].pic_thumb"></tigImage>
+                            </view>
                         </view>
                     </view>
+                    <view class="triangle"></view>
                 </view>
-                <view class="triangle"></view>
-            </view>
-            <saveBottomBox height="90" backgroundColor="#fff">
-                <view class="btn-box" @click="handleLeaveMessage">
-                    <uni-icons type="chat" color="#e9544d" size="20"></uni-icons>
-                    <view class="btn-box-text">发表留言</view>
-                </view>
-            </saveBottomBox>
-        </block>
+                <saveBottomBox height="90" backgroundColor="#fff">
+                    <view class="btn-box" @click="handleLeaveMessage">
+                        <uni-icons type="chat" color="#e9544d" size="20"></uni-icons>
+                        <view class="btn-box-text">发表留言</view>
+                    </view>
+                </saveBottomBox>
+            </block>
+        </saveContentbox>
     </view>
 </template>
 

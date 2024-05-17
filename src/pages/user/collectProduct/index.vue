@@ -1,44 +1,46 @@
 <template>
     <view>
-        <navbar :parameter="parameter"></navbar>
-        <view class="collect-product" v-if="collectList.length > 0">
-            <uni-swipe-action>
-                <block v-for="item in collectList" :key="item.product_id">
-                    <view class="move-item">
-                        <uni-swipe-action-item :threshold="0" autoClose>
-                            <view class="collect-product-item" @click="handleLink(item.product_id)">
-                                <view class="collect-product-item-left">
-                                    <view class="img-box">
-                                        <tigImage v-model:src="item.pic_thumb"></tigImage>
+        <saveContentbox>
+            <navbar :parameter="parameter"></navbar>
+            <view class="collect-product" v-if="collectList.length > 0">
+                <uni-swipe-action>
+                    <block v-for="item in collectList" :key="item.product_id">
+                        <view class="move-item">
+                            <uni-swipe-action-item :threshold="0" autoClose>
+                                <view class="collect-product-item" @click="handleLink(item.product_id)">
+                                    <view class="collect-product-item-left">
+                                        <view class="img-box">
+                                            <tigImage v-model:src="item.pic_thumb"></tigImage>
+                                        </view>
                                     </view>
-                                </view>
-                                <view class="collect-product-item-right">
-                                    <view class="title">{{ item.product_name }}</view>
-                                    <view class="item-bottom">
-                                        <view class="price">
-                                            <FormatPrice :priceData="item.actual_price"></FormatPrice>
+                                    <view class="collect-product-item-right">
+                                        <view class="title">{{ item.product_name }}</view>
+                                        <view class="item-bottom">
+                                            <view class="price">
+                                                <FormatPrice :priceData="item.actual_price"></FormatPrice>
+                                            </view>
                                         </view>
                                     </view>
                                 </view>
-                            </view>
-                            <template #right>
-                                <view class="collect-move-box">
-                                    <view class="btn-del" @click="__delCollect(item.product_id)"><text>取消收藏</text></view>
-                                </view>
-                            </template>
-                        </uni-swipe-action-item>
-                    </view>
-                </block>
-            </uni-swipe-action>
-        </view>
-        <view class="empty-box" v-if="collectList.length === 0 && loadend === true">
-            <view class="pictrue"><image src="/static/images/common/data_empty.png"></image></view>
-            <view class="txt">暂无收藏记录！</view>
-        </view>
-        <view class="loading-box" v-if="filterParams.page > 1">
-            <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
-            <view v-else>没有更多了~</view>
-        </view>
+                                <template #right>
+                                    <view class="collect-move-box">
+                                        <view class="btn-del" @click="__delCollect(item.product_id)"><text>取消收藏</text></view>
+                                    </view>
+                                </template>
+                            </uni-swipe-action-item>
+                        </view>
+                    </block>
+                </uni-swipe-action>
+            </view>
+            <view class="empty-box" v-if="collectList.length === 0 && loadend === true">
+                <view class="pictrue"><image src="/static/images/common/data_empty.png"></image></view>
+                <view class="txt">暂无收藏记录！</view>
+            </view>
+            <view class="loading-box" v-if="filterParams.page > 1">
+                <view class="bottomLoading" v-if="loaded"><image lazy-load class="loading" src="/static/images/common/loading.gif"></image></view>
+                <view v-else>没有更多了~</view>
+            </view>
+        </saveContentbox>
     </view>
 </template>
 
@@ -54,7 +56,8 @@ const parameter = {
     title: "商品收藏",
     color: false
 };
-const filterParams = reactive<CollectProductFilterParams>({   //初使化用于查询的参数
+const filterParams = reactive<CollectProductFilterParams>({
+    //初使化用于查询的参数
     page: 1,
     size: 10,
     keyword: ""
@@ -87,9 +90,9 @@ const __getCollectProductList = async () => {
 
 const handleLink = (id: number) => {
     uni.redirectTo({
-        url: '/pages/productDetail/index?id=' + id
-    })
-}
+        url: "/pages/productDetail/index?id=" + id
+    });
+};
 
 const __delCollect = (id: number) => {
     uni.showModal({

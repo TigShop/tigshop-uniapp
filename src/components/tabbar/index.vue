@@ -1,5 +1,5 @@
 <template>
-    <view class="tabbar-container safe-padding">
+    <view class="tabbar-container" :style="{'padding-bottom': configStore.saveBottom + 'rpx'}">
         <view class="tabbar">
             <view class="tabbar-item" v-for="(item, index) in tabbarStore.tabbarList" :key="index" @click="handleTabbar(item, index)">
                 <view class="tabbar-icon">

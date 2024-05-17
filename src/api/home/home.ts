@@ -23,7 +23,7 @@ export const getMobileCatNavList = (params: MobileCatNavFilterParams) => {
 // 获取首页分类商品列表
 export const getCateProduct = (params: GetCateProductFilterParams) => {
     return request<GetCateProductResponse>({
-        url: "product/home/get_list",
+        url: "product/product/list",
         method: "get",
         params
     });

@@ -1,101 +1,103 @@
 <template>
     <view class="after-sale-info">
-        <block v-if="Object.keys(infoData).length">
-            <view class="after-sal-info-steps">
-                <uni-steps active-color="#39bf3e" :options="infoData.step_status.steps" :active="infoData.step_status.current" />
-            </view>
-            <view class="refuse-reply" v-if="infoData.status === 3">
-                <view class="refuse-reply-title"> 拒绝原因: </view>
-                <view class="refuse-reply-content line1">
-                    {{ infoData.reply }}
+        <saveContentbox :specialNum="100" :saveTop="true">
+            <block v-if="Object.keys(infoData).length">
+                <view class="after-sal-info-steps">
+                    <uni-steps active-color="#39bf3e" :options="infoData.step_status.steps" :active="infoData.step_status.current" />
                 </view>
-            </view>
-            <view class="negotiate" @click="handleNegotiate">
-                <view class="negotiate-text"> 查看协商记录 </view>
-                <view class="negotiate-icon">
-                    <uni-icons type="right" size="20" color="#999"></uni-icons>
+                <view class="refuse-reply" v-if="infoData.status === 3">
+                    <view class="refuse-reply-title"> 拒绝原因: </view>
+                    <view class="refuse-reply-content line1">
+                        {{ infoData.reply }}
+                    </view>
                 </view>
-            </view>
-            <view class="negotiate" @click="handleShipments" v-if="infoData.status === 4">
-                <!-- <view class="negotiate" @click="handleShipments" v-if="true"> -->
-                <view class="negotiate-text"> 去发货 </view>
-                <view class="negotiate-icon">
-                    <uni-icons type="right" size="20" color="#999"></uni-icons>
+                <view class="negotiate" @click="handleNegotiate">
+                    <view class="negotiate-text"> 查看协商记录 </view>
+                    <view class="negotiate-icon">
+                        <uni-icons type="right" size="20" color="#999"></uni-icons>
+                    </view>
                 </view>
-            </view>
+                <view class="negotiate" @click="handleShipments" v-if="infoData.status === 4">
+                    <!-- <view class="negotiate" @click="handleShipments" v-if="true"> -->
+                    <view class="negotiate-text"> 去发货 </view>
+                    <view class="negotiate-icon">
+                        <uni-icons type="right" size="20" color="#999"></uni-icons>
+                    </view>
+                </view>
 
-            <view class="info-content">
-                <view class="info-content-title"> 售后信息 </view>
-                <view class="info-content-product">
-                    <view
-                        class="info-content-product-item"
-                        @click="handleProduct(item.product_id)"
-                        v-for="item in infoData.aftersales_items"
-                        :key="item.aftersales_item_id"
-                    >
-                        <view class="product-item-left">
-                            <tigImage v-model:src="item.pic_thumb"></tigImage>
-                        </view>
-                        <view class="product-item-right">
-                            <view class="product-item-name line2">{{ item.product_name }}</view>
-                            <view class="right-price">
-                                <FormatPrice class="right-price-pricenum" :priceData="item.price"></FormatPrice>
-                                <view class="right-price-quantity">x {{ item.number }}</view>
+                <view class="info-content">
+                    <view class="info-content-title"> 售后信息 </view>
+                    <view class="info-content-product">
+                        <view
+                            class="info-content-product-item"
+                            @click="handleProduct(item.product_id)"
+                            v-for="item in infoData.aftersales_items"
+                            :key="item.aftersales_item_id"
+                        >
+                            <view class="product-item-left">
+                                <tigImage v-model:src="item.pic_thumb"></tigImage>
+                            </view>
+                            <view class="product-item-right">
+                                <view class="product-item-name line2">{{ item.product_name }}</view>
+                                <view class="right-price">
+                                    <FormatPrice class="right-price-pricenum" :priceData="item.price"></FormatPrice>
+                                    <view class="right-price-quantity">x {{ item.number }}</view>
+                                </view>
                             </view>
                         </view>
                     </view>
-                </view>
-                <view class="refund-info">
-                    <view class="refund-info-item" v-if="Number(infoData.refund_amount) > 0">
-                        <view class="label">退款金额：</view>
-                        <view class="value price"><FormatPrice :priceData="infoData.refund_amount"></FormatPrice></view>
+                    <view class="refund-info">
+                        <view class="refund-info-item" v-if="Number(infoData.refund_amount) > 0">
+                            <view class="label">退款金额：</view>
+                            <view class="value price"><FormatPrice :priceData="infoData.refund_amount"></FormatPrice></view>
+                        </view>
+                        <view class="refund-info-item">
+                            <view class="label">售后方式：</view>
+                            <view class="value">{{ infoData.aftersales_type_name }}</view>
+                        </view>
+                        <view class="refund-info-item">
+                            <view class="label">退款原因：</view>
+                            <view class="value">{{ infoData.aftersale_reason }}</view>
+                        </view>
                     </view>
-                    <view class="refund-info-item">
-                        <view class="label">售后方式：</view>
-                        <view class="value">{{ infoData.aftersales_type_name }}</view>
-                    </view>
-                    <view class="refund-info-item">
-                        <view class="label">退款原因：</view>
-                        <view class="value">{{ infoData.aftersale_reason }}</view>
-                    </view>
-                </view>
-                <view class="after-sale">
-                    <view class="after-sale-item">
-                        <view class="label">售后编号：</view>
-                        <view class="value">{{ infoData.aftersales_sn }}</view>
-                    </view>
-                    <view class="after-sale-item">
-                        <view class="label">申请时间：</view>
-                        <view class="value">{{ infoData.add_time }}</view>
-                    </view>
-                    <view class="after-sale-item">
-                        <view class="label">退货数量：</view>
-                        <view class="value">{{ quantityNum }}</view>
-                    </view>
-                </view>
-            </view>
-            <view class="info-content" v-if="infoData.logistics_name && infoData.tracking_no">
-                <view class="info-content-title"> 退货信息 </view>
-                <view class="after-sale">
-                    <view class="after-sale-item">
-                        <view class="label">快递公司：</view>
-                        <view class="value">{{ infoData.logistics_name }}</view>
-                    </view>
-                    <view class="after-sale-item">
-                        <view class="label">快递单号：</view>
-                        <view class="value">{{ infoData.tracking_no }}</view>
+                    <view class="after-sale">
+                        <view class="after-sale-item">
+                            <view class="label">售后编号：</view>
+                            <view class="value">{{ infoData.aftersales_sn }}</view>
+                        </view>
+                        <view class="after-sale-item">
+                            <view class="label">申请时间：</view>
+                            <view class="value">{{ infoData.add_time }}</view>
+                        </view>
+                        <view class="after-sale-item">
+                            <view class="label">退货数量：</view>
+                            <view class="value">{{ quantityNum }}</view>
+                        </view>
                     </view>
                 </view>
-            </view>
-            <saveBottomBox height="90" backgroundColor="#fff">
-                <view class="after-sale-btn">
-                    <view class="after-sale-btn-box">
-                        <tigButton :plain="true"  @click="handleRevocation"> 撤销申请 </tigButton >
-                        <tigButton  :plain="true" :plainMainColor="true"  @click="handleEdit"> 修改申请 </tigButton >
+                <view class="info-content" v-if="infoData.logistics_name && infoData.tracking_no">
+                    <view class="info-content-title"> 退货信息 </view>
+                    <view class="after-sale">
+                        <view class="after-sale-item">
+                            <view class="label">快递公司：</view>
+                            <view class="value">{{ infoData.logistics_name }}</view>
+                        </view>
+                        <view class="after-sale-item">
+                            <view class="label">快递单号：</view>
+                            <view class="value">{{ infoData.tracking_no }}</view>
+                        </view>
                     </view>
                 </view>
-            </saveBottomBox>
-        </block>
+                <saveBottomBox height="90" backgroundColor="#fff">
+                    <view class="after-sale-btn">
+                        <view class="after-sale-btn-box">
+                            <tigButton :plain="true" @click="handleRevocation"> 撤销申请 </tigButton>
+                            <tigButton :plain="true" :plainMainColor="true" @click="handleEdit"> 修改申请 </tigButton>
+                        </view>
+                    </view>
+                </saveBottomBox>
+            </block>
+        </saveContentbox>
     </view>
 </template>
 
