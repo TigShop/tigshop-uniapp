@@ -62,12 +62,12 @@ const __getProductDetail = async (id: string) => {
     try {
         let result = await getProductDetail(id);
         product.value = result.item;
-        console.log('咨询商品', product.value);
+        console.log("咨询商品", product.value);
     } catch (error: any) {
         uni.showToast({
             title: error.message,
             icon: "none"
-        })
+        });
     }
 };
 const fetchConsultation = async () => {
@@ -80,25 +80,25 @@ const fetchConsultation = async () => {
     try {
         const result = await getProductConsultationList({ product_id: productId.value, page: page.value, size: size.value });
         consultationList.value = [...consultationList.value, ...result.filter_result];
-        console.log('咨询列表', consultationList.value);
+        console.log("咨询列表", consultationList.value);
         consultationTotal.value = result.total;
     } catch (error: any) {
         uni.showToast({
             title: error.message,
             icon: "none"
-        })
+        });
     } finally {
         loaded.value = false;
         uni.hideLoading();
     }
 };
-const productId = ref<any>("")
+const productId = ref<any>("");
 onLoad((option) => {
     if (option) {
         const { id } = option;
         if (id) {
             productId.value = id;
-            __getProductDetail(id)
+            __getProductDetail(id);
             fetchConsultation();
         }
     }
@@ -112,55 +112,55 @@ onReachBottom(() => {
 </script>
 
 <style lang="scss" scoped>
-
-.loading-box{
+.loading-box {
     padding: 30rpx;
     font-size: 24rpx;
 }
-.product-info{
+.product-info {
     border-top: 1rpx solid #eee;
     padding: 20rpx;
     background-color: #fff;
     margin-bottom: 20rpx;
-    .product-info-img{
-        image{
+    .product-info-img {
+        image {
             width: 160rpx;
             height: 160rpx;
         }
     }
-    .product-info-title{
+    .product-info-title {
         font-size: 26rpx;
     }
     .product-info-price {
-            color: $tig-color-primary;
-            font-weight: bold;
-            font-size: 36rpx;
-            display: flex;
-            align-items: center;
-            line-height: 36rpx;
-            margin-top: 10rpx;
-            :deep(.util) {
-                font-size: 24rpx;
-            }
+        color: $tig-color-primary;
+        font-weight: bold;
+        font-size: 36rpx;
+        display: flex;
+        align-items: center;
+        line-height: 36rpx;
+        margin-top: 10rpx;
+        :deep(.util) {
+            font-size: 24rpx;
         }
+    }
 }
-.product-consult-card{
-    .consult-item{
+.product-consult-card {
+    .consult-item {
         padding: 20rpx;
         background-color: #fff;
         margin-bottom: 20rpx;
-        .consult-item-tit{
+        .consult-item-tit {
             padding: 10rpx 0;
-            .time, .name{
+            .time,
+            .name {
                 color: #666;
                 font-size: 22rpx;
             }
         }
-        .consult-con{
+        .consult-con {
             padding: 10rpx 0;
             color: #666;
-                font-size: 22rpx;
-            text{
+            font-size: 22rpx;
+            text {
                 display: inline-block;
                 width: 35rpx;
                 height: 35rpx;
@@ -176,21 +176,3 @@ onReachBottom(() => {
     }
 }
 </style>
-
-<!-- 
-    <view class="product-consult-card">
-        <view class="consult-item" v-for="(item, index) in consultationList" :key="index">
-            <view class="consult-item-tit">
-                <view class="time">{{ item.add_time }}</view>
-                <view class="name">{{ item.username }}</view>
-            </view>
-            <view class="consult-con">
-                <text>Q</text>
-                {{ item.content }}
-            </view>
-            <view class="consult-con reply" v-if="item.reply">
-                <text>A</text>
-                {{ item.reply.content }}
-            </view>
-        </view>
-    </view> -->

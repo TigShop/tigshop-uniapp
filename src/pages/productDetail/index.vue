@@ -34,7 +34,7 @@
                         <view class="title"> 送至 </view>
                         <view class="label">
                             <view class="text">{{ regionText }} <uni-icons type="location" size="16" color="#bfbfbf"></uni-icons></view>
-                            <view class="tips">由 LYECS 配送并提供售后服务</view>
+                            <view class="tips">由卖家配送并提供售后服务</view>
                         </view>
                     </view>
                     <view @click="handleAddress">
