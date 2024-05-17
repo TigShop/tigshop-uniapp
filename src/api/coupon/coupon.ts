@@ -37,7 +37,7 @@ export const delCoupon = (data: object) => {
 // 获取我的优惠券详情
 export const getMyCouponInfo = (params:CouponInfoParams) => {
     return request<CouponDetailResponse>({
-        url: "user/coupon/edit",
+        url: "user/coupon/detail",
         method: "get",
         params
     });

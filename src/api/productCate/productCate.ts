@@ -3,21 +3,21 @@ import type { SearchFilterResult } from "@/types/productCate/productCate";
 // 获取商品分类
 export const getCategoryAll = () => {
     return request<SearchFilterResult>({
-        url: "/category/all",
+        url: "/category/category/all",
         method: "get"
     });
 };
 // 获取热门商品
 export const getCategoryHot = () => {
     return request<SearchFilterResult>({
-        url: "/category/hot",
+        url: "/category/category/hot",
         method: "get",
     });
 };
 // 获取分类树
 export const getCategoryTree = (id:number) => {
     return request<SearchFilterResult>({
-        url: "/category/parent_tree",
+        url: "/category/category/parent_tree",
         method: "get",
     });
 };

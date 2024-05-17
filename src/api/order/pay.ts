@@ -11,7 +11,7 @@ export const orderPayInfo = (id: number) => {
 // 创建订单支付
 export const creatPay = (params: creatPayParams) => {
     return request({
-        url: "order/pay/creat/",
+        url: "order/pay/create",
         method: "get",
         params
     });
@@ -19,7 +19,7 @@ export const creatPay = (params: creatPayParams) => {
 
 export const checkPayStatus = (params: {}) => {
     return request({
-        url: "order/pay/check_status/",
+        url: "order/pay/check_status",
         method: "get",
         params
     });

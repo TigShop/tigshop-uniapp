@@ -50,7 +50,7 @@ import selectRegion from "@/components/region/selectRegion.vue";
 import saveBottomBox from "@/components/saveBottomBox/index.vue";
 import { nextTick, reactive, ref } from "vue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
-import { getAddressData, updateAddressData } from "@/api/user/address";
+import { getAddressData, updateAddressData, addAddressData } from "@/api/user/address";
 
 const parameter = reactive({
     navbar: "1",
@@ -158,7 +158,7 @@ const onSubmit = (values: any) => {
 
 const add = async () => {
     try {
-        const result = await updateAddressData(form);
+        const result = await addAddressData(form);
         if (result.message) {
             uni.showToast({
                 title: result.message,

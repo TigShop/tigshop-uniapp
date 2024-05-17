@@ -152,7 +152,7 @@ const onSubmit = (values: any) => {
 
 const add = async () => {
     try {
-        const result = await updateAccount({ ...formState.value }, 'update_account');
+        const result = await updateAccount({ ...formState.value }, 'create_account');
         if (result.message) {
             uni.showToast({
                 title: result.message,
@@ -178,7 +178,7 @@ const add = async () => {
 
 const edit = async () => {
     try {
-        const result = await updateAccount({ ...formState.value }, 'edit_account');
+        const result = await updateAccount({ ...formState.value }, 'update_account');
         if (result.message) {
             uni.showToast({
                 title: result.message,

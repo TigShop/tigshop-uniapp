@@ -1,17 +1,26 @@
 import request from "@/utils/request";
 import type { afterSaleEditResponse, afterSaleEditParams, afterSaleInfoResponse, NegotiateResponse, AfterSaleListResponse } from "@/types/user/afterSale";
 
+// 申请数据
 export const getAftersalesEdit = (params: afterSaleEditParams) => {
     return request<afterSaleEditResponse>({
-        url: "user/aftersales/edit",
+        url: "user/aftersales/apply_data",
         method: "get",
         params
     });
 };
 
+// 售后选项
+export const getAftersalesConfig = () => {
+    return request<any>({
+        url: "user/aftersales/config",
+        method: "get"
+    });
+};
+
 export const updateAfterSales = (data: object) => {
     return request({
-        url: "user/aftersales/update/",
+        url: "user/aftersales/create",
         method: "post",
         data
     });
@@ -20,7 +29,7 @@ export const updateAfterSales = (data: object) => {
 // 售后记录详情
 export const aftersalesViewRecord = (id: number) => {
     return request<afterSaleInfoResponse>({
-        url: "user/aftersales/view_record?id=" + id,
+        url: "user/aftersales/detail?id=" + id,
         method: "get"
     });
 };
@@ -31,17 +40,16 @@ export const aftersalesCancel = (data: object) => {
         url: "user/aftersales/cancel",
         method: "post",
         data
-    })
-}
-
+    });
+};
 
 // 售后log
 export const viewRecordLog = (id: number) => {
     return request<NegotiateResponse>({
-        url: "user/aftersales/view_record_log?id=" + id,
+        url: "user/aftersales/detail_log?id=" + id,
         method: "get"
-    })
-}
+    });
+};
 
 //  提交售后反馈记录
 export const aftersalesFeedback = (data: object) => {
@@ -49,8 +57,8 @@ export const aftersalesFeedback = (data: object) => {
         url: "user/aftersales/feedback",
         method: "post",
         data
-    })
-}
+    });
+};
 
 // 售后申请记录
 export const aftersalesRecord = (params: object) => {
@@ -58,5 +66,5 @@ export const aftersalesRecord = (params: object) => {
         url: "user/aftersales/get_record",
         method: "get",
         params
-    })
-}
+    });
+};

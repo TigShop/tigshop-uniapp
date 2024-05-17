@@ -12,7 +12,7 @@ import type {
 // 账户变动记录
 export const getAccountList = (params?: AccountFilterParams) => {
     return request<AccountDetailFilterResult>({
-        url: 'user/account/list/',
+        url: 'user/account/list',
         method: 'get',
         params
     });
@@ -21,7 +21,7 @@ export const getAccountList = (params?: AccountFilterParams) => {
 // 申请记录
 export const getRechargeOrderList = (params?: AccountFilterParams) => {
     return request<AccountFilterResult>({
-        url: 'user/recharge_order/list/',
+        url: 'user/recharge_order/list',
         method: 'get',
         params
     });
@@ -29,7 +29,7 @@ export const getRechargeOrderList = (params?: AccountFilterParams) => {
 
 export const getDepositList = () => {
     return request<DepositFilterResult>({
-        url: 'user/recharge_order/setting/',
+        url: 'user/recharge_order/setting',
         method: 'get'
     });
 }
@@ -46,7 +46,7 @@ export const updateRechargeOrder = (data: object) => {
 // 提现
 export const getAccountNoList = (params?: AccountNoFilterParams) => {
     return request<AccountInfoResult>({
-        url: 'user/withdraw_apply/list/',
+        url: 'user/withdraw_apply/list',
         method: 'get',
         params,
     });
@@ -54,7 +54,7 @@ export const getAccountNoList = (params?: AccountNoFilterParams) => {
 
 export const updateWithdrawApply = (data: object) => {
     return request({
-        url: 'user/withdraw_apply/update/',
+        url: 'user/withdraw_apply/apply',
         method: 'post',
         data
     });
@@ -62,7 +62,7 @@ export const updateWithdrawApply = (data: object) => {
 
 export const delAccount = (params: object) => {
     return request({
-        url: "user/withdraw_apply/del_account/",
+        url: "user/withdraw_apply/del_account",
         method: "post",
         params
     });
@@ -70,7 +70,7 @@ export const delAccount = (params: object) => {
 
 export const getAccount = (params?: object) => {
     return request<AccountFormResult>({
-        url: 'user/withdraw_apply/account_detail/',
+        url: 'user/withdraw_apply/account_detail',
         method: 'get',
         params,
     });
@@ -78,7 +78,7 @@ export const getAccount = (params?: object) => {
 
 export const updateAccount = (params: object,url:string) => {
     return request({
-        url: "user/withdraw_apply/"+url+"/",
+        url: "user/withdraw_apply/"+url,
         method: "post",
         params
     });

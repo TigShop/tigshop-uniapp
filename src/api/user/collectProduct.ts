@@ -4,7 +4,7 @@ import type { CollectProductResponse, CollectProductFilterParams } from '@/types
 // 收藏商品列表
 export const getCollectProductList = (params?: CollectProductFilterParams) => {
     return request<CollectProductResponse>({
-        url: 'user/collect_product/list/',
+        url: 'user/collect_product/list',
         method: 'get',
         params
     })
@@ -13,7 +13,7 @@ export const getCollectProductList = (params?: CollectProductFilterParams) => {
 // 取消收藏商品
 export const delCollectProduct = (params: object) => {
     return request({
-        url: "user/collect_product/del/",
+        url: "user/collect_product/cancel",
         method: "get",
         params
     });

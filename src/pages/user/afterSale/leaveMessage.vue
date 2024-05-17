@@ -88,7 +88,7 @@ const handlePicDelete = (e: any) => {
 const uploadFile = (filePath: any) => {
     let name, extname, url;
     uni.uploadFile({
-        url: indexConfig.baseUrl + indexConfig.requestUrlPrefix + "user/upload_img",
+        url: indexConfig.baseUrl + indexConfig.requestUrlPrefix + "user/user/upload_img",
         filePath,
         header: {
             Authorization: uni.getStorageSync("token")

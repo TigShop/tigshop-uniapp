@@ -11,7 +11,7 @@ export const getInvoiceStatus = () => {
 
 export const getCheckInvoice = (params: object) => {
     return request<any>({
-        url: "order/check/check_invoice",
+        url: "order/check/get_invoice",
         method: "get",
         params
     });

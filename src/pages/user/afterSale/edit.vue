@@ -43,7 +43,7 @@
                     </picker>
                 </uni-forms-item>
                 <uni-forms-item label="退款原因" name="aftersale_reason">
-                    <picker @change="getAftersaleReason" :value="aftersaleTypeIndex" :range="infoData.aftersale_reason">
+                    <picker @change="getAftersaleReason" :value="aftersaleReasonIndex" :range="aftersaleReasonList">
                         <view class="form-item-content">
                             <view>
                                 <text class="form-item-value" v-if="form.aftersale_reason">{{ form.aftersale_reason }}</text>
@@ -83,7 +83,7 @@
         </view>
         <saveBottomBox :height="90" backgroundColor="#fff">
             <view class="after-sale-btn-box">
-                <tigButton style="width: 100%;height: 100%;" @click="handleSave"> 提交 </tigButton>
+                <tigButton style="width: 100%; height: 100%" @click="handleSave"> 提交 </tigButton>
             </view>
         </saveBottomBox>
     </view>
@@ -92,7 +92,7 @@
 <script setup lang="ts">
 import { onLoad } from "@dcloudio/uni-app";
 import { ref, reactive } from "vue";
-import { getAftersalesEdit, updateAfterSales } from "@/api/user/afterSale";
+import { getAftersalesEdit, updateAfterSales, getAftersalesConfig } from "@/api/user/afterSale";
 import type { afterSaleEditResponse } from "@/types/user/afterSale";
 import { imageFormat } from "@/utils/format";
 import indexConfig from "@/config/index.config";
@@ -104,6 +104,7 @@ onLoad((options) => {
         orderId.value = options.order_id;
         itemId.value = options.item_id;
         __getAftersalesEdit();
+        __getAftersalesConfig();
     }
 });
 
@@ -142,6 +143,22 @@ const __getAftersalesEdit = async () => {
     }
 };
 
+const aftersaleReasonList = ref<any[]>([]);
+const __getAftersalesConfig = async () => {
+    try {
+        const result = await getAftersalesConfig();
+        aftersaleReasonList.value = result.aftersale_reason;
+        aftersale_type_list.value = Object.keys(result.aftersale_type).map((key) => {
+            return {
+                value: Number(key),
+                label: result.aftersale_type[key]
+            };
+        });
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 interface Iform {
     items: Item[];
     pics: any[];
@@ -176,8 +193,11 @@ const getAftersaleType = (e: any) => {
     aftersaleTypeIndex.value = e.detail.value;
     form.aftersale_type = aftersale_type_list.value[aftersaleTypeIndex.value!].value;
 };
+
+const aftersaleReasonIndex = ref<null | number>(null);
 const getAftersaleReason = (e: any) => {
-    form.aftersale_reason = infoData.value.aftersale_reason[e.detail.value];
+    aftersaleReasonIndex.value = e.detail.value;
+    form.aftersale_reason = aftersaleReasonList.value[aftersaleReasonIndex.value!];
 };
 
 const handlePicSelect = (e: any) => {
@@ -194,7 +214,7 @@ const handlePicSelect = (e: any) => {
 const uploadFile = (filePath: any) => {
     let name, extname, url;
     uni.uploadFile({
-        url: indexConfig.baseUrl + indexConfig.requestUrlPrefix + "user/upload_img", //仅为示例，非真实的接口地址
+        url: indexConfig.baseUrl + indexConfig.requestUrlPrefix + "user/user/upload_img", //仅为示例，非真实的接口地址
         filePath,
         header: {
             Authorization: uni.getStorageSync("token")
@@ -420,7 +440,9 @@ const handleSave = async () => {
         box-sizing: border-box;
         height: 100%;
         padding: 15rpx 20rpx;
-
+    }
+    :deep(.uni-file-picker__header) {
+        padding-right: 15rpx;
     }
 }
 </style>

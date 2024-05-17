@@ -4,7 +4,7 @@ import type {ProductFilterResult, SkuDetail,ProductCouponList,CommentFilterResul
 // 获取商品详情
 export const getProductDetail = (id: any) => {
     return request<ProductFilterResult>({
-        url: "product/index/",
+        url: "product/product/detail",
         method: "get",
         params: { id }
     });
@@ -12,14 +12,14 @@ export const getProductDetail = (id: any) => {
 
 export const getComment = (id: number) => {
     return request<CommentDetailResult>({
-        url: "product/get_comment/",
+        url: "product/product/get_comment",
         method: "get",
         params: { id }
     });
 };
 export const getCommentList = (id: number, params: object) => {
     return request<CommentFilterResult>({
-        url: "product/get_comment_list/",
+        url: "product/product/get_comment_list",
         method: "get",
         params: { id, ...params }
     });
@@ -27,14 +27,14 @@ export const getCommentList = (id: number, params: object) => {
 
 export const getProductSkuDetail = (id: string, params: object) => {
     return request<SkuDetail>({
-        url: "product/get_sku_detail/",
+        url: "product/product/get_product_availability",
         method: "get",
         params: { id, ...params }
     });
 };
 export const addToCart = (params: { id: number; number: number; sku_id?: number; is_quick?: number }) => {
     return request({
-        url: "product/add_to_cart/",
+        url: "product/product/add_to_cart",
         method: "post",
         data: params
     });
@@ -50,7 +50,7 @@ export const getProductConsultationList = (params: object) => {
 //提交商品咨询
 export const addConsultation = (data:ProductConsultationFormState) => {
     return request({
-        url: "user/feedback/update",
+        url: "user/feedback/submit",
         method: "post",
         data
     });
@@ -64,19 +64,11 @@ export const getAfterSaleService = (id: number) => {
     });
 };
 
-//商品侧边内容
-// export const getProductRelateInfo = (params: object) => {
-//     return request<ProductConsultationList>({
-//         url: 'category/relate_info',
-//         method: 'get',
-//         params
-//     });
-// }
 
 //收藏商品
 export const getCollectProduct = (params: object) => {
     return request<any>({
-        url: 'product/is_collect',
+        url: 'product/product/is_collect',
         method: 'get',
         params
     });
@@ -84,7 +76,7 @@ export const getCollectProduct = (params: object) => {
 // 取消收藏商品
 export const delCollectProduct = (params: object) => {
     return request({
-        url: "user/collect_product/del/",
+        url: "user/collect_product/cancel",
         method: "get",
         params
     });
@@ -92,7 +84,7 @@ export const delCollectProduct = (params: object) => {
 // 收藏商品
 export const updateCollectProduct = (data: object) => {
     return request({
-        url: "user/collect_product/update/",
+        url: "user/collect_product/save",
         method: "get",
         data
     });
@@ -101,7 +93,7 @@ export const updateCollectProduct = (data: object) => {
 //优惠券列表
 export const getProductCouponList = (id: number) => {
     return request<ProductCouponList>({
-        url: "product/get_coupon/",
+        url: "product/product/get_coupon",
         method: "get",
         params: { id }
     });

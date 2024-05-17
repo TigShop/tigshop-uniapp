@@ -3,7 +3,7 @@ import type { ProfileFormResult } from "@/types/user/profile.d";
 
 export const getProfile = () => {
     return request<ProfileFormResult>({
-        url: "user/user/info/",
+        url: "user/user/detail",
         method: "get"
     });
 };

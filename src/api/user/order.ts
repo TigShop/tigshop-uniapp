@@ -12,7 +12,7 @@ export const getOrderList = (params: any) => {
 export const getOrderNum = () => {
     return request<OrderNumResponse>({
         url: "user/order/order_num",
-        method: "post"
+        method: "get"
     });
 };
 
@@ -35,7 +35,7 @@ export const cancelOrder = (data: object) => {
 //获取订单详情
 export const getOrder = (params: object) => {
     return request<OrderInfoResponse>({
-        url: "user/order/info",
+        url: "user/order/detail",
         method: "get",
         params
     });

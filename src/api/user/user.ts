@@ -3,7 +3,7 @@ import type { UserDataResponse } from "@/types/user/user";
 
 export const getUser = () => {
     return request<UserDataResponse>({
-        url: "user/info/",
+        url: "user/user/detail",
         method: "get"
     });
 };

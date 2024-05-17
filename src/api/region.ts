@@ -4,7 +4,7 @@ import type {RegionFilterState} from '@/types/user/address'
 export const getRegionByIds = (ids: Number[] = []) => {
     return request<RegionFilterState>({
         url: "sys/region/get_region",
-        method: "post",
+        method: "get",
         params: { region_ids: ids },
     });
 };

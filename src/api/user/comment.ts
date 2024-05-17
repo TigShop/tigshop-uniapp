@@ -29,7 +29,7 @@ export const getCommentList = (params: CommentFilterParams) => {
 // 上传评论
 export const updateCommentData = (data: object) => {
     return request({
-        url: "user/comment/update/",
+        url: "user/comment/evaluate",
         method: "post",
         data
     });
@@ -38,7 +38,7 @@ export const updateCommentData = (data: object) => {
 //获取评价详情
 export const getCommentData  = (params: object) => {
     return request<any>({
-        url: 'user/comment/edit',
+        url: 'user/comment/detail',
         method: 'get',
         params
     });

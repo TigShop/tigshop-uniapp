@@ -340,7 +340,9 @@ const onSubmit = () => {
 };
 
 const handleApply = () => {
-    // uni.navigateTo()
+    uni.navigateTo({
+        url: "/pages/user/invoiceManagement/index?type=invoice"
+    })
 };
 </script>
 

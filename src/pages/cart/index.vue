@@ -55,6 +55,7 @@
                                                             <uni-number-box
                                                                 :disabled="goods.is_disabled"
                                                                 v-model="goods.quantity"
+                                                                :min="1"
                                                                 @change="updateCartItem(goods.cart_id, goods.quantity)"
                                                             />
                                                         </view>
