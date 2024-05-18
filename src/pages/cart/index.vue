@@ -900,18 +900,22 @@ onShow(() => {
 }
 .goods-list-cart .cart_item .cart-move-box .btn-del {
     width: 150rpx;
-    background: #ff4f18;
-    background: linear-gradient(-41deg, #ff4f18, #ff2000 24%, #f10000);
+    // background: #ff4f18;
+    // background: linear-gradient(-41deg, #ff4f18, #ff2000 24%, #f10000);
+
     display: inline-block;
     height: 100%;
     vertical-align: middle;
     display: table-cell;
     position: relative;
+    background: $tig-color-primary;
 }
 .goods-list-cart .cart_item .cart-move-box .btn-collect {
     width: 150rpx;
-    background: #ffa600;
-    background: linear-gradient(138deg, #ffa600, #ffb000 77%, #ffbc00);
+    // background: #ffa600;
+    // background: linear-gradient(138deg, #ffa600, #ffb000 77%, #ffbc00);
+    background: #e1f4e3;
+    color: $tig-color-primary;
     display: inline-block;
     height: 100%;
     vertical-align: middle;

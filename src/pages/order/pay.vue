@@ -114,11 +114,10 @@ const loadOrderPayInfo = async (id: number) => {
             duration: 1500,
             icon: "none"
         });
-        setTimeout(() => {
-            uni.redirectTo({
-                url: "/pages/user/order/index?type=await_pay"
-            });
-        }, 1500);
+
+        uni.redirectTo({
+            url: "/pages/user/order/index?type=await_pay"
+        });
     } finally {
         loading.value = false;
     }
@@ -139,9 +138,7 @@ const getRechargeOrderPay = async (id: number) => {
             duration: 1500,
             icon: "none"
         });
-        setTimeout(() => {
-            uni.navigateBack();
-        }, 1500);
+        uni.navigateBack();
     } finally {
         loading.value = false;
     }
@@ -213,11 +210,10 @@ const handlePay = async () => {
             duration: 1500,
             icon: "none"
         });
-        setTimeout(() => {
-            uni.redirectTo({
-                url: "/pages/user/order/index?type=await_pay"
-            });
-        }, 1500);
+
+        uni.redirectTo({
+            url: "/pages/user/order/index?type=await_pay"
+        });
     } finally {
         paymentDisabled.value = false;
     }
