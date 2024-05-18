@@ -45,10 +45,10 @@ export const updateAddressData = (data: object) => {
 };
 
 // 切换地址
-export const selectedAddress = (params: object) => {
+export const selectedAddress = (data: object) => {
     return request<any>({
         url: "user/address/set_selected",
-        method: "get",
-        params
+        method: "post",
+        data
     });
 };

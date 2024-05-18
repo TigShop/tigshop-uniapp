@@ -23,14 +23,14 @@ watch(
     (newVal) => {
         if (!newVal) {
             // #ifndef MP-WEIXIN
-            return emit("update:src", "/src/static/images/common/empty-img-bg3.png");
+            return emit("update:src", "/static/images/common/empty-img-bg3.png");
             // #endif
 
             // #ifdef MP-WEIXIN
             return emit("update:src", "/static/images/common/empty-img-bg3.png");
             // #endif
         }
-        if (newVal.includes("static/images/common/empty-img-bg3.png")) {
+        if (newVal.includes("/static/images/common/empty-img-bg3.png")) {
             srcData.value = newVal;
         } else {
             srcData.value = imageFormat(newVal || "");
@@ -43,7 +43,7 @@ watch(
 
 const handleError = (e: Event) => {
     // #ifndef MP-WEIXIN
-    emit("update:src", "/src/static/images/common/empty-img-bg3.png");
+    emit("update:src", "/static/images/common/empty-img-bg3.png");
     // #endif
 
     // #ifdef MP-WEIXIN

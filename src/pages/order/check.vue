@@ -112,8 +112,12 @@ const getOrderInfo = async () => {
         balanceNum.value = balance;
         pointsData.value = points;
         availablePoints.value = available_points;
-    } catch (error) {
+    } catch (error: any) {
         console.error(error);
+        uni.showToast({
+            title: error.message,
+            icon: "none"
+        });
     } finally {
         uni.hideLoading();
     }
@@ -227,6 +231,5 @@ onShow(() => {
             font-weight: normal;
         }
     }
-
 }
 </style>

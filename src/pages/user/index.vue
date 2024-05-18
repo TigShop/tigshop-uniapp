@@ -74,7 +74,7 @@
                                         <view class="txt">待付款</view>
                                     </block>
                                 </view>
-                                <view class="li" @click="goPages('/pages/user/order/list?type=await_shipping')">
+                                <view class="li" @click="goPages('/pages/user/order/list?type=await_received')">
                                     <uni-badge
                                         v-if="orderNum.await_received > 0"
                                         class="badgecolor"

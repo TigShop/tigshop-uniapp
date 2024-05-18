@@ -1,6 +1,6 @@
 <template>
     <div style="position: relative">
-        <div style="display: flex;flex-wrap: wrap;justify-content: center;padding-top: 25rpx;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; padding-top: 25rpx">
             <div v-if="type === '2'" class="verify-img-out" :style="{ height: parseInt(setSize.imgHeight) + vSpace + 'px' }">
                 <div
                     class="verify-img-panel"
@@ -9,7 +9,13 @@
                         height: setSize.imgHeight
                     }"
                 >
-                    <image lazy-load  v-if="backImgBase" :src="'data:image/png;base64,' + backImgBase" alt="" style="width: 100%; height: 100%; display: block"></image>
+                    <image
+                        lazy-load
+                        v-if="backImgBase"
+                        :src="'data:image/png;base64,' + backImgBase"
+                        alt=""
+                        style="width: 100%; height: 100%; display: block"
+                    ></image>
 
                     <div v-if="backImgBase" class="verify-refresh" @click="refresh" v-show="showRefresh"><i class="iconfont-pc icon-refresh"></i></div>
                     <transition name="tips">
@@ -61,7 +67,8 @@
                                 'background-size': setSize.imgWidth + ' ' + setSize.imgHeight
                             }"
                         >
-                            <image lazy-load 
+                            <image
+                                lazy-load
                                 v-if="blockBackImgBase"
                                 :src="'data:image/png;base64,' + blockBackImgBase"
                                 alt=""
@@ -290,7 +297,7 @@ export default {
                     token: backToken.value
                 };
                 request({
-                    url: "common/verification/check/",
+                    url: "common/verification/check",
                     method: "post",
                     data: data
                 })
@@ -372,9 +379,9 @@ export default {
                 captchaType: captchaType.value
             };
             request({
-                url: "common/verification/captcha/",
-                method: "post",
-                data: data
+                url: "common/verification/captcha",
+                method: "get",
+                params: data
             })
                 .then((result) => {
                     backImgBase.value = result.originalImageBase64;

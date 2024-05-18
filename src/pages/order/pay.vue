@@ -114,9 +114,10 @@ const loadOrderPayInfo = async (id: number) => {
             duration: 1500,
             icon: "none"
         });
-        setTimeout(() => {
-            uni.navigateBack();
-        }, 1500);
+
+        uni.redirectTo({
+            url: "/pages/user/order/list?type=await_pay"
+        });
     } finally {
         loading.value = false;
     }
@@ -137,9 +138,7 @@ const getRechargeOrderPay = async (id: number) => {
             duration: 1500,
             icon: "none"
         });
-        setTimeout(() => {
-            uni.navigateBack();
-        }, 1500);
+        uni.navigateBack();
     } finally {
         loading.value = false;
     }
@@ -199,7 +198,7 @@ const handlePay = async () => {
                         icon: "none"
                     });
                     uni.redirectTo({
-                        url: "/pages/user/order/index?type=await_pay"
+                        url: "/pages/user/order/list?type=await_pay"
                     });
                 }
             }, 2000);
@@ -210,6 +209,10 @@ const handlePay = async () => {
             title: error.message,
             duration: 1500,
             icon: "none"
+        });
+
+        uni.redirectTo({
+            url: "/pages/user/order/list?type=await_pay"
         });
     } finally {
         paymentDisabled.value = false;
@@ -253,7 +256,7 @@ const miniProgramPay = (pay_info: any) => {
             });
             setTimeout(function () {
                 uni.redirectTo({
-                    url: "/pages/user/order/index?type=await_pay"
+                    url: "/pages/user/order/list?type=await_pay"
                 });
             }, 1500);
         },
@@ -265,7 +268,7 @@ const miniProgramPay = (pay_info: any) => {
             });
             setTimeout(() => {
                 uni.redirectTo({
-                    url: "/pages/user/order/index?type=await_pay"
+                    url: "/pages/user/order/list?type=await_pay"
                 });
             }, 1500);
         }
@@ -322,7 +325,6 @@ onBeforeUnmount(() => {
         top: -5rpx;
     }
 }
-
 
 .other-info {
     background: #fff;

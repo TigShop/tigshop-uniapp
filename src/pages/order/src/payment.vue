@@ -9,11 +9,11 @@
                                 {{ paymentText[payment!] }}
                             </view>
 
-                            <image v-if="payment !== 'offline'" class="payment-info-img" :src="'/src/static/images/payment/pay_' + payment + '.png'"></image>
+                            <image v-if="payment !== 'offline'" class="payment-info-img" :src="'/static/images/payment/pay_' + payment + '.png'"></image>
                         </view>
                         <radio
                             :value="payment"
-                            activeBackgroundColor="#ee0a24"
+                            :activeBackgroundColor="themeStore.themeStyle['--general']"
                             :checked="payment === modelValue"
                             style="margin-right: 20rpx; transform: scale(0.9)"
                         ></radio>
@@ -25,6 +25,8 @@
 </template>
 
 <script setup lang="ts">
+import { useThemeStore } from "@/store/theme";
+const themeStore = useThemeStore();
 interface Props {
     paymentList: string[];
     modelValue: string;

@@ -5,7 +5,7 @@ import type { PointFilterParams, PointFilterResult } from "@/types/user/point";
 
 export const getPointList = (params: PointFilterParams) => {
     return request<PointFilterResult>({
-        url: "user/points_log/list/",
+        url: "user/points_log/list",
         method: "get",
         params
     });
